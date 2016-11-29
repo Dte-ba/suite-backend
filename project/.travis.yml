@@ -1,0 +1,12 @@
+language: python
+services:
+– postgresql
+python:
+– 2.7
+install:
+– pip install -r requirements.txt
+before_script:
+– psql -c 'create database demo;' -U postgres
+– cd project; python manage.py migrate
+script:
+– cd project; python manage.py test
