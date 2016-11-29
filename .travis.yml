@@ -4,9 +4,9 @@ python:
 services:
   - postgresql
 before_script:
-  - cd project; python manage.py migrate
+  - python project/manage.py migrate
 script:
-  - cd project; python manage.py test
+  - python project/manage.py test
 install:
   - pip install -r requirements.txt
   - pip install psycopg2 --quiet
