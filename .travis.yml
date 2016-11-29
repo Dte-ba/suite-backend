@@ -3,10 +3,11 @@ python:
   - "2.7"
 services:
   – postgresql
-install:
-  – pip install -r requirements.txt
 before_script:
   – psql -c 'create database demo;' -U postgres
   – cd project; python manage.py migrate
 script:
   – cd project; python manage.py test
+install:
+  - pip install -r requirements.txt
+  - pip install psycopg2 --quiet
