@@ -11,6 +11,13 @@ virtualenv venv
 . venv/bin/activate
 ```
 
+instalar las dependencias especificadas en el archivo
+requirements.txt:
+
+```
+pip install -r requirements.txt
+```
+
 Luego, hay que preparar la base de datos de desarrollo:
 
 ```
