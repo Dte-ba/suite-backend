@@ -51,4 +51,4 @@ crear_migraciones:
 	${BIN_MANAGE} makemigrations
 
 admin:
-  ${BIN_MANAGE} createsuperuser
+	${BIN_MANAGE} createsuperuser
