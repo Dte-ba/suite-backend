@@ -20,6 +20,7 @@ comandos:
 	@echo "    ${G}admin${N}               Genera el usuario root para la sección ADMIN."
 	@echo "    ${G}test${N}                Ejecuta los tests."
 	@echo "    ${G}serve${N}               Ejecuta el servidor en modo desarrollo."
+	@echo "    ${G}lint${N}                Busca errores o inconsistencias en el código."
 	@echo "    ${G}ayuda${N}               Muestra una listado de todos los comandos django."
 	@echo ""
 	@echo ""
@@ -52,3 +53,6 @@ crear_migraciones:
 
 admin:
 	${BIN_MANAGE} createsuperuser
+lint:
+	pyflakes suite
+
