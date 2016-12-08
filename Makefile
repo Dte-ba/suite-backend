@@ -38,6 +38,7 @@ migrar: dependencias
 	${BIN_MANAGE} migrate
 
 test: dependencias
+	clear;
 	${BIN_MANAGE_RELATIVO} test
 
 test_live: dependencias
