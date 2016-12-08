@@ -16,8 +16,8 @@ comandos:
 	@echo ""
 	@echo "    ${G}iniciar${N}             Instala todas las dependencias."
 	@echo "    ${G}crear_migraciones${N}   Genera las migraciones."
+	@echo "    ${G}crear_usuario_admin${N} Genera un usuario administrador."
 	@echo "    ${G}migrar${N}              Ejecuta las migraciones sobre la base de datos."
-	@echo "    ${G}admin${N}               Genera el usuario root para la sección ADMIN."
 	@echo "    ${G}test${N}                Ejecuta los tests."
 	@echo "    ${G}serve${N}               Ejecuta el servidor en modo desarrollo."
 	@echo "    ${G}lint${N}                Busca errores o inconsistencias en el código."
@@ -26,17 +26,19 @@ comandos:
 	@echo ""
 
 
-iniciar:
-	@echo "${G}instalando dependencias ...${N}"
-	@pip install -r requirements.txt
+dependencias:
+	@echo "${G}actualizando dependencias pip ...${N}"
+	@pip install -r requirements.txt | sed '/Requirement\ \w*/d'
 
-migrar:
+iniciar: dependencias
+
+migrar: dependencias
 	${BIN_MANAGE} migrate
 
-test:
+test: dependencias
 	${BIN_MANAGE} test
 
-serve:
+serve: dependencias
 	${BIN_MANAGE} runserver
 
 s: serve
@@ -45,14 +47,15 @@ server: serve
 ayuda:
 	${BIN_MANAGE}
 
-shell:
+shell: dependencias
 	${BIN_MANAGE} shell
 
 crear_migraciones:
 	${BIN_MANAGE} makemigrations
 
-admin:
+crear_usuario_admin:
 	${BIN_MANAGE} createsuperuser
+
 lint:
 	pyflakes suite
 
