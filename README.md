@@ -31,6 +31,8 @@ acceder al administrador de django:
 make admin
 ```
 
+
+
 ## Cómo iniciar el servidor
 
 Para iniciar el servidor en modo desarrollo hay que
@@ -221,3 +223,12 @@ admin.site.register(models.Domicilio)
 ```
 
 ![](imagenes/admin_domicilio.png)
+
+
+## Notas
+
+Para salir del entorno se puede ejecutar el siguiente comando:
+
+```
+deactivate
+```
