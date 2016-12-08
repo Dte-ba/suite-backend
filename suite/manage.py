@@ -12,6 +12,7 @@ if __name__ == "__main__":
         # exceptions on Python 2.
         try:
             import django
+            django;           # No es necesaria esta linea, pero no encontre otra forma de silenciar pyflakes.
         except ImportError:
             raise ImportError(
                 "Couldn't import Django. Are you sure it's installed and "
