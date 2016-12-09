@@ -1,3 +1,4 @@
+# coding: utf-8
 from django.db import models
 
 class Contacto(models.Model):
@@ -8,6 +9,9 @@ class Contacto(models.Model):
     email = models.EmailField(max_length=254)
 
     escuela = models.ForeignKey('Escuela', on_delete=models.CASCADE)
+
+    def __unicode__(self):
+        return self.nombre
 
     class Meta:
         db_table = 'contactos'
