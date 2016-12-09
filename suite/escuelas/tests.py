@@ -2,7 +2,6 @@
 from django.test import TestCase
 from rest_framework.test import APITestCase
 
-
 class APIUsuariosTests(APITestCase):
 
     def test_ruta_principal_de_la_api(self):
@@ -18,7 +17,7 @@ class GeneralesTestCase(TestCase):
 
     def test_pagina_principal_retorna_ok(self):
         response = self.client.get('/')
-        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.status_code, 200)
 
 """
     def test_index(self):
