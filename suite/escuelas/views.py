@@ -15,3 +15,7 @@ class UserViewSet(viewsets.ModelViewSet):
 class EscuelaViewSet(viewsets.ModelViewSet):
     queryset = models.Escuela.objects.all()
     serializer_class = serializers.EscuelaSerializer
+
+class ContactoViewSet(viewsets.ModelViewSet):
+    queryset = models.Contacto.objects.all()
+    serializer_class = serializers.ContactoSerializer

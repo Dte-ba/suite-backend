@@ -13,3 +13,9 @@ class EscuelaSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = models.Escuela
         fields = '__all__'
+
+class ContactoSerializer(serializers.HyperlinkedModelSerializer):
+
+    class Meta:
+        model = models.Contacto
+        fields = '__all__'
