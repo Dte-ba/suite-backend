@@ -1,6 +1,7 @@
 NOMBRE=suite
 
 N=[0m
+R=[00;31m
 G=[01;32m
 Y=[01;33m
 B=[01;34m
@@ -8,6 +9,7 @@ L=[01;30m
 
 BIN_MANAGE=python suite/manage.py
 BIN_MANAGE_RELATIVO=cd suite; python manage.py
+BIN_ESTA_DENTRO_DE_VENV=python utils/esta_dentro_de_entorno_virtual.py
 
 comandos:
 	@echo ""
@@ -28,9 +30,12 @@ comandos:
 	@echo ""
 
 
-dependencias:
+dependencias: esta_dentro_de_un_entorno_virtual
 	@echo "${G}actualizando dependencias pip ...${N}"
 	@pip install -r requirements.txt | sed '/Requirement\ \w*/d'
+
+esta_dentro_de_un_entorno_virtual:
+	@${BIN_ESTA_DENTRO_DE_VENV}
 
 iniciar: dependencias
 
