@@ -143,5 +143,5 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
-# Para ejecutar test en colores.
+# Para que el resultado de los tests pueda verse en colores.
 TEST_RUNNER="redgreenunittest.django.runner.RedGreenDiscoverRunner"

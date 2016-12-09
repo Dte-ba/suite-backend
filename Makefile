@@ -38,11 +38,12 @@ migrar: dependencias
 	${BIN_MANAGE} migrate
 
 test: dependencias
-	clear;
-	${BIN_MANAGE_RELATIVO} test
+	@clear;
+	@echo "${G}Ejecutando tests ...${N}"
+	@${BIN_MANAGE_RELATIVO} test
 
 test_live: dependencias
-	make test; watchmedo shell-command --patterns="*.py" --recursive --command='make test' .
+	@make test; watchmedo shell-command --patterns="*.py" --recursive --command='make test' .
 
 
 serve: dependencias

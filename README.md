@@ -1,4 +1,4 @@
-# evaluacion-django-suite
+# SUITE 2
 
 [![Build Status](https://travis-ci.org/hugoruscitti/evaluacion-django-suite.svg?branch=master)](https://travis-ci.org/hugoruscitti/evaluacion-django-suite)
 
@@ -54,27 +54,32 @@ o bien, la siguiente dirección para abrir la interfaz de administración:
 
 ## Cómo crear un nuevo modelo de base de datos
 
-Para crear un nuevo modelo en la base de datos hay que crear una nueva clase dentro del archivo `suite/escuelas/models.py`.
+Para crear un nuevo modelo en la base de datos hay que crear un nuevo
+archivo dentro del directorio `suite/escuelas/models` y luego vincularlo desde
+el archivo `suite/escuelas/models/__init__.py`.
 
-Por ejemplo, vamos a suponer que queremos crear una nueva tabla en nuestro
-modelo que nos permita guardar la dirección de un contacto asociado a una
+Por ejemplo, vamos a suponer que queremos crear una tabla nueva que nos
+permita guardar la dirección de un contacto asociado a una
 escuela.
 
 (Ojo, esto es un ejemplo ilustrativo, no contempla direcciones en
-departamentos ni nada parecido, es solo un ejemplo rápido)
+departamentos ni nada parecido, es solo un ejemplo rápido )
 
-El modelo actual es así:
+El modelo de datos actual es así:
 
 ![](imagenes/der_inicial.png)
 
 Y lo que nos gustaría hacer es crear una tabla de domicilios que se vincule
-con un contacto:
+con un contacto así:
 
 ![](imagenes/der_con_relacion.png)
 
-Tendríamos que escribir dentro de `suite/escuelas/models.py` así:
+Tendríamos que escribir un archivo nuevo llamado `suite/escuelas/models/domicilio.py`
+con este contenido :
 
 ```
+from django.db import models
+
 class Domicilio(models.Model):
     calle = models.CharField(max_length=500)
     numeracion = models.IntegerField()
@@ -83,8 +88,15 @@ class Domicilio(models.Model):
         db_table = 'domicilios'
 ```
 
+Y luego agregar esta linea al archivo `suite/escuelas/models/__init__.py`:
+
+```
+from domicilio import Domicilio
+```
+
 Y para que se relacione con un contacto tendríamos
-que declarar la relación en la clase Contacto:
+que declarar la relación en la clase Contacto
+(archivo `suite/escuelas/models/contacto.y`):
 
 ```
 class Contacto(models.Model):
@@ -95,7 +107,7 @@ class Contacto(models.Model):
 
 Ahora, como cambiamos el modelo, necesitamos escribir una migración
 para que django pueda modificar la estructura de la base de datos y migrar
-los datos existentes.
+todos los registros existentes.
 
 Para crear una migración hay que escribir el comando:
 
@@ -113,7 +125,7 @@ Migrations for 'escuelas':
     - Add field domicilio to contacto
 ```
 
-Lo interesante de este archivo, es que nos servirá para hacer un seguimiento
+Lo interesante de este archivo, es que nos va a servir para hacer un seguimiento
 de los cambios en la base de datos. Ese archivo se tiene que subir
 al respositorio y le va a servir al equipo entero para replicar la mísma base
 de datos en otra pc.
@@ -157,6 +169,9 @@ Con `tab` podemos autocompletar, y usando el signo `?` o `??` a la derecha
 de algún objeto podemos obtener ayuda sobre cómo utilizarlo:
 
 ![](imagenes/inspector.png)
+
+Este intérprete de prueba también sirve para otras cosas, como para sacarnos
+dudas a la hora de escribir un tests o investigar la API de django.
 
 #### Cómo crear registros
 
@@ -225,10 +240,60 @@ admin.site.register(models.Domicilio)
 ![](imagenes/admin_domicilio.png)
 
 
-## Notas
+## Notas, consejos y trucos.
+
+
+### Cómo salir del entorno virtual
 
 Para salir del entorno se puede ejecutar el siguiente comando:
 
 ```
 deactivate
 ```
+
+### Cómo instalar dependencias
+
+
+Si encontás alguna dependencia útil, podés
+instalarla usando el comando `pip install`, por
+ejemplo:
+
+
+```
+pip install rednose
+```
+
+Esto agregará la dependencia en el entorno virtual. Si querés
+indicar en el repositorio que esta dependencia es obligatoria agregala
+al archivo `requirements.txt` así:
+
+```
+pip freeze > requirements.txt
+```
+
+### Ocultar archivos .pyc en Atom
+
+Python genera archivos .pyc para agilizar al conversión python -> bytecode,
+pero esto ensucia un poco el treeview de un editor como atom:
+
+![](imagenes/ocultar_pyc_1.png)
+
+Atom reconoce que los archivos `.pyc` no son importantes (ya que están
+en el archivo .gitignore) y por eso los muestra en color gris.
+
+
+Para que estos archivos ni siquiera aparescan, se puede ingresar en las
+prefenrencias del editor, luego en complemento treeview y activar la
+opción para ocultar todos los archivos ignorados:
+
+![](imagenes/ocultar_pyc_2.png)
+
+Así debería quedar el treeview luego de guardar
+los cambios:
+
+![](imagenes/ocultar_pyc_3.png)
+
+
+### Activar el autocompletado en Atom
+
+
