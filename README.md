@@ -294,6 +294,40 @@ los cambios:
 ![](imagenes/ocultar_pyc_3.png)
 
 
+### Activar utf-8
+
+Si ves un mensaje de la forma:
+
+```
+SyntaxError: Non-ASCII character '\xc3' in file ...
+```
+
+
+Simplemente agregá este comentario al principio del archivo que da errores:
+
+```
+# coding: utf-8
+```
+
+
+### Cómo generar un gráfico del modelo de datos
+
+Primero tendrías que instalar graphviz en tu equipo, con
+algún comando como este:
+
+```
+sudo apt-get install graphviz
+```
+
+Y luego ejecutar este comando:
+
+
+```
+make grafico
+```
+
+Se va a generar un archivo .png similar al siguiente:
+
+![](imagenes/demo_grafico_db.png)
+
 ### Activar el autocompletado en Atom
-
-

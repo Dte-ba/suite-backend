@@ -11,7 +11,7 @@ class APIUsuariosTests(APITestCase):
 
     def test_ruta_users(self):
         response = self.client.get('/api/users', format='json')
-        pass
+        self.assertNotEquals(response, None)
 
 class GeneralesTestCase(TestCase):
 

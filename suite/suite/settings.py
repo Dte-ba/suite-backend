@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
+    'django_extensions',
 ]
 
 MIDDLEWARE = [
@@ -145,3 +146,8 @@ STATIC_URL = '/static/'
 
 # Para que el resultado de los tests pueda verse en colores.
 TEST_RUNNER="redgreenunittest.django.runner.RedGreenDiscoverRunner"
+
+GRAPH_MODELS = {
+  'all_applications': True,
+  'group_models': True,
+}

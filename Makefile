@@ -9,7 +9,6 @@ L=[01;30m
 
 BIN_MANAGE=python suite/manage.py
 BIN_MANAGE_RELATIVO=cd suite; python manage.py
-BIN_ESTA_DENTRO_DE_VENV=python utils/esta_dentro_de_entorno_virtual.py
 
 comandos:
 	@echo ""
@@ -21,6 +20,7 @@ comandos:
 	@echo "    ${G}crear_migraciones${N}   Genera las migraciones."
 	@echo "    ${G}crear_usuario_admin${N} Genera un usuario administrador."
 	@echo "    ${G}migrar${N}              Ejecuta las migraciones sobre la base de datos."
+	@echo "    ${G}grafico${N}             Genera un grafico del modelo de datos en .PNG"
 	@echo "    ${G}test${N}                Ejecuta los tests."
 	@echo "    ${G}test_live${N}           Ejecuta los tests en forma contínua."
 	@echo "    ${G}serve${N}               Ejecuta el servidor en modo desarrollo."
@@ -30,12 +30,12 @@ comandos:
 	@echo ""
 
 
-dependencias: esta_dentro_de_un_entorno_virtual
+dependencias: _esta_dentro_de_un_entorno_virtual
 	@echo "${G}actualizando dependencias pip ...${N}"
 	@pip install -r requirements.txt | sed '/Requirement\ \w*/d'
 
-esta_dentro_de_un_entorno_virtual:
-	@${BIN_ESTA_DENTRO_DE_VENV}
+_esta_dentro_de_un_entorno_virtual:
+	@python utils/esta_dentro_de_entorno_virtual.py
 
 iniciar: dependencias
 
@@ -45,11 +45,11 @@ migrar: dependencias
 test: dependencias
 	@clear;
 	@echo "${G}Ejecutando tests ...${N}"
+	@make lint
 	@${BIN_MANAGE_RELATIVO} test
 
 test_live: dependencias
 	@make test; watchmedo shell-command --patterns="*.py" --recursive --command='make test' .
-
 
 serve: dependencias
 	${BIN_MANAGE} runserver
@@ -70,4 +70,12 @@ crear_usuario_admin:
 	${BIN_MANAGE} createsuperuser
 
 lint:
-	pyflakes suite
+	@pyflakes suite
+
+_esta_instalado_graphviz:
+	@python utils/esta_instalado_graphviz.py
+	
+grafico: _esta_instalado_graphviz
+	@echo "Graficando modelo de base de datos ..."
+	@${BIN_MANAGE} graph_models escuelas --no-color -g -o grafico_db.png
+	@echo "Se ha creado el archivo grafico_db.png"
