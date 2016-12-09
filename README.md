@@ -31,8 +31,6 @@ acceder al administrador de django:
 make admin
 ```
 
-
-
 ## Cómo iniciar el servidor
 
 Para iniciar el servidor en modo desarrollo hay que
@@ -239,6 +237,68 @@ admin.site.register(models.Domicilio)
 
 ![](imagenes/admin_domicilio.png)
 
+
+
+## API
+
+La aplicación incluye una API para acceder a los modelos a traves del
+estándar json-api. Para ver todas las rutas disponibles ingresá en:
+
+- http://localhost:8000/api/
+
+Si ves esa URL con un navegador, vas a poder pulsar en las URLs para
+ingresar en cada recurso y navegar por cualquier link:
+
+![](imagenes/api.png)
+
+En cambio, si accedes a los datos desde CURL (o un frontend javascript) vas a ver
+solamente los datos crudos:
+
+```
+> curl http://localhost:8000/api/
+{"data":{"users":"http://localhost:8000/api/users/"}}
+```
+
+Para agregar algún modelo a esta API deberías crear
+una vista y un serializador. Esto es bastante sencillo
+de hacer, pero requiere seguir estos pasos y copiar/pegar un poco de código:
+
+- Primero tendrías que crear la ruta en el archivo `suite/suite/urls.py`.
+
+Por ejemplo, para exponer la API de los modelo Escuela
+usamos esta linea:
+
+```
+router.register(r'escuelas', views.EscuelaViewSet)
+```
+
+- Luego tendrías que incluir una vista en el archivo
+`suite/escuelas/views.py`:
+
+Volviendo al ejemplo del modelo Escuela, la vista quedaría
+así:
+
+```
+class EscuelaViewSet(viewsets.ModelViewSet):
+    queryset = Escuela.objects.all()
+    serializer_class = serializers.EscuelaSerializer
+```
+
+Por último, hay que crear el serializador en el archivo
+`suite/escuelas/serializers.py`, por ejemplo:
+
+
+```
+class EscuelaSerializer(serializers.HyperlinkedModelSerializer):
+
+    class Meta:
+        model = models.Escuela
+        fields = '__all__'
+```
+
+El campo `fields` sirve para indicar qué atributos se quieren exponer en
+la api, no siempre se quieren mostrar todos los datos como acá. Mirá
+la clase `UserSerializer` del mismo archivo para ver otro ejemplo de uso.
 
 ## Notas, consejos y trucos.
 

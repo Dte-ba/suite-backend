@@ -1,8 +1,14 @@
 # coding: utf-8
 from django.test import TestCase
 from rest_framework.test import APITestCase
+import models
 
 class APIUsuariosTests(APITestCase):
+
+    def setUp(self):
+        #escuela = models.Escuela.objects.create(nombre="Escuela de ejemplo", cue="123")
+        #escuela.save()
+        pass
 
     def test_ruta_principal_de_la_api(self):
         response = self.client.get('/api/', format='json')
@@ -13,31 +19,21 @@ class APIUsuariosTests(APITestCase):
         response = self.client.get('/api/users', format='json')
         self.assertNotEquals(response, None)
 
+    def test_ruta_escuelas(self):
+        response = self.client.get('/api/escuelas/', format='json')
+        self.assertEquals(response.data['results'], [], "Inicialmente no hay escuelas cargadas")
+
+        # Se genera una escuela de prueba.
+        escuela = models.Escuela.objects.create(nombre="Escuela de ejemplo", cue="123")
+        escuela.save()
+
+        # ahora la API tiene que exponer una sola escuela.
+        response = self.client.get('/api/escuelas/', format='json')
+        self.assertEqual(response.data['meta']['pagination']['count'], 1, "Tiene que retornarse un solo registro")
+
+
 class GeneralesTestCase(TestCase):
 
     def test_pagina_principal_retorna_ok(self):
         response = self.client.get('/')
         self.assertEqual(response.status_code, 200)
-
-"""
-    def test_index(self):
-        response = self.client.get('/customer/index/')
-        self.assertEqual(response.status_code, 200)
-"""
-
-"""
-from django.test import TestCase
-from myapp.models import Animal
-
-class AnimalTestCase(TestCase):
-    def setUp(self):
-        Animal.objects.create(name="lion", sound="roar")
-        Animal.objects.create(name="cat", sound="meow")
-
-    def test_animals_can_speak(self):
-        lion = Animal.objects.get(name="lion")
-        cat = Animal.objects.get(name="cat")
-        self.assertEqual(lion.speak(), 'The lion says "roar"')
-        self.assertEqual(cat.speak(), 'The cat says "meow"')
-
-"""
