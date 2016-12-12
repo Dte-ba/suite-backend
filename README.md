@@ -391,3 +391,5 @@ Se va a generar un archivo .png similar al siguiente:
 ![](imagenes/demo_grafico_db.png)
 
 ### Activar el autocompletado en Atom
+
+>> TODO: ver avances en trello por el momento.
