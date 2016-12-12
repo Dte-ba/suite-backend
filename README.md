@@ -1,4 +1,4 @@
-# SUITE 2
+# SUITE 2 - API Backend
 
 [![Build Status](https://travis-ci.org/hugoruscitti/evaluacion-django-suite.svg?branch=master)](https://travis-ci.org/hugoruscitti/evaluacion-django-suite)
 
