@@ -1,6 +1,6 @@
 # SUITE 2 - API Backend
 
-[![Build Status](https://travis-ci.org/hugoruscitti/evaluacion-django-suite.svg?branch=master)](https://travis-ci.org/hugoruscitti/evaluacion-django-suite)
+[![Build Status](https://travis-ci.org/Dte-ba/suite-backend.svg?branch=master)](https://travis-ci.org/Dte-ba/suite-backend)
 
 ## ¿Cómo iniciar la aplicación?
 
