@@ -392,4 +392,6 @@ Se va a generar un archivo .png similar al siguiente:
 
 ### Activar el autocompletado en Atom
 
+
 >> TODO: ver avances en trello por el momento.
+
