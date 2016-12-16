@@ -28,7 +28,7 @@ También es buena idea crear un usuario para poder
 acceder al administrador de django:
 
 ```
-make admin
+make crear_usuario_admin
 ```
 
 ## Cómo iniciar el servidor
@@ -392,6 +392,25 @@ Se va a generar un archivo .png similar al siguiente:
 
 ### Activar el autocompletado en Atom
 
+Para activar el autocompletado desde el editor atom hay que instalar
+un complemento llamado [autocomplete-python](https://atom.io/packages/autocomplete-python).
 
->> TODO: ver avances en trello por el momento.
+![](imagenes/autocompletado-1.png)
 
+Una vez instalado, hay que ingresar en las preferencias del complemento
+y colocar las rutas al binario de python (dentro del entorno virtual) y
+también el directorio de bibliotecas dentro del entorno virtual:
+
+- binarios: `/usr/bin/python;$PROJECT/venv/bin/python`
+- bibliotecas: `$PROJECT/venv/lib/python2.7/site-packages`
+
+![](imagenes/autocompletado-2.png)
+
+Con esto listo, podríamos empezar a escribir código y ver cómo infiere
+el autocompletado correctamente:
+
+![](imagenes/autocompletado-3.png)
+
+Nota: la primera vez que comenzamos a escribir, demora como 5 o 10 segundos
+en aparecer la primer opción de autocompletado. Una vez que pasa esa primer
+demora el resto de las sugerencias es inmediata.
