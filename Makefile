@@ -22,8 +22,8 @@ comandos:
 	@echo "    ${G}migrar${N}              Ejecuta las migraciones sobre la base de datos."
 	@echo "    ${G}grafico${N}             Genera un grafico del modelo de datos en .PNG"
 	@echo "    ${G}test${N}                Ejecuta los tests."
-	@echo "    ${G}test_live${N}           Ejecuta los tests en forma contínua."
-	@echo "    ${G}serve${N}               Ejecuta el servidor en modo desarrollo."
+	@echo "    ${G}test_continuos${N}      Ejecuta los tests en forma contínua."
+	@echo "    ${G}ejecutar${N}            Ejecuta el servidor en modo desarrollo."
 	@echo "    ${G}lint${N}                Busca errores o inconsistencias en el código."
 	@echo "    ${G}ayuda${N}               Muestra una listado de todos los comandos django."
 	@echo ""
@@ -48,8 +48,13 @@ test: dependencias
 	@make lint
 	@${BIN_MANAGE_RELATIVO} test
 
+
+test_continuos: test_live
+
 test_live: dependencias
 	@make test; watchmedo shell-command --patterns="*.py" --recursive --command='make test' .
+
+ejecutar: serve
 
 serve: dependencias
 	${BIN_MANAGE} runserver
