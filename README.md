@@ -414,3 +414,73 @@ el autocompletado correctamente:
 Nota: la primera vez que comenzamos a escribir, demora como 5 o 10 segundos
 en aparecer la primer opción de autocompletado. Una vez que pasa esa primer
 demora el resto de las sugerencias es inmediata.
+
+
+
+
+## Deploy en producción
+
+Primero hay que contar con un servidor que soporte dokku, hay una nota
+que puede servirte de introducción a dokku aquí:
+
+- http://blog.enjambrelab.com.ar/
+
+También tendrías que tener instalada la extensión para usar bases de
+dato postgres:
+
+- https://github.com/dokku/dokku-postgres
+
+
+En este punto, tu vps con dokku debería tener un dominio. Aquí usaremos
+el dominio enjambrelab.com.ar como ejemplo.
+
+Para iniciar la instalación de la aplicación en dokku tenemos que escribir:
+
+	git remote add desarrollo dokku@enjambrelab.com.ar:suite-backend-desarrollo
+	git push desarrollo master
+
+
+La instancia de la aplicación quedará como un destino remoto de nuestro
+repositorio, así que cada vez que busquemos hacer un deploy tenemos
+que ejecutar el comando:
+
+	git push desarrollo master
+
+
+Donde "desarrollo" es el nombre que le damos a la instancia, que podría
+ser cualquier otra cosa. Incluso podríamos tener una instancia "produccion",
+"pruebas" etc...
+
+
+	dokku postgres:create desarrollo-suite-backend
+	dokku postgres:info desarrollo-suite-backend
+
+
+Por último, hay que vincular la nueva base de datos con la aplicación:
+
+	dokku postgres:link desarrollo-suite-backend suite-backend-desarrollo
+
+(el primer argumento de link es el nombre de la base de datos y el segundo
+es el identificador de la aplicación).
+
+Luego, desde la aplicación deberíamos conectarnos a la base de datos usando
+la variable de entorno DATABASE_URL. Usando el comando `dokku config` se
+puede consultar si esta variable se inicializó correctamente o no:
+
+	> dokku config
+	=====> suite-backend-desarrollo config vars
+	DATABASE_URL:      postgres://postgres:612a369cxxxxx13@dokku-postgres-desarrollo-suite-backend:5432/desarrollo_suite_backend
+	DOKKU_APP_RESTORE: 1
+	DOKKU_APP_TYPE:    herokuish
+	DOKKU_NGINX_PORT:  80
+
+
+Por último, para ejecutar comandos sobre el entorno de desarrollo hay que
+anteponer el prefijo `dokku run` y en algunos casos especificar el nombre
+de la configuración del entorno:
+
+
+	dokku run python manage.py migrate --settings=suite.desarrollo_settings
+	dokku run python manage.py createsuperuser --settings=suite.desarrollo_settings
+
+
