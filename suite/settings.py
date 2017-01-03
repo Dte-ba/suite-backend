@@ -25,7 +25,7 @@ SECRET_KEY = '!b5t3zyyr+6(*&^75v%drix74^0b2kqebk81gtmozqk+w3*-1&'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['0.0.0.0', '127.0.0.1']
+ALLOWED_HOSTS = ['0.0.0.0', '127.0.0.1', 'suite-backend-desarrollo.enjambrelab.com.ar']
 
 
 # Application definition
