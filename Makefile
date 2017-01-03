@@ -7,8 +7,8 @@ Y=[01;33m
 B=[01;34m
 L=[01;30m
 
-BIN_MANAGE=python suite/manage.py
-BIN_MANAGE_RELATIVO=cd suite; python manage.py
+BIN_MANAGE=python manage.py
+BIN_MANAGE_RELATIVO=python manage.py
 
 comandos:
 	@echo ""
