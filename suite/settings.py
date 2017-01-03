@@ -146,9 +146,11 @@ PROJECT_ROOT = os.path.dirname(os.path.abspath(__file__))
 STATIC_ROOT = os.path.join(PROJECT_ROOT, 'staticfiles')
 STATIC_URL = "/static/"
 
+"""
 STATICFILES_DIRS = (
     os.path.join(PROJECT_ROOT, 'static'),
 )
+"""
 
 # Para que el resultado de los tests pueda verse en colores.
 TEST_RUNNER="redgreenunittest.django.runner.RedGreenDiscoverRunner"
