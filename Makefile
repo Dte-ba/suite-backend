@@ -75,7 +75,7 @@ crear_usuario_admin:
 	${BIN_MANAGE} createsuperuser
 
 lint:
-	@pyflakes suite
+	@pyflakes escuelas
 
 _esta_instalado_graphviz:
 	@python utils/esta_instalado_graphviz.py
