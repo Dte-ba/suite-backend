@@ -59,7 +59,8 @@ test_live: dependencias
 ejecutar: serve
 
 serve: dependencias
-	${BIN_MANAGE} testserver escuelas/fixtures/*
+	${BIN_MANAGE} runserver 
+	#${BIN_MANAGE} testserver escuelas/fixtures/*
 
 s: serve
 server: serve
