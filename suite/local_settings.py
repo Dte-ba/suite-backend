@@ -27,6 +27,7 @@ SECRET_KEY = '!b5t3zyyr+6(*&^75v%drix74^0b2kqebk81gtmozqk+w3*-1&'
 DEBUG = True
 
 ALLOWED_HOSTS = [
+    'localhost',
     '0.0.0.0',
     '127.0.0.1',
     'suite.dtelab.com.ar',
@@ -72,7 +73,7 @@ ROOT_URLCONF = 'suite.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': ['suite/templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -151,7 +152,7 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/1.10/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'es-ar'
 
 TIME_ZONE = 'UTC'
 
