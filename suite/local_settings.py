@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/1.10/ref/settings/
 """
 
 import os
+import dj_database_url
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -25,8 +26,16 @@ SECRET_KEY = '!b5t3zyyr+6(*&^75v%drix74^0b2kqebk81gtmozqk+w3*-1&'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['0.0.0.0', '127.0.0.1', 'suite-backend-desarrollo.enjambrelab.com.ar']
+ALLOWED_HOSTS = [
+    '0.0.0.0',
+    '127.0.0.1',
+    'suite.dtelab.com.ar',
+    'testing-suite-backend.dtelab.com.ar',
+]
 
+JSON_API_FORMAT_KEYS = 'dasherize'
+JSON_API_PLURALIZE_RELATION_TYPE = True
+CORS_ORIGIN_ALLOW_ALL = True
 
 # Application definition
 
@@ -42,9 +51,15 @@ INSTALLED_APPS = [
     'django_extensions',
 ]
 
+MEDIA_ROOT = 'media'
+STATIC_ROOT = 'static'
+MEDIA_URL = '/media/'
+STATIC_URL = '/static/'
+
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -71,15 +86,13 @@ TEMPLATES = [
 ]
 
 REST_FRAMEWORK = {
-    # Use Django's standard `django.contrib.auth` permissions,
-    # or allow read-only access for unauthenticated users.
-    'DEFAULT_PERMISSION_CLASSES': [
-        'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly'
-    ],
-
-    'PAGE_SIZE': 10,
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework.authentication.TokenAuthentication',
+    ),
+    'PAGE_SIZE': 500,
     'EXCEPTION_HANDLER': 'rest_framework_json_api.exceptions.exception_handler',
-    'DEFAULT_PAGINATION_CLASS': 'rest_framework_json_api.pagination.PageNumberPagination',
+    'DEFAULT_PAGINATION_CLASS':
+        'rest_framework_json_api.pagination.PageNumberPagination',
     'DEFAULT_PARSER_CLASSES': (
         'rest_framework_json_api.parsers.JSONParser',
         'rest_framework.parsers.FormParser',
@@ -98,12 +111,22 @@ WSGI_APPLICATION = 'suite.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/1.10/ref/settings/#databases
 
+
+"""
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     }
 }
+"""
+DATABASES = {
+}
+
+db_url = os.environ.get('DOKKU_POSTGRES_BLUE_URL', 'sqlite://./database.sqlite')
+DATABASES['default'] = dj_database_url.config(conn_max_age=600, default=db_url)
+
+
 
 
 # Password validation
@@ -143,14 +166,12 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.10/howto/static-files/
 
 PROJECT_ROOT = os.path.dirname(os.path.abspath(__file__))
-#STATIC_ROOT = os.path.join(PROJECT_ROOT, 'staticfiles')
+STATIC_ROOT = ""
 STATIC_URL = "/static/"
 
-"""
 STATICFILES_DIRS = (
     os.path.join(PROJECT_ROOT, 'static'),
 )
-"""
 
 # Para que el resultado de los tests pueda verse en colores.
 TEST_RUNNER="redgreenunittest.django.runner.RedGreenDiscoverRunner"
