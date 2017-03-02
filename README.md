@@ -273,7 +273,7 @@ router.register(r'escuelas', views.EscuelaViewSet)
 ```
 
 - Luego tendrías que incluir una vista en el archivo
-`suite/escuelas/views.py`:
+  `suite/escuelas/views.py`:
 
 Volviendo al ejemplo del modelo Escuela, la vista quedaría
 así:
@@ -431,12 +431,13 @@ dato postgres:
 - https://github.com/dokku/dokku-postgres
 
 
-En este punto, tu vps con dokku debería tener un dominio. Aquí usaremos
-el dominio enjambrelab.com.ar como ejemplo.
+En este punto, tu vps con dokku debería tener un dominio. 
+
+Aquí usaremos el dominio dtelab.com.ar porque es el que estamos usando para desarrollo:
 
 Para iniciar la instalación de la aplicación en dokku tenemos que escribir:
 
-	git remote add desarrollo dokku@enjambrelab.com.ar:suite-backend-desarrollo
+	git remote add desarrollo dokku@dtelab.com.ar:testing-suite-backend
 	git push desarrollo master
 
 
@@ -452,13 +453,13 @@ ser cualquier otra cosa. Incluso podríamos tener una instancia "produccion",
 "pruebas" etc...
 
 
-	dokku postgres:create desarrollo-suite-backend
-	dokku postgres:info desarrollo-suite-backend
+	dokku postgres:create testing-suite-backend
+	dokku postgres:info testing-suite-backend
 
 
 Por último, hay que vincular la nueva base de datos con la aplicación:
 
-	dokku postgres:link desarrollo-suite-backend suite-backend-desarrollo
+	dokku postgres:link testing-suite-backend suite-backend-desarrollo
 
 (el primer argumento de link es el nombre de la base de datos y el segundo
 es el identificador de la aplicación).
@@ -469,7 +470,7 @@ puede consultar si esta variable se inicializó correctamente o no:
 
 	> dokku config
 	=====> suite-backend-desarrollo config vars
-	DATABASE_URL:      postgres://postgres:612a369cxxxxx13@dokku-postgres-desarrollo-suite-backend:5432/desarrollo_suite_backend
+	DATABASE_URL:      postgres://postgres:612a369cxxxxx13@dokku-postgres-testing-suite-backend:5432/desarrollo_suite_backend
 	DOKKU_APP_RESTORE: 1
 	DOKKU_APP_TYPE:    herokuish
 	DOKKU_NGINX_PORT:  80
