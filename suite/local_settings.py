@@ -167,10 +167,6 @@ USE_TZ = True
 
 PROJECT_ROOT = os.path.dirname(os.path.abspath(__file__))
 
-STATICFILES_DIRS = (
-    os.path.join(PROJECT_ROOT, 'static'),
-)
-
 # Para que el resultado de los tests pueda verse en colores.
 TEST_RUNNER="redgreenunittest.django.runner.RedGreenDiscoverRunner"
 
