@@ -437,6 +437,7 @@ Aquí usaremos el dominio dtelab.com.ar porque es el que estamos usando para des
 
 Para iniciar la instalación de la aplicación en dokku tenemos que escribir:
 
+
 	git remote add desarrollo dokku@dtelab.com.ar:testing-suite-backend
 	git push desarrollo master
 
@@ -474,6 +475,11 @@ puede consultar si esta variable se inicializó correctamente o no:
 	DOKKU_APP_RESTORE: 1
 	DOKKU_APP_TYPE:    herokuish
 	DOKKU_NGINX_PORT:  80
+
+Si no llega a estar correctamente configurado, hay que ejecutar el comando que
+define la variable de entorno DATABASE_URL:
+
+	dokku config:set DATABASE_URL=postgres://postgres:33bd2xxxxx@dokku-postgres-testing-suite-backend:5432/desarrollo_suite_backend
 
 
 Por último, para ejecutar comandos sobre el entorno de desarrollo hay que
