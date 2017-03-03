@@ -10,6 +10,7 @@ static
 
 # C extensions
 *.so
+*.sqlite
 
 # Distribution / packaging
 .Python

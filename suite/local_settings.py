@@ -53,7 +53,7 @@ INSTALLED_APPS = [
 ]
 
 MEDIA_ROOT = '_media'
-STATIC_ROOT = '_static'
+STATIC_ROOT = 'staticfiles'
 MEDIA_URL = '/media/'
 STATIC_URL = '/static/'
 
