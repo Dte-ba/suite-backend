@@ -6,7 +6,7 @@ import serializers
 import models
 
 def home(request):
-    return HttpResponse("Bienvenido a la API de SUITE, ingrese en /api o /admin para más detalles.")
+    return HttpResponse("Bienvenido a la API de SUITE, ingrese en <a href='/api'>/api</a> o <a href='/admin'>/admin</a> para más detalles.")
 
 class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
