@@ -52,8 +52,8 @@ INSTALLED_APPS = [
     'django_extensions',
 ]
 
-MEDIA_ROOT = '/media'
-STATIC_ROOT = '/static'
+MEDIA_ROOT = '_media'
+STATIC_ROOT = '_static'
 MEDIA_URL = '/media/'
 STATIC_URL = '/static/'
 
