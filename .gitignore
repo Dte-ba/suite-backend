@@ -3,9 +3,8 @@ __pycache__/
 *.py[cod]
 *$py.class
 
-suite/static
+staticfiles
 
-static
 .DS_Store
 
 # C extensions
