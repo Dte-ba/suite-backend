@@ -21,3 +21,23 @@ class EscuelaViewSet(viewsets.ModelViewSet):
 class ContactoViewSet(viewsets.ModelViewSet):
     queryset = models.Contacto.objects.all()
     serializer_class = serializers.ContactoSerializer
+
+class EventoViewSet(viewsets.ModelViewSet):
+    resource_name = 'eventos'
+    queryset = models.Evento.objects.all()
+    serializer_class = serializers.EventoSerializer
+
+class RegionViewSet(viewsets.ModelViewSet):
+    resource_name = 'regiones'
+    queryset = models.Region.objects.all()
+    serializer_class = serializers.RegionSerializer
+
+class PerfilViewSet(viewsets.ModelViewSet):
+    resource_name = 'perfiles'
+    queryset = models.Perfil.objects.all()
+    serializer_class = serializers.PerfilSerializer
+
+class MunicipioViewSet(viewsets.ModelViewSet):
+    resource_name = 'municipio'
+    queryset = models.Municipio.objects.all()
+    serializer_class = serializers.MunicipioSerializer

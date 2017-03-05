@@ -4,10 +4,15 @@ from django.contrib import admin
 from escuelas import views
 from rest_framework import routers
 
-router = routers.DefaultRouter()
+router = routers.DefaultRouter(trailing_slash=False)
 router.register(r'users', views.UserViewSet)
 router.register(r'escuelas', views.EscuelaViewSet)
 router.register(r'contactos', views.ContactoViewSet)
+router.register(r'eventos', views.EventoViewSet)
+router.register(r'regiones', views.RegionViewSet)
+router.register(r'perfiles', views.PerfilViewSet)
+router.register(r'municipios', views.MunicipioViewSet)
+
 
 urlpatterns = [
     url(r'^$', views.home, name='home'),

@@ -15,3 +15,4 @@ class Contacto(models.Model):
 
     class Meta:
         db_table = 'contactos'
+        verbose_name_plural = "contactos"

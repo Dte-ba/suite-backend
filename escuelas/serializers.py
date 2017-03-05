@@ -30,3 +30,27 @@ class ContactoSerializer(CustomSerializer):
     class Meta:
         model = models.Contacto
         fields = '__all__'
+
+class EventoSerializer(CustomSerializer):
+
+    class Meta:
+        model = models.Evento
+        fields = '__all__'
+
+class RegionSerializer(CustomSerializer):
+
+    class Meta:
+        model = models.Region
+        fields = ('id', 'numero', 'municipios')
+
+class PerfilSerializer(CustomSerializer):
+
+    class Meta:
+        model = models.Perfil
+        fields = '__all__'
+
+class MunicipioSerializer(CustomSerializer):
+
+    class Meta:
+        model = models.Municipio
+        fields = '__all__'

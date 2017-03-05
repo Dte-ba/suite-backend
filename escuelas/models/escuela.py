@@ -12,3 +12,4 @@ class Escuela(models.Model):
 
     class Meta:
         db_table = 'escuelas'
+        verbose_name_plural = "escuelas"
