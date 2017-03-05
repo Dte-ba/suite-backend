@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Origami Backend</title>
+    <link rel="stylesheet" href="https://unpkg.com/purecss@0.6.2/build/pure-min.css" integrity="sha384-UQiGfs9ICog+LwheBSRCt1o5cbyKIHbwjWscjemyBMT9YCUMZffs6UqUTd0hObXD" crossorigin="anonymous">
+
+    <style>
+      .content {
+        padding: 2em;
+        text-align: center;
+      }
+
+      .panel {
+        padding: 1em;
+      }
+
+      p {
+        line-height: 1.6;
+        font-family: sans-serif;
+        font-weight: 100;
+        font-size: 1.125em;
+      }
+
+
+      .footer {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        text-align: center;
+        padding: 1em;
+      }
+    </style>
+  </head>
+  <body>
+
+    <div class='content'>
+      {% load static %}
+
+<!-- Master icon by Icons8 -->
+<img class="icon icons8-Master" src="data:image/png;base64,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" width="100" height="100">
+
+
+
+
+      <p>Este es el backend de <strong>SUITE</strong>, desde aquí se pueden
+        realizar tareas de administración o exportación de datos masivas.
+      </p>
+
+      <div class='panel'>
+        <p><a class="pure-button pure-button-primary" href='/admin'>Ingresar al administrador</a>
+        <a class="pure-button pure-button-primary" href='/api'>Ingresar en la API</a></p>
+      </div>
+
+
+
+	<div class='footer'>
+	<a href="https://icons8.com">Icon pack by Icons8</a>
+</div>
+    </div>
+
+  </body>
+</html>
