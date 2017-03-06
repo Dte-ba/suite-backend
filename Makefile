@@ -27,7 +27,10 @@ comandos:
 	@echo "    ${G}lint${N}                Busca errores o inconsistencias en el código."
 	@echo "    ${G}ayuda${N}               Muestra una listado de todos los comandos django."
 	@echo ""
-	@echo "    ${G}ayuda_fixtures${N}      Muestra ayuda sobre como generar y correr fixtures."
+	@echo "  ${Y}Para gestionar datos${N}"
+	@echo ""
+	@echo "    $(G)generar_fixture_desde_base_de_datos$(N)   Genera un fixture nuevo desde la base de datos."
+	@echo "    $(R)cargar_fixture_borrando_base_de_datos$(N) Pisa la base de datos con los datos del fixture."
 	@echo ""
 	@echo ""
 
@@ -83,22 +86,16 @@ lint:
 _esta_instalado_graphviz:
 	@python utils/esta_instalado_graphviz.py
 
-ayuda_fixtures:
-	@echo ""
-	@echo "    Para generar fixtures desde una aplicación:"
-	@echo ""
-	@echo "       python manage.py dumpdata escuelas --indent 4 > escuelas/fixtures/escuelas.json "
-	@echo ""
-	@echo "    Para cargar un fixture a la base de datos:"
-	@echo ""
-	@echo "       python manage.py loaddata escuelas/fixtures/* "
-	@echo ""
-	@echo "Para más ejemplos: https://coderwall.com/p/mvsoyg/django-dumpdata-and-loaddata"
-	@echo ""
-	@echo "(tener en cuenta que make ejecutar carga los fixtures antes de iniciar)"
-	@echo ""
-	
 grafico: _esta_instalado_graphviz
 	@echo "Graficando modelo de base de datos ..."
 	@${BIN_MANAGE} graph_models escuelas --no-color -g -o grafico_db.png
 	@echo "Se ha creado el archivo grafico_db.png"
+
+cargar_fixture_borrando_base_de_datos:
+	python manage.py loaddata fixture_db.json
+
+generar_fixture_desde_base_de_datos:
+	@echo ""
+	@echo "$(V)Generando fixture y guardándolo en el archivo fixture_db.json$(N)"
+	@echo ""
+	python manage.py dumpdata --indent 2 --verbosity 3 -o fixture_db.json
