@@ -29,16 +29,16 @@ def obtener_numero_de_region(linea):
 def obtener_region(linea):
     busqueda = re.search('\[(.*)\] (.*)', linea, re.IGNORECASE)
     nombre = busqueda.group(2)
-    es_central = False
+    es_cabecera = False
 
     if nombre.endswith("*"):
-        es_central = True
+        es_cabecera = True
         nombre = nombre[:-1]
 
     return {
         "numero": busqueda.group(1),
         "nombre": nombre,
-        "central": es_central
+        "esCabecera": es_cabecera
     }
 
 def buscar_u_obtener_registro_de_region(numero_de_region):
@@ -53,7 +53,7 @@ def buscar_u_obtener_registro_de_municipio(datos_del_municipio, registro_de_regi
     resultado = models.Municipio.objects.get_or_create(
         numero = datos_del_municipio['numero'],
         nombre = datos_del_municipio['nombre'],
-        #central = datos_del_municipio['central'],
+        esCabecera = datos_del_municipio['esCabecera'],
         region=registro_de_region_a_la_que_pertenece
     )
 
