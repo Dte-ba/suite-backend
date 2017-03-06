@@ -29,6 +29,10 @@ comandos:
 	@echo ""
 	@echo "  ${Y}Para gestionar datos${N}"
 	@echo ""
+	@echo "    ${G}importar_regiones${N}   Importa regiones desde un archivo."
+	@echo ""
+	@echo "  ${Y}Para gestionar datos${N}"
+	@echo ""
 	@echo "    $(G)generar_fixture_desde_base_de_datos$(N)   Genera un fixture nuevo desde la base de datos."
 	@echo "    $(R)cargar_fixture_borrando_base_de_datos$(N) Pisa la base de datos con los datos del fixture."
 	@echo ""
@@ -99,3 +103,6 @@ generar_fixture_desde_base_de_datos:
 	@echo "$(V)Generando fixture y guardándolo en el archivo fixture_db.json$(N)"
 	@echo ""
 	python manage.py dumpdata --indent 2 --verbosity 3 -o fixture_db.json
+
+importar_regiones:
+	python scripts/importar_regiones.py
