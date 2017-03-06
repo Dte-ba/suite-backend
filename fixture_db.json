@@ -1,5 +1,1530 @@
 [
 {
+  "model": "escuelas.region",
+  "pk": 1,
+  "fields": {
+    "numero": "1"
+  }
+},
+{
+  "model": "escuelas.region",
+  "pk": 2,
+  "fields": {
+    "numero": "2"
+  }
+},
+{
+  "model": "escuelas.region",
+  "pk": 3,
+  "fields": {
+    "numero": "3"
+  }
+},
+{
+  "model": "escuelas.region",
+  "pk": 4,
+  "fields": {
+    "numero": "4"
+  }
+},
+{
+  "model": "escuelas.region",
+  "pk": 5,
+  "fields": {
+    "numero": "5"
+  }
+},
+{
+  "model": "escuelas.region",
+  "pk": 6,
+  "fields": {
+    "numero": "6"
+  }
+},
+{
+  "model": "escuelas.region",
+  "pk": 7,
+  "fields": {
+    "numero": "7"
+  }
+},
+{
+  "model": "escuelas.region",
+  "pk": 8,
+  "fields": {
+    "numero": "8"
+  }
+},
+{
+  "model": "escuelas.region",
+  "pk": 9,
+  "fields": {
+    "numero": "9"
+  }
+},
+{
+  "model": "escuelas.region",
+  "pk": 10,
+  "fields": {
+    "numero": "10"
+  }
+},
+{
+  "model": "escuelas.region",
+  "pk": 11,
+  "fields": {
+    "numero": "11"
+  }
+},
+{
+  "model": "escuelas.region",
+  "pk": 12,
+  "fields": {
+    "numero": "12"
+  }
+},
+{
+  "model": "escuelas.region",
+  "pk": 13,
+  "fields": {
+    "numero": "13"
+  }
+},
+{
+  "model": "escuelas.region",
+  "pk": 14,
+  "fields": {
+    "numero": "14"
+  }
+},
+{
+  "model": "escuelas.region",
+  "pk": 15,
+  "fields": {
+    "numero": "15"
+  }
+},
+{
+  "model": "escuelas.region",
+  "pk": 16,
+  "fields": {
+    "numero": "16"
+  }
+},
+{
+  "model": "escuelas.region",
+  "pk": 17,
+  "fields": {
+    "numero": "17"
+  }
+},
+{
+  "model": "escuelas.region",
+  "pk": 18,
+  "fields": {
+    "numero": "18"
+  }
+},
+{
+  "model": "escuelas.region",
+  "pk": 19,
+  "fields": {
+    "numero": "19"
+  }
+},
+{
+  "model": "escuelas.region",
+  "pk": 20,
+  "fields": {
+    "numero": "20"
+  }
+},
+{
+  "model": "escuelas.region",
+  "pk": 21,
+  "fields": {
+    "numero": "21"
+  }
+},
+{
+  "model": "escuelas.region",
+  "pk": 22,
+  "fields": {
+    "numero": "22"
+  }
+},
+{
+  "model": "escuelas.region",
+  "pk": 23,
+  "fields": {
+    "numero": "23"
+  }
+},
+{
+  "model": "escuelas.region",
+  "pk": 24,
+  "fields": {
+    "numero": "24"
+  }
+},
+{
+  "model": "escuelas.region",
+  "pk": 25,
+  "fields": {
+    "numero": "25"
+  }
+},
+{
+  "model": "escuelas.municipio",
+  "pk": 1,
+  "fields": {
+    "numero": "113",
+    "nombre": "Berisso",
+    "esCabecera": false,
+    "region": 1
+  }
+},
+{
+  "model": "escuelas.municipio",
+  "pk": 2,
+  "fields": {
+    "numero": "014",
+    "nombre": "Brandsen",
+    "esCabecera": false,
+    "region": 1
+  }
+},
+{
+  "model": "escuelas.municipio",
+  "pk": 3,
+  "fields": {
+    "numero": "114",
+    "nombre": "Ensenada",
+    "esCabecera": false,
+    "region": 1
+  }
+},
+{
+  "model": "escuelas.municipio",
+  "pk": 4,
+  "fields": {
+    "numero": "001",
+    "nombre": "La Plata",
+    "esCabecera": true,
+    "region": 1
+  }
+},
+{
+  "model": "escuelas.municipio",
+  "pk": 5,
+  "fields": {
+    "numero": "064",
+    "nombre": "Magdalena",
+    "esCabecera": false,
+    "region": 1
+  }
+},
+{
+  "model": "escuelas.municipio",
+  "pk": 6,
+  "fields": {
+    "numero": "134",
+    "nombre": "Punta Indio",
+    "esCabecera": false,
+    "region": 1
+  }
+},
+{
+  "model": "escuelas.municipio",
+  "pk": 7,
+  "fields": {
+    "numero": "005",
+    "nombre": "Avellaneda",
+    "esCabecera": true,
+    "region": 2
+  }
+},
+{
+  "model": "escuelas.municipio",
+  "pk": 8,
+  "fields": {
+    "numero": "111",
+    "nombre": "Lan\u00fas",
+    "esCabecera": false,
+    "region": 2
+  }
+},
+{
+  "model": "escuelas.municipio",
+  "pk": 9,
+  "fields": {
+    "numero": "062",
+    "nombre": "Lomas de Zamora",
+    "esCabecera": false,
+    "region": 2
+  }
+},
+{
+  "model": "escuelas.municipio",
+  "pk": 10,
+  "fields": {
+    "numero": "069",
+    "nombre": "La Matanza",
+    "esCabecera": true,
+    "region": 3
+  }
+},
+{
+  "model": "escuelas.municipio",
+  "pk": 11,
+  "fields": {
+    "numero": "119",
+    "nombre": "Berazategui",
+    "esCabecera": false,
+    "region": 4
+  }
+},
+{
+  "model": "escuelas.municipio",
+  "pk": 12,
+  "fields": {
+    "numero": "032",
+    "nombre": "Florencio Varela",
+    "esCabecera": false,
+    "region": 4
+  }
+},
+{
+  "model": "escuelas.municipio",
+  "pk": 13,
+  "fields": {
+    "numero": "085",
+    "nombre": "Quilmes",
+    "esCabecera": true,
+    "region": 4
+  }
+},
+{
+  "model": "escuelas.municipio",
+  "pk": 14,
+  "fields": {
+    "numero": "004",
+    "nombre": "Almirante Brown",
+    "esCabecera": true,
+    "region": 5
+  }
+},
+{
+  "model": "escuelas.municipio",
+  "pk": 15,
+  "fields": {
+    "numero": "030",
+    "nombre": "Esteban Echeverr\u00eda",
+    "esCabecera": false,
+    "region": 5
+  }
+},
+{
+  "model": "escuelas.municipio",
+  "pk": 16,
+  "fields": {
+    "numero": "130",
+    "nombre": "Ezeiza",
+    "esCabecera": false,
+    "region": 5
+  }
+},
+{
+  "model": "escuelas.municipio",
+  "pk": 17,
+  "fields": {
+    "numero": "129",
+    "nombre": "Presidente Per\u00f3n",
+    "esCabecera": false,
+    "region": 5
+  }
+},
+{
+  "model": "escuelas.municipio",
+  "pk": 18,
+  "fields": {
+    "numero": "099",
+    "nombre": "San Vicente",
+    "esCabecera": false,
+    "region": 5
+  }
+},
+{
+  "model": "escuelas.municipio",
+  "pk": 19,
+  "fields": {
+    "numero": "095",
+    "nombre": "San Fernando",
+    "esCabecera": false,
+    "region": 6
+  }
+},
+{
+  "model": "escuelas.municipio",
+  "pk": 20,
+  "fields": {
+    "numero": "096",
+    "nombre": "San Isidro",
+    "esCabecera": false,
+    "region": 6
+  }
+},
+{
+  "model": "escuelas.municipio",
+  "pk": 21,
+  "fields": {
+    "numero": "055",
+    "nombre": "Tigre",
+    "esCabecera": true,
+    "region": 6
+  }
+},
+{
+  "model": "escuelas.municipio",
+  "pk": 22,
+  "fields": {
+    "numero": "109",
+    "nombre": "Vicente L\u00f3pez",
+    "esCabecera": false,
+    "region": 6
+  }
+},
+{
+  "model": "escuelas.municipio",
+  "pk": 23,
+  "fields": {
+    "numero": "045",
+    "nombre": "General San Mart\u00edn",
+    "esCabecera": true,
+    "region": 7
+  }
+},
+{
+  "model": "escuelas.municipio",
+  "pk": 24,
+  "fields": {
+    "numero": "135",
+    "nombre": "Hurlingham",
+    "esCabecera": false,
+    "region": 7
+  }
+},
+{
+  "model": "escuelas.municipio",
+  "pk": 25,
+  "fields": {
+    "numero": "117",
+    "nombre": "Tres de Febrero",
+    "esCabecera": false,
+    "region": 7
+  }
+},
+{
+  "model": "escuelas.municipio",
+  "pk": 26,
+  "fields": {
+    "numero": "136",
+    "nombre": "Ituzaing\u00f3",
+    "esCabecera": false,
+    "region": 8
+  }
+},
+{
+  "model": "escuelas.municipio",
+  "pk": 27,
+  "fields": {
+    "numero": "071",
+    "nombre": "Merlo",
+    "esCabecera": false,
+    "region": 8
+  }
+},
+{
+  "model": "escuelas.municipio",
+  "pk": 28,
+  "fields": {
+    "numero": "100",
+    "nombre": "Mor\u00f3n",
+    "esCabecera": true,
+    "region": 8
+  }
+},
+{
+  "model": "escuelas.municipio",
+  "pk": 29,
+  "fields": {
+    "numero": "132",
+    "nombre": "Jos\u00e9 C. Paz",
+    "esCabecera": false,
+    "region": 9
+  }
+},
+{
+  "model": "escuelas.municipio",
+  "pk": 30,
+  "fields": {
+    "numero": "133",
+    "nombre": "Malvinas Argentinas",
+    "esCabecera": false,
+    "region": 9
+  }
+},
+{
+  "model": "escuelas.municipio",
+  "pk": 31,
+  "fields": {
+    "numero": "073",
+    "nombre": "Moreno",
+    "esCabecera": false,
+    "region": 9
+  }
+},
+{
+  "model": "escuelas.municipio",
+  "pk": 32,
+  "fields": {
+    "numero": "131",
+    "nombre": "San Miguel",
+    "esCabecera": true,
+    "region": 9
+  }
+},
+{
+  "model": "escuelas.municipio",
+  "pk": 33,
+  "fields": {
+    "numero": "016",
+    "nombre": "Ca\u00f1uelas",
+    "esCabecera": false,
+    "region": 10
+  }
+},
+{
+  "model": "escuelas.municipio",
+  "pk": 34,
+  "fields": {
+    "numero": "057",
+    "nombre": "General Las Heras",
+    "esCabecera": false,
+    "region": 10
+  }
+},
+{
+  "model": "escuelas.municipio",
+  "pk": 35,
+  "fields": {
+    "numero": "044",
+    "nombre": "General Rodr\u00edguez",
+    "esCabecera": false,
+    "region": 10
+  }
+},
+{
+  "model": "escuelas.municipio",
+  "pk": 36,
+  "fields": {
+    "numero": "063",
+    "nombre": "Luj\u00e1n",
+    "esCabecera": false,
+    "region": 10
+  }
+},
+{
+  "model": "escuelas.municipio",
+  "pk": 37,
+  "fields": {
+    "numero": "067",
+    "nombre": "Marcos Paz",
+    "esCabecera": false,
+    "region": 10
+  }
+},
+{
+  "model": "escuelas.municipio",
+  "pk": 38,
+  "fields": {
+    "numero": "070",
+    "nombre": "Mercedes",
+    "esCabecera": true,
+    "region": 10
+  }
+},
+{
+  "model": "escuelas.municipio",
+  "pk": 39,
+  "fields": {
+    "numero": "074",
+    "nombre": "Navarro",
+    "esCabecera": false,
+    "region": 10
+  }
+},
+{
+  "model": "escuelas.municipio",
+  "pk": 40,
+  "fields": {
+    "numero": "093",
+    "nombre": "San Andr\u00e9s de Giles",
+    "esCabecera": false,
+    "region": 10
+  }
+},
+{
+  "model": "escuelas.municipio",
+  "pk": 41,
+  "fields": {
+    "numero": "101",
+    "nombre": "Suipacha",
+    "esCabecera": false,
+    "region": 10
+  }
+},
+{
+  "model": "escuelas.municipio",
+  "pk": 42,
+  "fields": {
+    "numero": "015",
+    "nombre": "Campana",
+    "esCabecera": false,
+    "region": 11
+  }
+},
+{
+  "model": "escuelas.municipio",
+  "pk": 43,
+  "fields": {
+    "numero": "116",
+    "nombre": "Escobar",
+    "esCabecera": false,
+    "region": 11
+  }
+},
+{
+  "model": "escuelas.municipio",
+  "pk": 44,
+  "fields": {
+    "numero": "031",
+    "nombre": "Exaltaci\u00f3n de la Cruz",
+    "esCabecera": false,
+    "region": 11
+  }
+},
+{
+  "model": "escuelas.municipio",
+  "pk": 45,
+  "fields": {
+    "numero": "083",
+    "nombre": "Pilar",
+    "esCabecera": false,
+    "region": 11
+  }
+},
+{
+  "model": "escuelas.municipio",
+  "pk": 46,
+  "fields": {
+    "numero": "047",
+    "nombre": "Z\u00e1rate",
+    "esCabecera": true,
+    "region": 11
+  }
+},
+{
+  "model": "escuelas.municipio",
+  "pk": 47,
+  "fields": {
+    "numero": "011",
+    "nombre": "Arrecifes",
+    "esCabecera": false,
+    "region": 12
+  }
+},
+{
+  "model": "escuelas.municipio",
+  "pk": 48,
+  "fields": {
+    "numero": "010",
+    "nombre": "Baradero",
+    "esCabecera": false,
+    "region": 12
+  }
+},
+{
+  "model": "escuelas.municipio",
+  "pk": 49,
+  "fields": {
+    "numero": "121",
+    "nombre": "Capit\u00e1n Sarmiento",
+    "esCabecera": false,
+    "region": 12
+  }
+},
+{
+  "model": "escuelas.municipio",
+  "pk": 50,
+  "fields": {
+    "numero": "086",
+    "nombre": "Ramallo",
+    "esCabecera": false,
+    "region": 12
+  }
+},
+{
+  "model": "escuelas.municipio",
+  "pk": 51,
+  "fields": {
+    "numero": "097",
+    "nombre": "San Nicol\u00e1s",
+    "esCabecera": true,
+    "region": 12
+  }
+},
+{
+  "model": "escuelas.municipio",
+  "pk": 52,
+  "fields": {
+    "numero": "098",
+    "nombre": "San Pedro",
+    "esCabecera": false,
+    "region": 12
+  }
+},
+{
+  "model": "escuelas.municipio",
+  "pk": 53,
+  "fields": {
+    "numero": "019",
+    "nombre": "Carmen de Areco",
+    "esCabecera": false,
+    "region": 13
+  }
+},
+{
+  "model": "escuelas.municipio",
+  "pk": 54,
+  "fields": {
+    "numero": "022",
+    "nombre": "Col\u00f3n",
+    "esCabecera": false,
+    "region": 13
+  }
+},
+{
+  "model": "escuelas.municipio",
+  "pk": 55,
+  "fields": {
+    "numero": "081",
+    "nombre": "Pergamino",
+    "esCabecera": true,
+    "region": 13
+  }
+},
+{
+  "model": "escuelas.municipio",
+  "pk": 56,
+  "fields": {
+    "numero": "089",
+    "nombre": "Rojas",
+    "esCabecera": false,
+    "region": 13
+  }
+},
+{
+  "model": "escuelas.municipio",
+  "pk": 57,
+  "fields": {
+    "numero": "066",
+    "nombre": "Salto",
+    "esCabecera": false,
+    "region": 13
+  }
+},
+{
+  "model": "escuelas.municipio",
+  "pk": 58,
+  "fields": {
+    "numero": "094",
+    "nombre": "San Antonio de Areco",
+    "esCabecera": false,
+    "region": 13
+  }
+},
+{
+  "model": "escuelas.municipio",
+  "pk": 59,
+  "fields": {
+    "numero": "026",
+    "nombre": "Chacabuco",
+    "esCabecera": false,
+    "region": 14
+  }
+},
+{
+  "model": "escuelas.municipio",
+  "pk": 60,
+  "fields": {
+    "numero": "128",
+    "nombre": "Florentino Ameghino",
+    "esCabecera": false,
+    "region": 14
+  }
+},
+{
+  "model": "escuelas.municipio",
+  "pk": 61,
+  "fields": {
+    "numero": "035",
+    "nombre": "General Arenales",
+    "esCabecera": false,
+    "region": 14
+  }
+},
+{
+  "model": "escuelas.municipio",
+  "pk": 62,
+  "fields": {
+    "numero": "042",
+    "nombre": "General Pinto",
+    "esCabecera": false,
+    "region": 14
+  }
+},
+{
+  "model": "escuelas.municipio",
+  "pk": 63,
+  "fields": {
+    "numero": "048",
+    "nombre": "General Viamonte",
+    "esCabecera": false,
+    "region": 14
+  }
+},
+{
+  "model": "escuelas.municipio",
+  "pk": 64,
+  "fields": {
+    "numero": "053",
+    "nombre": "Jun\u00edn",
+    "esCabecera": true,
+    "region": 14
+  }
+},
+{
+  "model": "escuelas.municipio",
+  "pk": 65,
+  "fields": {
+    "numero": "058",
+    "nombre": "Leandro N. Alem",
+    "esCabecera": false,
+    "region": 14
+  }
+},
+{
+  "model": "escuelas.municipio",
+  "pk": 66,
+  "fields": {
+    "numero": "059",
+    "nombre": "Lincoln",
+    "esCabecera": false,
+    "region": 14
+  }
+},
+{
+  "model": "escuelas.municipio",
+  "pk": 67,
+  "fields": {
+    "numero": "003",
+    "nombre": "Alberti",
+    "esCabecera": false,
+    "region": 15
+  }
+},
+{
+  "model": "escuelas.municipio",
+  "pk": 68,
+  "fields": {
+    "numero": "013",
+    "nombre": "Bragado",
+    "esCabecera": false,
+    "region": 15
+  }
+},
+{
+  "model": "escuelas.municipio",
+  "pk": 69,
+  "fields": {
+    "numero": "017",
+    "nombre": "Carlos Casares",
+    "esCabecera": false,
+    "region": 15
+  }
+},
+{
+  "model": "escuelas.municipio",
+  "pk": 70,
+  "fields": {
+    "numero": "028",
+    "nombre": "Chivilcoy",
+    "esCabecera": false,
+    "region": 15
+  }
+},
+{
+  "model": "escuelas.municipio",
+  "pk": 71,
+  "fields": {
+    "numero": "118",
+    "nombre": "Hip\u00f3lito Yrigoyen",
+    "esCabecera": false,
+    "region": 15
+  }
+},
+{
+  "model": "escuelas.municipio",
+  "pk": 72,
+  "fields": {
+    "numero": "076",
+    "nombre": "Nueve de Julio",
+    "esCabecera": false,
+    "region": 15
+  }
+},
+{
+  "model": "escuelas.municipio",
+  "pk": 73,
+  "fields": {
+    "numero": "079",
+    "nombre": "Pehuaj\u00f3",
+    "esCabecera": true,
+    "region": 15
+  }
+},
+{
+  "model": "escuelas.municipio",
+  "pk": 74,
+  "fields": {
+    "numero": "018",
+    "nombre": "Carlos Tejedor",
+    "esCabecera": false,
+    "region": 16
+  }
+},
+{
+  "model": "escuelas.municipio",
+  "pk": 75,
+  "fields": {
+    "numero": "049",
+    "nombre": "General Villegas",
+    "esCabecera": false,
+    "region": 16
+  }
+},
+{
+  "model": "escuelas.municipio",
+  "pk": 76,
+  "fields": {
+    "numero": "080",
+    "nombre": "Pellegrini",
+    "esCabecera": false,
+    "region": 16
+  }
+},
+{
+  "model": "escuelas.municipio",
+  "pk": 77,
+  "fields": {
+    "numero": "088",
+    "nombre": "Rivadavia",
+    "esCabecera": false,
+    "region": 16
+  }
+},
+{
+  "model": "escuelas.municipio",
+  "pk": 78,
+  "fields": {
+    "numero": "120",
+    "nombre": "Salliquel\u00f3",
+    "esCabecera": false,
+    "region": 16
+  }
+},
+{
+  "model": "escuelas.municipio",
+  "pk": 79,
+  "fields": {
+    "numero": "106",
+    "nombre": "Trenque Lauquen",
+    "esCabecera": true,
+    "region": 16
+  }
+},
+{
+  "model": "escuelas.municipio",
+  "pk": 80,
+  "fields": {
+    "numero": "127",
+    "nombre": "Tres Lomas",
+    "esCabecera": false,
+    "region": 16
+  }
+},
+{
+  "model": "escuelas.municipio",
+  "pk": 81,
+  "fields": {
+    "numero": "027",
+    "nombre": "Chascom\u00fas",
+    "esCabecera": true,
+    "region": 17
+  }
+},
+{
+  "model": "escuelas.municipio",
+  "pk": 82,
+  "fields": {
+    "numero": "036",
+    "nombre": "General Belgrano",
+    "esCabecera": false,
+    "region": 17
+  }
+},
+{
+  "model": "escuelas.municipio",
+  "pk": 83,
+  "fields": {
+    "numero": "041",
+    "nombre": "General Paz",
+    "esCabecera": false,
+    "region": 17
+  }
+},
+{
+  "model": "escuelas.municipio",
+  "pk": 84,
+  "fields": {
+    "numero": "137",
+    "nombre": "Lezama",
+    "esCabecera": false,
+    "region": 17
+  }
+},
+{
+  "model": "escuelas.municipio",
+  "pk": 85,
+  "fields": {
+    "numero": "072",
+    "nombre": "Monte",
+    "esCabecera": false,
+    "region": 17
+  }
+},
+{
+  "model": "escuelas.municipio",
+  "pk": 86,
+  "fields": {
+    "numero": "082",
+    "nombre": "Pila",
+    "esCabecera": false,
+    "region": 17
+  }
+},
+{
+  "model": "escuelas.municipio",
+  "pk": 87,
+  "fields": {
+    "numero": "087",
+    "nombre": "Rauch",
+    "esCabecera": false,
+    "region": 17
+  }
+},
+{
+  "model": "escuelas.municipio",
+  "pk": 88,
+  "fields": {
+    "numero": "006",
+    "nombre": "Ayacucho",
+    "esCabecera": false,
+    "region": 18
+  }
+},
+{
+  "model": "escuelas.municipio",
+  "pk": 89,
+  "fields": {
+    "numero": "021",
+    "nombre": "Castelli",
+    "esCabecera": false,
+    "region": 18
+  }
+},
+{
+  "model": "escuelas.municipio",
+  "pk": 90,
+  "fields": {
+    "numero": "029",
+    "nombre": "Dolores",
+    "esCabecera": true,
+    "region": 18
+  }
+},
+{
+  "model": "escuelas.municipio",
+  "pk": 91,
+  "fields": {
+    "numero": "037",
+    "nombre": "General Guido",
+    "esCabecera": false,
+    "region": 18
+  }
+},
+{
+  "model": "escuelas.municipio",
+  "pk": 92,
+  "fields": {
+    "numero": "039",
+    "nombre": "General Lavalle",
+    "esCabecera": false,
+    "region": 18
+  }
+},
+{
+  "model": "escuelas.municipio",
+  "pk": 93,
+  "fields": {
+    "numero": "040",
+    "nombre": "General Madariaga",
+    "esCabecera": false,
+    "region": 18
+  }
+},
+{
+  "model": "escuelas.municipio",
+  "pk": 94,
+  "fields": {
+    "numero": "123",
+    "nombre": "La Costa",
+    "esCabecera": false,
+    "region": 18
+  }
+},
+{
+  "model": "escuelas.municipio",
+  "pk": 95,
+  "fields": {
+    "numero": "065",
+    "nombre": "Maip\u00fa",
+    "esCabecera": false,
+    "region": 18
+  }
+},
+{
+  "model": "escuelas.municipio",
+  "pk": 96,
+  "fields": {
+    "numero": "124",
+    "nombre": "Pinamar",
+    "esCabecera": false,
+    "region": 18
+  }
+},
+{
+  "model": "escuelas.municipio",
+  "pk": 97,
+  "fields": {
+    "numero": "104",
+    "nombre": "Tordillo",
+    "esCabecera": false,
+    "region": 18
+  }
+},
+{
+  "model": "escuelas.municipio",
+  "pk": 98,
+  "fields": {
+    "numero": "125",
+    "nombre": "Villa Gesell",
+    "esCabecera": false,
+    "region": 18
+  }
+},
+{
+  "model": "escuelas.municipio",
+  "pk": 99,
+  "fields": {
+    "numero": "033",
+    "nombre": "General Alvarado",
+    "esCabecera": false,
+    "region": 19
+  }
+},
+{
+  "model": "escuelas.municipio",
+  "pk": 100,
+  "fields": {
+    "numero": "043",
+    "nombre": "General Pueyrred\u00f3n",
+    "esCabecera": true,
+    "region": 19
+  }
+},
+{
+  "model": "escuelas.municipio",
+  "pk": 101,
+  "fields": {
+    "numero": "068",
+    "nombre": "Mar Chiquita",
+    "esCabecera": false,
+    "region": 19
+  }
+},
+{
+  "model": "escuelas.municipio",
+  "pk": 102,
+  "fields": {
+    "numero": "009",
+    "nombre": "Balcarce",
+    "esCabecera": false,
+    "region": 20
+  }
+},
+{
+  "model": "escuelas.municipio",
+  "pk": 103,
+  "fields": {
+    "numero": "060",
+    "nombre": "Lober\u00eda",
+    "esCabecera": false,
+    "region": 20
+  }
+},
+{
+  "model": "escuelas.municipio",
+  "pk": 104,
+  "fields": {
+    "numero": "075",
+    "nombre": "Necochea",
+    "esCabecera": true,
+    "region": 20
+  }
+},
+{
+  "model": "escuelas.municipio",
+  "pk": 105,
+  "fields": {
+    "numero": "115",
+    "nombre": "San Cayetano",
+    "esCabecera": false,
+    "region": 20
+  }
+},
+{
+  "model": "escuelas.municipio",
+  "pk": 106,
+  "fields": {
+    "numero": "102",
+    "nombre": "Tandil",
+    "esCabecera": false,
+    "region": 20
+  }
+},
+{
+  "model": "escuelas.municipio",
+  "pk": 107,
+  "fields": {
+    "numero": "050",
+    "nombre": "Adolfo Gonzales Chaves",
+    "esCabecera": false,
+    "region": 21
+  }
+},
+{
+  "model": "escuelas.municipio",
+  "pk": 108,
+  "fields": {
+    "numero": "052",
+    "nombre": "Benito Ju\u00e1rez",
+    "esCabecera": false,
+    "region": 21
+  }
+},
+{
+  "model": "escuelas.municipio",
+  "pk": 109,
+  "fields": {
+    "numero": "023",
+    "nombre": "Coronel Dorrego",
+    "esCabecera": false,
+    "region": 21
+  }
+},
+{
+  "model": "escuelas.municipio",
+  "pk": 110,
+  "fields": {
+    "numero": "024",
+    "nombre": "Coronel Pringles",
+    "esCabecera": false,
+    "region": 21
+  }
+},
+{
+  "model": "escuelas.municipio",
+  "pk": 111,
+  "fields": {
+    "numero": "054",
+    "nombre": "Laprida",
+    "esCabecera": false,
+    "region": 21
+  }
+},
+{
+  "model": "escuelas.municipio",
+  "pk": 112,
+  "fields": {
+    "numero": "107",
+    "nombre": "Tres Arroyos",
+    "esCabecera": true,
+    "region": 21
+  }
+},
+{
+  "model": "escuelas.municipio",
+  "pk": 113,
+  "fields": {
+    "numero": "008",
+    "nombre": "Bah\u00eda Blanca",
+    "esCabecera": true,
+    "region": 22
+  }
+},
+{
+  "model": "escuelas.municipio",
+  "pk": 114,
+  "fields": {
+    "numero": "112",
+    "nombre": "Coronel de Marina Leonardo Rosales",
+    "esCabecera": false,
+    "region": 22
+  }
+},
+{
+  "model": "escuelas.municipio",
+  "pk": 115,
+  "fields": {
+    "numero": "126",
+    "nombre": "Monte Hermoso",
+    "esCabecera": false,
+    "region": 22
+  }
+},
+{
+  "model": "escuelas.municipio",
+  "pk": 116,
+  "fields": {
+    "numero": "078",
+    "nombre": "Patagones",
+    "esCabecera": false,
+    "region": 22
+  }
+},
+{
+  "model": "escuelas.municipio",
+  "pk": 117,
+  "fields": {
+    "numero": "110",
+    "nombre": "Villarino",
+    "esCabecera": false,
+    "region": 22
+  }
+},
+{
+  "model": "escuelas.municipio",
+  "pk": 118,
+  "fields": {
+    "numero": "002",
+    "nombre": "Adolfo Alsina",
+    "esCabecera": false,
+    "region": 23
+  }
+},
+{
+  "model": "escuelas.municipio",
+  "pk": 119,
+  "fields": {
+    "numero": "025",
+    "nombre": "Coronel Su\u00e1rez",
+    "esCabecera": true,
+    "region": 23
+  }
+},
+{
+  "model": "escuelas.municipio",
+  "pk": 120,
+  "fields": {
+    "numero": "020",
+    "nombre": "Daireaux",
+    "esCabecera": false,
+    "region": 23
+  }
+},
+{
+  "model": "escuelas.municipio",
+  "pk": 121,
+  "fields": {
+    "numero": "038",
+    "nombre": "General Lamadrid",
+    "esCabecera": false,
+    "region": 23
+  }
+},
+{
+  "model": "escuelas.municipio",
+  "pk": 122,
+  "fields": {
+    "numero": "051",
+    "nombre": "Guamin\u00ed",
+    "esCabecera": false,
+    "region": 23
+  }
+},
+{
+  "model": "escuelas.municipio",
+  "pk": 123,
+  "fields": {
+    "numero": "084",
+    "nombre": "Puan",
+    "esCabecera": false,
+    "region": 23
+  }
+},
+{
+  "model": "escuelas.municipio",
+  "pk": 124,
+  "fields": {
+    "numero": "091",
+    "nombre": "Saavedra",
+    "esCabecera": false,
+    "region": 23
+  }
+},
+{
+  "model": "escuelas.municipio",
+  "pk": 125,
+  "fields": {
+    "numero": "105",
+    "nombre": "Tornquist",
+    "esCabecera": false,
+    "region": 23
+  }
+},
+{
+  "model": "escuelas.municipio",
+  "pk": 126,
+  "fields": {
+    "numero": "034",
+    "nombre": "General Alvear",
+    "esCabecera": false,
+    "region": 24
+  }
+},
+{
+  "model": "escuelas.municipio",
+  "pk": 127,
+  "fields": {
+    "numero": "056",
+    "nombre": "Las Flores",
+    "esCabecera": false,
+    "region": 24
+  }
+},
+{
+  "model": "escuelas.municipio",
+  "pk": 128,
+  "fields": {
+    "numero": "061",
+    "nombre": "Lobos",
+    "esCabecera": false,
+    "region": 24
+  }
+},
+{
+  "model": "escuelas.municipio",
+  "pk": 129,
+  "fields": {
+    "numero": "090",
+    "nombre": "Roque P\u00e9rez",
+    "esCabecera": false,
+    "region": 24
+  }
+},
+{
+  "model": "escuelas.municipio",
+  "pk": 130,
+  "fields": {
+    "numero": "092",
+    "nombre": "Saladillo",
+    "esCabecera": true,
+    "region": 24
+  }
+},
+{
+  "model": "escuelas.municipio",
+  "pk": 131,
+  "fields": {
+    "numero": "108",
+    "nombre": "Veinticinco de Mayo",
+    "esCabecera": false,
+    "region": 24
+  }
+},
+{
+  "model": "escuelas.municipio",
+  "pk": 132,
+  "fields": {
+    "numero": "007",
+    "nombre": "Azul",
+    "esCabecera": false,
+    "region": 25
+  }
+},
+{
+  "model": "escuelas.municipio",
+  "pk": 133,
+  "fields": {
+    "numero": "012",
+    "nombre": "Bol\u00edvar",
+    "esCabecera": false,
+    "region": 25
+  }
+},
+{
+  "model": "escuelas.municipio",
+  "pk": 134,
+  "fields": {
+    "numero": "077",
+    "nombre": "Olavarr\u00eda",
+    "esCabecera": true,
+    "region": 25
+  }
+},
+{
+  "model": "escuelas.municipio",
+  "pk": 135,
+  "fields": {
+    "numero": "103",
+    "nombre": "Tapalqu\u00e9",
+    "esCabecera": false,
+    "region": 25
+  }
+},
+{
   "model": "contenttypes.contenttype",
   "pk": 1,
   "fields": {
@@ -93,6 +1618,14 @@
   "fields": {
     "app_label": "sessions",
     "model": "session"
+  }
+},
+{
+  "model": "sessions.session",
+  "pk": "lxmp27ws11l9v1lsrbqh9u2pbh7zb7vy",
+  "fields": {
+    "session_data": "Y2M1NWE0ZjdlYzA5OTZmZWEwNjU3OWFiZTJkYzk5NWRiZjEyZjgyOTp7Il9hdXRoX3VzZXJfaGFzaCI6ImIzZGNjNGFhZWQwOTJjY2U4NGM0YWJkYTg5MzI1NzlkYzQ1ODAyZGIiLCJfYXV0aF91c2VyX2JhY2tlbmQiOiJkamFuZ28uY29udHJpYi5hdXRoLmJhY2tlbmRzLk1vZGVsQmFja2VuZCIsIl9hdXRoX3VzZXJfaWQiOiIxIn0=",
+    "expire_date": "2017-03-20T21:15:51.164Z"
   }
 },
 {
@@ -424,7 +1957,7 @@
   "pk": 1,
   "fields": {
     "password": "pbkdf2_sha256$30000$jeQkwq8zuCRE$22nI8/8srWSzwUDeSn2pdxviW0j/QjxmXvdx7q1w3v0=",
-    "last_login": null,
+    "last_login": "2017-03-06T21:15:51.161Z",
     "is_superuser": true,
     "username": "admin",
     "first_name": "",
