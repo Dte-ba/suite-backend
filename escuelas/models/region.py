@@ -2,8 +2,8 @@
 from django.db import models
 
 class Region(models.Model):
-    numero = models.CharField(max_length=10)
-    
+    numero = models.IntegerField()
+
     def __unicode__(self):
         return u"Región %s" %(self.numero)
 

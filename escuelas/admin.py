@@ -10,6 +10,7 @@ class MunicipioInline(admin.TabularInline):
     model = models.Municipio
 
 class RegionAdmin(admin.ModelAdmin):
+    ordering = ("numero", )
     inlines = [
         MunicipioInline,
     ]
