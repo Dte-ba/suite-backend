@@ -19,6 +19,7 @@ comandos:
 	@echo "    ${G}iniciar${N}             Instala todas las dependencias."
 	@echo "    ${G}crear_migraciones${N}   Genera las migraciones."
 	@echo "    ${G}crear_usuario_admin${N} Genera un usuario administrador."
+	@echo "    ${G}generar_estaticos${N}   Genera los archivos estáticos."
 	@echo "    ${G}migrar${N}              Ejecuta las migraciones sobre la base de datos."
 	@echo "    ${G}grafico${N}             Genera un grafico del modelo de datos en .PNG"
 	@echo "    ${G}test${N}                Ejecuta los tests."
@@ -33,8 +34,8 @@ comandos:
 	@echo ""
 	@echo "  ${Y}Para gestionar datos${N}"
 	@echo ""
-	@echo "    $(G)generar_fixture_desde_base_de_datos$(N)   Genera un fixture nuevo desde la base de datos."
-	@echo "    $(R)cargar_fixture_borrando_base_de_datos$(N) Pisa la base de datos con los datos del fixture."
+	@echo "    $(G)generar_fixture_desde_base_de_datos$(N)   Genera un fixture nuevo."
+	@echo "    $(R)cargar_fixture_borrando_base_de_datos$(N) Pisa la base de datos."
 	@echo ""
 	@echo ""
 
@@ -103,6 +104,10 @@ generar_fixture_desde_base_de_datos:
 	@echo "$(V)Generando fixture y guardándolo en el archivo fixture_db.json$(N)"
 	@echo ""
 	python manage.py dumpdata --indent 2 --natural-foreign --natural-primary -o fixture_db.json
+
+generar_estaticos:
+	python manage.py collectstatic
+
 
 importar_regiones:
 	python scripts/importar_regiones.py
