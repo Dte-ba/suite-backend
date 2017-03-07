@@ -11,6 +11,7 @@ class Perfil(models.Model):
     dni = models.CharField(max_length=200, default="0000")
     cuit = models.CharField(max_length=200, default="0000")
     fechadenacimiento = models.DateField(default="2010-10-10")
+    fechaDeIngreso = models.DateField(default="2010-10-10")
     user = models.OneToOneField(User, on_delete=models.CASCADE, default=1)
 
     def __unicode__(self):
