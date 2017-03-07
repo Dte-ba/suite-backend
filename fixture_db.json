@@ -1526,7 +1526,6 @@
 },
 {
   "model": "contenttypes.contenttype",
-  "pk": 1,
   "fields": {
     "app_label": "escuelas",
     "model": "escuela"
@@ -1534,7 +1533,6 @@
 },
 {
   "model": "contenttypes.contenttype",
-  "pk": 2,
   "fields": {
     "app_label": "escuelas",
     "model": "contacto"
@@ -1542,7 +1540,6 @@
 },
 {
   "model": "contenttypes.contenttype",
-  "pk": 3,
   "fields": {
     "app_label": "escuelas",
     "model": "evento"
@@ -1550,7 +1547,6 @@
 },
 {
   "model": "contenttypes.contenttype",
-  "pk": 4,
   "fields": {
     "app_label": "escuelas",
     "model": "perfil"
@@ -1558,7 +1554,6 @@
 },
 {
   "model": "contenttypes.contenttype",
-  "pk": 5,
   "fields": {
     "app_label": "escuelas",
     "model": "region"
@@ -1566,7 +1561,6 @@
 },
 {
   "model": "contenttypes.contenttype",
-  "pk": 6,
   "fields": {
     "app_label": "escuelas",
     "model": "municipio"
@@ -1574,7 +1568,6 @@
 },
 {
   "model": "contenttypes.contenttype",
-  "pk": 7,
   "fields": {
     "app_label": "admin",
     "model": "logentry"
@@ -1582,7 +1575,6 @@
 },
 {
   "model": "contenttypes.contenttype",
-  "pk": 8,
   "fields": {
     "app_label": "auth",
     "model": "permission"
@@ -1590,7 +1582,6 @@
 },
 {
   "model": "contenttypes.contenttype",
-  "pk": 9,
   "fields": {
     "app_label": "auth",
     "model": "user"
@@ -1598,7 +1589,6 @@
 },
 {
   "model": "contenttypes.contenttype",
-  "pk": 10,
   "fields": {
     "app_label": "auth",
     "model": "group"
@@ -1606,7 +1596,6 @@
 },
 {
   "model": "contenttypes.contenttype",
-  "pk": 11,
   "fields": {
     "app_label": "contenttypes",
     "model": "contenttype"
@@ -1614,7 +1603,6 @@
 },
 {
   "model": "contenttypes.contenttype",
-  "pk": 12,
   "fields": {
     "app_label": "sessions",
     "model": "session"
@@ -1630,331 +1618,402 @@
 },
 {
   "model": "auth.permission",
-  "pk": 1,
   "fields": {
     "name": "Can add escuela",
-    "content_type": 1,
+    "content_type": [
+      "escuelas",
+      "escuela"
+    ],
     "codename": "add_escuela"
   }
 },
 {
   "model": "auth.permission",
-  "pk": 2,
   "fields": {
     "name": "Can change escuela",
-    "content_type": 1,
+    "content_type": [
+      "escuelas",
+      "escuela"
+    ],
     "codename": "change_escuela"
   }
 },
 {
   "model": "auth.permission",
-  "pk": 3,
   "fields": {
     "name": "Can delete escuela",
-    "content_type": 1,
+    "content_type": [
+      "escuelas",
+      "escuela"
+    ],
     "codename": "delete_escuela"
   }
 },
 {
   "model": "auth.permission",
-  "pk": 4,
   "fields": {
     "name": "Can add contacto",
-    "content_type": 2,
+    "content_type": [
+      "escuelas",
+      "contacto"
+    ],
     "codename": "add_contacto"
   }
 },
 {
   "model": "auth.permission",
-  "pk": 5,
   "fields": {
     "name": "Can change contacto",
-    "content_type": 2,
+    "content_type": [
+      "escuelas",
+      "contacto"
+    ],
     "codename": "change_contacto"
   }
 },
 {
   "model": "auth.permission",
-  "pk": 6,
   "fields": {
     "name": "Can delete contacto",
-    "content_type": 2,
+    "content_type": [
+      "escuelas",
+      "contacto"
+    ],
     "codename": "delete_contacto"
   }
 },
 {
   "model": "auth.permission",
-  "pk": 7,
   "fields": {
     "name": "Can add evento",
-    "content_type": 3,
+    "content_type": [
+      "escuelas",
+      "evento"
+    ],
     "codename": "add_evento"
   }
 },
 {
   "model": "auth.permission",
-  "pk": 8,
   "fields": {
     "name": "Can change evento",
-    "content_type": 3,
+    "content_type": [
+      "escuelas",
+      "evento"
+    ],
     "codename": "change_evento"
   }
 },
 {
   "model": "auth.permission",
-  "pk": 9,
   "fields": {
     "name": "Can delete evento",
-    "content_type": 3,
+    "content_type": [
+      "escuelas",
+      "evento"
+    ],
     "codename": "delete_evento"
   }
 },
 {
   "model": "auth.permission",
-  "pk": 10,
   "fields": {
     "name": "Can add perfil",
-    "content_type": 4,
+    "content_type": [
+      "escuelas",
+      "perfil"
+    ],
     "codename": "add_perfil"
   }
 },
 {
   "model": "auth.permission",
-  "pk": 11,
   "fields": {
     "name": "Can change perfil",
-    "content_type": 4,
+    "content_type": [
+      "escuelas",
+      "perfil"
+    ],
     "codename": "change_perfil"
   }
 },
 {
   "model": "auth.permission",
-  "pk": 12,
   "fields": {
     "name": "Can delete perfil",
-    "content_type": 4,
+    "content_type": [
+      "escuelas",
+      "perfil"
+    ],
     "codename": "delete_perfil"
   }
 },
 {
   "model": "auth.permission",
-  "pk": 13,
   "fields": {
     "name": "Can add region",
-    "content_type": 5,
+    "content_type": [
+      "escuelas",
+      "region"
+    ],
     "codename": "add_region"
   }
 },
 {
   "model": "auth.permission",
-  "pk": 14,
   "fields": {
     "name": "Can change region",
-    "content_type": 5,
+    "content_type": [
+      "escuelas",
+      "region"
+    ],
     "codename": "change_region"
   }
 },
 {
   "model": "auth.permission",
-  "pk": 15,
   "fields": {
     "name": "Can delete region",
-    "content_type": 5,
+    "content_type": [
+      "escuelas",
+      "region"
+    ],
     "codename": "delete_region"
   }
 },
 {
   "model": "auth.permission",
-  "pk": 16,
   "fields": {
     "name": "Can add municipio",
-    "content_type": 6,
+    "content_type": [
+      "escuelas",
+      "municipio"
+    ],
     "codename": "add_municipio"
   }
 },
 {
   "model": "auth.permission",
-  "pk": 17,
   "fields": {
     "name": "Can change municipio",
-    "content_type": 6,
+    "content_type": [
+      "escuelas",
+      "municipio"
+    ],
     "codename": "change_municipio"
   }
 },
 {
   "model": "auth.permission",
-  "pk": 18,
   "fields": {
     "name": "Can delete municipio",
-    "content_type": 6,
+    "content_type": [
+      "escuelas",
+      "municipio"
+    ],
     "codename": "delete_municipio"
   }
 },
 {
   "model": "auth.permission",
-  "pk": 19,
   "fields": {
     "name": "Can add log entry",
-    "content_type": 7,
+    "content_type": [
+      "admin",
+      "logentry"
+    ],
     "codename": "add_logentry"
   }
 },
 {
   "model": "auth.permission",
-  "pk": 20,
   "fields": {
     "name": "Can change log entry",
-    "content_type": 7,
+    "content_type": [
+      "admin",
+      "logentry"
+    ],
     "codename": "change_logentry"
   }
 },
 {
   "model": "auth.permission",
-  "pk": 21,
   "fields": {
     "name": "Can delete log entry",
-    "content_type": 7,
+    "content_type": [
+      "admin",
+      "logentry"
+    ],
     "codename": "delete_logentry"
   }
 },
 {
   "model": "auth.permission",
-  "pk": 22,
   "fields": {
     "name": "Can add permission",
-    "content_type": 8,
+    "content_type": [
+      "auth",
+      "permission"
+    ],
     "codename": "add_permission"
   }
 },
 {
   "model": "auth.permission",
-  "pk": 23,
   "fields": {
     "name": "Can change permission",
-    "content_type": 8,
+    "content_type": [
+      "auth",
+      "permission"
+    ],
     "codename": "change_permission"
   }
 },
 {
   "model": "auth.permission",
-  "pk": 24,
   "fields": {
     "name": "Can delete permission",
-    "content_type": 8,
+    "content_type": [
+      "auth",
+      "permission"
+    ],
     "codename": "delete_permission"
   }
 },
 {
   "model": "auth.permission",
-  "pk": 25,
   "fields": {
     "name": "Can add user",
-    "content_type": 9,
+    "content_type": [
+      "auth",
+      "user"
+    ],
     "codename": "add_user"
   }
 },
 {
   "model": "auth.permission",
-  "pk": 26,
   "fields": {
     "name": "Can change user",
-    "content_type": 9,
+    "content_type": [
+      "auth",
+      "user"
+    ],
     "codename": "change_user"
   }
 },
 {
   "model": "auth.permission",
-  "pk": 27,
   "fields": {
     "name": "Can delete user",
-    "content_type": 9,
+    "content_type": [
+      "auth",
+      "user"
+    ],
     "codename": "delete_user"
   }
 },
 {
   "model": "auth.permission",
-  "pk": 28,
   "fields": {
     "name": "Can add group",
-    "content_type": 10,
+    "content_type": [
+      "auth",
+      "group"
+    ],
     "codename": "add_group"
   }
 },
 {
   "model": "auth.permission",
-  "pk": 29,
   "fields": {
     "name": "Can change group",
-    "content_type": 10,
+    "content_type": [
+      "auth",
+      "group"
+    ],
     "codename": "change_group"
   }
 },
 {
   "model": "auth.permission",
-  "pk": 30,
   "fields": {
     "name": "Can delete group",
-    "content_type": 10,
+    "content_type": [
+      "auth",
+      "group"
+    ],
     "codename": "delete_group"
   }
 },
 {
   "model": "auth.permission",
-  "pk": 31,
   "fields": {
     "name": "Can add content type",
-    "content_type": 11,
+    "content_type": [
+      "contenttypes",
+      "contenttype"
+    ],
     "codename": "add_contenttype"
   }
 },
 {
   "model": "auth.permission",
-  "pk": 32,
   "fields": {
     "name": "Can change content type",
-    "content_type": 11,
+    "content_type": [
+      "contenttypes",
+      "contenttype"
+    ],
     "codename": "change_contenttype"
   }
 },
 {
   "model": "auth.permission",
-  "pk": 33,
   "fields": {
     "name": "Can delete content type",
-    "content_type": 11,
+    "content_type": [
+      "contenttypes",
+      "contenttype"
+    ],
     "codename": "delete_contenttype"
   }
 },
 {
   "model": "auth.permission",
-  "pk": 34,
   "fields": {
     "name": "Can add session",
-    "content_type": 12,
+    "content_type": [
+      "sessions",
+      "session"
+    ],
     "codename": "add_session"
   }
 },
 {
   "model": "auth.permission",
-  "pk": 35,
   "fields": {
     "name": "Can change session",
-    "content_type": 12,
+    "content_type": [
+      "sessions",
+      "session"
+    ],
     "codename": "change_session"
   }
 },
 {
   "model": "auth.permission",
-  "pk": 36,
   "fields": {
     "name": "Can delete session",
-    "content_type": 12,
+    "content_type": [
+      "sessions",
+      "session"
+    ],
     "codename": "delete_session"
   }
 },
 {
   "model": "auth.user",
-  "pk": 1,
   "fields": {
     "password": "pbkdf2_sha256$30000$jeQkwq8zuCRE$22nI8/8srWSzwUDeSn2pdxviW0j/QjxmXvdx7q1w3v0=",
     "last_login": "2017-03-06T21:15:51.161Z",
