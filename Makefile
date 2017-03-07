@@ -39,12 +39,12 @@ comandos:
 	@echo ""
 
 
-dependencias: _esta_dentro_de_un_entorno_virtual
+dependencias: #_esta_dentro_de_un_entorno_virtual
 	@echo "${G}actualizando dependencias pip ...${N}"
 	@pip install -r requirements.txt | sed '/Requirement\ \w*/d'
 
-_esta_dentro_de_un_entorno_virtual:
-	@python utils/esta_dentro_de_entorno_virtual.py
+#_esta_dentro_de_un_entorno_virtual:
+#	@python utils/esta_dentro_de_entorno_virtual.py
 
 iniciar: dependencias
 
@@ -102,7 +102,7 @@ generar_fixture_desde_base_de_datos:
 	@echo ""
 	@echo "$(V)Generando fixture y guardándolo en el archivo fixture_db.json$(N)"
 	@echo ""
-	python manage.py dumpdata --indent 2 --verbosity 3 -o fixture_db.json
+	python manage.py dumpdata --indent 2 --natural-foreign --natural-primary -o fixture_db.json
 
 importar_regiones:
 	python scripts/importar_regiones.py
