@@ -1610,6 +1610,14 @@
 },
 {
   "model": "sessions.session",
+  "pk": "82rl8sl6b8mwpl2yjzcu4xbdrq5uf8xk",
+  "fields": {
+    "session_data": "Y2M1NWE0ZjdlYzA5OTZmZWEwNjU3OWFiZTJkYzk5NWRiZjEyZjgyOTp7Il9hdXRoX3VzZXJfaGFzaCI6ImIzZGNjNGFhZWQwOTJjY2U4NGM0YWJkYTg5MzI1NzlkYzQ1ODAyZGIiLCJfYXV0aF91c2VyX2JhY2tlbmQiOiJkamFuZ28uY29udHJpYi5hdXRoLmJhY2tlbmRzLk1vZGVsQmFja2VuZCIsIl9hdXRoX3VzZXJfaWQiOiIxIn0=",
+    "expire_date": "2017-03-21T18:02:31.027Z"
+  }
+},
+{
+  "model": "sessions.session",
   "pk": "lxmp27ws11l9v1lsrbqh9u2pbh7zb7vy",
   "fields": {
     "session_data": "Y2M1NWE0ZjdlYzA5OTZmZWEwNjU3OWFiZTJkYzk5NWRiZjEyZjgyOTp7Il9hdXRoX3VzZXJfaGFzaCI6ImIzZGNjNGFhZWQwOTJjY2U4NGM0YWJkYTg5MzI1NzlkYzQ1ODAyZGIiLCJfYXV0aF91c2VyX2JhY2tlbmQiOiJkamFuZ28uY29udHJpYi5hdXRoLmJhY2tlbmRzLk1vZGVsQmFja2VuZCIsIl9hdXRoX3VzZXJfaWQiOiIxIn0=",
@@ -2030,14 +2038,50 @@
   }
 },
 {
+  "model": "admin.logentry",
+  "pk": 1,
+  "fields": {
+    "action_time": "2017-03-07T18:02:54.900Z",
+    "user": [
+      "admin"
+    ],
+    "content_type": [
+      "escuelas",
+      "perfil"
+    ],
+    "object_id": "1",
+    "object_repr": "00000000000",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"nombre\", \"apellido\", \"dni\", \"cuit\", \"fechadenacimiento\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 2,
+  "fields": {
+    "action_time": "2017-03-07T18:59:51.202Z",
+    "user": [
+      "admin"
+    ],
+    "content_type": [
+      "escuelas",
+      "perfil"
+    ],
+    "object_id": "1",
+    "object_repr": "000000000000",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"nombre\", \"apellido\", \"dni\", \"cuit\", \"fechadenacimiento\"]}}]"
+  }
+},
+{
   "model": "escuelas.perfil",
   "pk": 1,
   "fields": {
-    "nombre": "",
-    "apellido": "",
-    "dni": "0000",
-    "cuit": "0000",
-    "fechadenacimiento": "2010-10-10",
+    "nombre": "Administrador",
+    "apellido": "Administrador",
+    "dni": "000000000000",
+    "cuit": "000000000000",
+    "fechadenacimiento": "1980-03-07",
     "user": [
       "admin"
     ]
