@@ -49,3 +49,45 @@ class PerfilSerializer(CustomSerializer):
         model = models.Perfil
         fields = '__all__'
         read_only_fields = ('image',)
+
+class DistritoSerializer(CustomSerializer):
+
+    class Meta:
+        model = models.Distrito
+        fields = '__all__'
+
+class LocalidadSerializer(CustomSerializer):
+
+    class Meta:
+        model = models.Localidad
+        fields = '__all__'
+
+class ProgramaSerializer(CustomSerializer):
+
+    class Meta:
+        model = models.Programa
+        fields = '__all__'
+
+class TipoDeFinanciamientoSerializer(CustomSerializer):
+
+    class Meta:
+        model = models.TipoDeFinanciamiento
+        fields = '__all__'
+
+class TipoDeGestionSerializer(CustomSerializer):
+
+    class Meta:
+        model = models.TipoDeGestion
+        fields = '__all__'
+
+class AreaSerializer(CustomSerializer):
+
+    class Meta:
+        model = models.Area
+        fields = '__all__'
+
+class NivelSerializer(CustomSerializer):
+
+    class Meta:
+        model = models.Nivel
+        fields = '__all__'

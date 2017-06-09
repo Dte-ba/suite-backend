@@ -13,6 +13,13 @@ router.register(r'contactos', views.ContactoViewSet)
 router.register(r'eventos', views.EventoViewSet)
 router.register(r'regiones', views.RegionViewSet)
 router.register(r'perfiles', views.PerfilViewSet)
+router.register(r'distritos', views.DistritoViewSet)
+router.register(r'localidades', views.LocalidadViewSet)
+router.register(r'programas', views.ProgramaViewSet)
+router.register(r'tiposDeFinanciamiento', views.TipoDeFinanciamientoViewSet)
+router.register(r'tiposDeGestion', views.TipoDeGestionViewSet)
+router.register(r'areas', views.AreaViewSet)
+router.register(r'niveles', views.NivelViewSet)
 
 urlpatterns = [
     url(r'^$', views.home, name='home'),

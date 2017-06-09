@@ -42,3 +42,38 @@ class PerfilViewSet(viewsets.ModelViewSet):
         print(request.data)
         #print(file_obj)
         return viewsets.ModelViewSet.partial_update(self, request, pk)
+
+class DistritoViewSet(viewsets.ModelViewSet):
+    resource_name = 'distrito'
+    queryset = models.Distrito.objects.all()
+    serializer_class = serializers.DistritoSerializer
+
+class LocalidadViewSet(viewsets.ModelViewSet):
+    resource_name = 'localidad'
+    queryset = models.Localidad.objects.all()
+    serializer_class = serializers.LocalidadSerializer
+
+class ProgramaViewSet(viewsets.ModelViewSet):
+    resource_name = 'programa'
+    queryset = models.Programa.objects.all()
+    serializer_class = serializers.ProgramaSerializer
+
+class TipoDeFinanciamientoViewSet(viewsets.ModelViewSet):
+    resource_name = 'tipoDeFinanciamiento'
+    queryset = models.TipoDeFinanciamiento.objects.all()
+    serializer_class = serializers.TipoDeFinanciamientoSerializer
+
+class TipoDeGestionViewSet(viewsets.ModelViewSet):
+    resource_name = 'tipoDeGestion'
+    queryset = models.TipoDeGestion.objects.all()
+    serializer_class = serializers.TipoDeGestionSerializer
+
+class AreaViewSet(viewsets.ModelViewSet):
+    resource_name = 'area'
+    queryset = models.Area.objects.all()
+    serializer_class = serializers.AreaSerializer
+
+class NivelViewSet(viewsets.ModelViewSet):
+    resource_name = 'nivel'
+    queryset = models.Nivel.objects.all()
+    serializer_class = serializers.NivelSerializer
