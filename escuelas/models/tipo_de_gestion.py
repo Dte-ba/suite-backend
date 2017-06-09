@@ -5,7 +5,7 @@ class TipoDeGestion(models.Model):
     nombre = models.CharField(max_length=255)
 
     def __unicode__(self):
-        return self.nombre
+        return u"TipoDeGestion: " + self.nombre
 
     class Meta:
         db_table = 'tiposDeGestion'
