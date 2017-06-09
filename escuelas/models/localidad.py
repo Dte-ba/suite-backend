@@ -3,6 +3,7 @@ from django.db import models
 
 class Localidad(models.Model):
     nombre = models.CharField(max_length=255)
+    distrito = models.ForeignKey('Distrito', on_delete=models.CASCADE, related_name='localidades', default=None, blank=True, null=True)
 
     def __unicode__(self):
         return u"Localidad: " + self.nombre
