@@ -7,6 +7,7 @@ from municipio import Municipio
 from tipo_de_financiamiento import TipoDeFinanciamiento
 from nivel import Nivel
 from tipo_de_gestion import TipoDeGestion
+from area import Area
 
 Contacto;
 Escuela;
@@ -17,3 +18,4 @@ Municipio;
 TipoDeFinanciamiento;
 Nivel;
 TipoDeGestion;
+Area;
