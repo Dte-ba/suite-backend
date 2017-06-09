@@ -1,7 +1,6 @@
 # SUITE 2 - API Backend
 
-
-[![Build Status](https://travis-ci.org/Dte-ba/suite-backend.svg?branch=master)](https://travis-ci.org/Dte-ba/suite-backend)
+[![CircleCI](https://circleci.com/gh/Dte-ba/suite-backend.svg?style=svg)](https://circleci.com/gh/Dte-ba/suite-backend)
 
 ## ¿Cómo iniciar la aplicación?
 
