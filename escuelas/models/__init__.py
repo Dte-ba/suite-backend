@@ -8,6 +8,7 @@ from tipo_de_financiamiento import TipoDeFinanciamiento
 from nivel import Nivel
 from tipo_de_gestion import TipoDeGestion
 from area import Area
+from programa import Programa
 
 Contacto;
 Escuela;
@@ -19,3 +20,4 @@ TipoDeFinanciamiento;
 Nivel;
 TipoDeGestion;
 Area;
+Programa;
