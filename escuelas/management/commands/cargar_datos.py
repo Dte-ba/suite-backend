@@ -42,7 +42,7 @@ class Command(BaseCommand):
             objeto_distrito.region, created = models.Region.objects.get_or_create(numero=int(localidad['region']))
             objeto_distrito.save()
 
-            print objeto_distrito, " -> ", objeto_localidad
+            print objeto_distrito, " -> ", objeto_localidad, "de la", objeto_distrito.region
 
 
     def obtener_datos_desde_api(self, data):
