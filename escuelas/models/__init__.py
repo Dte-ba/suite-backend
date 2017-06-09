@@ -6,6 +6,7 @@ from perfil import Perfil
 from municipio import Municipio
 from tipo_de_financiamiento import TipoDeFinanciamiento
 from nivel import Nivel
+from tipo_de_gestion import TipoDeGestion
 
 Contacto;
 Escuela;
@@ -15,3 +16,4 @@ Perfil;
 Municipio;
 TipoDeFinanciamiento;
 Nivel;
+TipoDeGestion;
