@@ -5,6 +5,7 @@ from region import Region
 from perfil import Perfil
 from municipio import Municipio
 from tipo_de_financiamiento import TipoDeFinanciamiento
+from nivel import Nivel
 
 Contacto;
 Escuela;
@@ -13,3 +14,4 @@ Region;
 Perfil;
 Municipio;
 TipoDeFinanciamiento;
+Nivel;
