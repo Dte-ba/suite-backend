@@ -19,6 +19,8 @@ comandos:
 	@echo "    ${G}iniciar${N}             Instala todas las dependencias."
 	@echo "    ${G}crear_migraciones${N}   Genera las migraciones."
 	@echo "    ${G}crear_usuario_admin${N} Genera un usuario administrador."
+	@echo "    ${G}cargar_datos${N}        Carga toda la información inicial de los datos."
+	@echo ""
 	@echo "    ${G}generar_estaticos${N}   Genera los archivos estáticos."
 	@echo "    ${G}migrar${N}              Ejecuta las migraciones sobre la base de datos."
 	@echo "    ${G}grafico${N}             Genera un grafico del modelo de datos en .PNG"
@@ -67,7 +69,7 @@ test_live: dependencias
 ejecutar: serve
 
 serve: dependencias
-	${BIN_MANAGE} runserver 
+	${BIN_MANAGE} runserver
 	#${BIN_MANAGE} testserver escuelas/fixtures/*
 
 s: serve
@@ -108,6 +110,8 @@ generar_fixture_desde_base_de_datos:
 generar_estaticos:
 	python manage.py collectstatic
 
+cargar_datos:
+	python manage.py cargar_datos
 
 importar_regiones:
 	python scripts/importar_regiones.py
