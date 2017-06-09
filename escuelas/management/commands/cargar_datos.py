@@ -34,11 +34,11 @@ class Command(BaseCommand):
         localidades = self.obtener_datos_desde_api('localidades')['localidades']
 
         for distrito in distritos:
-            p, created = models.Distrito.objects.get_or_create(nombre=distrito['nombre'])
+            p, created = models.Distrito.objects.get_or_create(nombre=distrito['nombre'].title())
             print(p)
 
         for localidad in localidades:
-            p, created = models.Localidad.objects.get_or_create(nombre=localidad['nombre'])
+            p, created = models.Localidad.objects.get_or_create(nombre=localidad['nombre'].title())
             print(p)
 
 
