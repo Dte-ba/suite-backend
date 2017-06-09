@@ -11,6 +11,8 @@ admin.site.register(models.Nivel)
 admin.site.register(models.TipoDeGestion)
 admin.site.register(models.Area)
 admin.site.register(models.Programa)
+admin.site.register(models.Localidad)
+admin.site.register(models.Distrito)
 
 class MunicipioInline(admin.TabularInline):
     model = models.Municipio
