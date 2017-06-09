@@ -4,11 +4,13 @@ from escuelas import models
 
 import requests
 
+BASE_URL = 'http://suite-staging.dtelab.com.ar/suite/datasuite/api/'
+
 class Command(BaseCommand):
     help = 'Genera todos los datos iniciales.'
 
     def handle(self, *args, **options):
-        self.importar_usuarios()
+        self.importar_distritos_y_localidades()
 
         self.crear_regiones()
         self.crear_tipos_de_financiamiento()
@@ -27,12 +29,21 @@ class Command(BaseCommand):
         p, created = models.Region.objects.get_or_create(numero=27)
         print(p)
 
-    def importar_usuarios(self):
-        #print(self.obtener_datos_desde_api('usuarios/'))
-        pass
+    def importar_distritos_y_localidades(self):
+        distritos = self.obtener_datos_desde_api('distritos')['distritos']
+        localidades = self.obtener_datos_desde_api('localidades')['localidades']
+
+        for distrito in distritos:
+            p, created = models.Distrito.objects.get_or_create(nombre=distrito['nombre'])
+            print(p)
+
+        for localidad in localidades:
+            p, created = models.Localidad.objects.get_or_create(nombre=localidad['nombre'])
+            print(p)
+
 
     def obtener_datos_desde_api(self, data):
-        url = 'http://suite.dtelab.com.ar/suite/datasuite/api/' + data
+        url = BASE_URL + data
         return requests.get(url).json()
 
     def crear_tipos_de_financiamiento(self):
