@@ -12,7 +12,6 @@ admin.site.register(models.TipoDeGestion)
 admin.site.register(models.Area)
 admin.site.register(models.Programa)
 admin.site.register(models.Localidad)
-admin.site.register(models.Distrito)
 
 class DistritoInline(admin.TabularInline):
     model = models.Distrito
@@ -22,4 +21,13 @@ class RegionAdmin(admin.ModelAdmin):
         DistritoInline,
     ]
 
+class LocalidadInline(admin.TabularInline):
+    model = models.Localidad
+
+class DistritoAdmin(admin.ModelAdmin):
+    inlines = [
+        LocalidadInline,
+    ]
+
 admin.site.register(models.Region, RegionAdmin)
+admin.site.register(models.Distrito, DistritoAdmin)

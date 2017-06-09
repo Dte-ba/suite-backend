@@ -7,12 +7,12 @@ class Escuela(models.Model):
     direccion = models.CharField(max_length=255, default=None, blank=True, null=True)
     latitud = models.CharField(max_length=15, default=None, blank=True, null=True)
     longitud = models.CharField(max_length=15, default=None, blank=True, null=True)
-    localidad = models.ForeignKey('Localidad', on_delete=models.CASCADE, related_name='escuelas', default=None, blank=True, null=True)
-    tipoDeFinanciamiento = models.ForeignKey('TipoDeFinanciamiento', on_delete=models.CASCADE, related_name='escuelas', default=None, blank=True, null=True)
-    nivel = models.ForeignKey('Nivel', on_delete=models.CASCADE, related_name='escuelas', default=None, blank=True, null=True)
-    tipoDeGestion = models.ForeignKey('TipoDeGestion', on_delete=models.CASCADE, related_name='escuelas', default=None, blank=True, null=True)
-    area = models.ForeignKey('Area', on_delete=models.CASCADE, related_name='escuelas', default=None, blank=True, null=True)
-    programa = models.ForeignKey('Programa', on_delete=models.CASCADE, related_name='escuelas', default=None, blank=True, null=True)
+    localidad = models.ForeignKey('Localidad', related_name='escuelas', default=None, blank=True, null=True)
+    tipoDeFinanciamiento = models.ForeignKey('TipoDeFinanciamiento', related_name='escuelas', default=None, blank=True, null=True)
+    nivel = models.ForeignKey('Nivel', related_name='escuelas', default=None, blank=True, null=True)
+    tipoDeGestion = models.ForeignKey('TipoDeGestion', related_name='escuelas', default=None, blank=True, null=True)
+    area = models.ForeignKey('Area', related_name='escuelas', default=None, blank=True, null=True)
+    programas = models.ManyToManyField('Programa', related_name='escuelas')
 
 
     def __unicode__(self):
