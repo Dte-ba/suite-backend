@@ -30,16 +30,16 @@ class Command(BaseCommand):
         print(p)
 
     def importar_distritos_y_localidades(self):
-        distritos = self.obtener_datos_desde_api('distritos')['distritos']
         localidades = self.obtener_datos_desde_api('localidades')['localidades']
 
-        for distrito in distritos:
-            p, created = models.Distrito.objects.get_or_create(nombre=distrito['nombre'].title())
-            print(p)
-
         for localidad in localidades:
-            p, created = models.Localidad.objects.get_or_create(nombre=localidad['nombre'].title())
-            print(p)
+            objeto_distrito, created = models.Distrito.objects.get_or_create(nombre=localidad['distrito'].title())
+            objeto_localidad, created = models.Localidad.objects.get_or_create(nombre=localidad['localidad'].title())
+
+            objeto_localidad.distrito = objeto_distrito
+            objeto_localidad.save()
+
+            print objeto_distrito, " -> ", objeto_localidad
 
 
     def obtener_datos_desde_api(self, data):
