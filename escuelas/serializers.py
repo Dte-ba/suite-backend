@@ -48,6 +48,7 @@ class PerfilSerializer(CustomSerializer):
     class Meta:
         model = models.Perfil
         fields = '__all__'
+        read_only_fields = ('image',)
 
 class MunicipioSerializer(CustomSerializer):
 

@@ -20,11 +20,13 @@ inflection==0.3.1
 ipython==5.1.0
 ipython-genutils==0.1.0
 jdcal==1.3
+olefile==0.44
 openpyxl==2.4.4
 pathlib2==2.1.0
 pathtools==0.1.2
 pexpect==4.2.1
 pickleshare==0.7.4
+Pillow==4.0.0
 prompt-toolkit==1.0.9
 psycopg2==2.6.2
 ptyprocess==0.5.1
