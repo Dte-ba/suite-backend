@@ -4,6 +4,8 @@ from escuelas import models
 
 import requests
 
+BASE_URL = 'http://suite-staging.dtelab.com.ar/suite/datasuite/api/'
+
 class Command(BaseCommand):
     help = 'Genera todos los datos iniciales.'
 
@@ -32,7 +34,7 @@ class Command(BaseCommand):
         pass
 
     def obtener_datos_desde_api(self, data):
-        url = 'http://suite.dtelab.com.ar/suite/datasuite/api/' + data
+        url = BASE_URL + data
         return requests.get(url).json()
 
     def crear_tipos_de_financiamiento(self):
