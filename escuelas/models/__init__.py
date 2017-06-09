@@ -9,6 +9,8 @@ from nivel import Nivel
 from tipo_de_gestion import TipoDeGestion
 from area import Area
 from programa import Programa
+from localidad import Localidad
+from distrito import Distrito
 
 Contacto;
 Escuela;
@@ -21,3 +23,5 @@ Nivel;
 TipoDeGestion;
 Area;
 Programa;
+Localidad;
+Distrito;
