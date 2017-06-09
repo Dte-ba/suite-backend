@@ -42,8 +42,3 @@ class PerfilViewSet(viewsets.ModelViewSet):
         print(request.data)
         #print(file_obj)
         return viewsets.ModelViewSet.partial_update(self, request, pk)
-
-class MunicipioViewSet(viewsets.ModelViewSet):
-    resource_name = 'municipio'
-    queryset = models.Municipio.objects.all()
-    serializer_class = serializers.MunicipioSerializer

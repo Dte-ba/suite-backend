@@ -14,13 +14,12 @@ admin.site.register(models.Programa)
 admin.site.register(models.Localidad)
 admin.site.register(models.Distrito)
 
-class MunicipioInline(admin.TabularInline):
-    model = models.Municipio
+class DistritoInline(admin.TabularInline):
+    model = models.Distrito
 
 class RegionAdmin(admin.ModelAdmin):
-    ordering = ("numero", )
     inlines = [
-        MunicipioInline,
+        DistritoInline,
     ]
 
 admin.site.register(models.Region, RegionAdmin)

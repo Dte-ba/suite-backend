@@ -13,8 +13,6 @@ router.register(r'contactos', views.ContactoViewSet)
 router.register(r'eventos', views.EventoViewSet)
 router.register(r'regiones', views.RegionViewSet)
 router.register(r'perfiles', views.PerfilViewSet)
-router.register(r'municipios', views.MunicipioViewSet)
-
 
 urlpatterns = [
     url(r'^$', views.home, name='home'),
