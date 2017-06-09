@@ -5,7 +5,7 @@ class Area(models.Model):
     nombre = models.CharField(max_length=255)
 
     def __unicode__(self):
-        return self.nombre
+        return u"Area: " + self.nombre
 
     class Meta:
         db_table = 'areas'
