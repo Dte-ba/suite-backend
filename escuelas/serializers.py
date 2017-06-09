@@ -41,7 +41,7 @@ class RegionSerializer(CustomSerializer):
 
     class Meta:
         model = models.Region
-        fields = ('id', 'numero', 'municipios')
+        fields = ('id', 'numero')
 
 class PerfilSerializer(CustomSerializer):
 
@@ -49,9 +49,3 @@ class PerfilSerializer(CustomSerializer):
         model = models.Perfil
         fields = '__all__'
         read_only_fields = ('image',)
-
-class MunicipioSerializer(CustomSerializer):
-
-    class Meta:
-        model = models.Municipio
-        fields = '__all__'
