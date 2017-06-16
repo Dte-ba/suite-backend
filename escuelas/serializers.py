@@ -41,7 +41,7 @@ class RegionSerializer(CustomSerializer):
 
     class Meta:
         model = models.Region
-        fields = ('id', 'numero')
+        fields = ('id', 'numero', 'distritos')
 
 class PerfilSerializer(CustomSerializer):
 
@@ -54,7 +54,7 @@ class DistritoSerializer(CustomSerializer):
 
     class Meta:
         model = models.Distrito
-        fields = '__all__'
+        fields = ('id', 'nombre', 'localidades')
 
 class LocalidadSerializer(CustomSerializer):
 
