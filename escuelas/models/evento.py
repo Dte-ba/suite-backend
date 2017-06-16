@@ -3,11 +3,12 @@ from django.db import models
 
 class Evento(models.Model):
     titulo = models.CharField(max_length=512)
-    fechainicio = models.DateField()
-    fechafin = models.DateField()
+    fechainicio = models.DateTimeField()
+    fechafin = models.DateTimeField()
+    todoElDia = models.BooleanField(default=False)
 
     def __unicode__(self):
-        return self.nombre
+        return self.titulo
 
     class Meta:
         db_table = 'eventos'
