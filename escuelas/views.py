@@ -58,7 +58,6 @@ class ProgramaViewSet(viewsets.ModelViewSet):
     serializer_class = serializers.ProgramaSerializer
 
 class TipoDeFinanciamientoViewSet(viewsets.ModelViewSet):
-    resource_name = 'tipoDeFinanciamiento'
     queryset = models.TipoDeFinanciamiento.objects.all()
     serializer_class = serializers.TipoDeFinanciamientoSerializer
 
