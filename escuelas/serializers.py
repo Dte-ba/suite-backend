@@ -54,7 +54,7 @@ class DistritoSerializer(CustomSerializer):
 
     class Meta:
         model = models.Distrito
-        fields = ('id', 'nombre', 'localidades')
+        fields = ('id', 'nombre', 'localidades', 'region')
 
 class LocalidadSerializer(CustomSerializer):
 
