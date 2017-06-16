@@ -5,6 +5,8 @@ class Escuela(models.Model):
     cue = models.CharField(max_length=8, db_index=True)
     nombre = models.CharField(max_length=100)
     direccion = models.CharField(max_length=255, default=None, blank=True, null=True)
+    telefono = models.CharField(max_length=255, default=None, blank=True, null=True)
+    email = models.CharField(max_length=255, default=None, blank=True, null=True)
     latitud = models.CharField(max_length=15, default=None, blank=True, null=True)
     longitud = models.CharField(max_length=15, default=None, blank=True, null=True)
     localidad = models.ForeignKey('Localidad', related_name='escuelas', default=None, blank=True, null=True)
