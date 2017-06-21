@@ -9,7 +9,7 @@ class Command(BaseCommand):
     help = 'Genera todos los datos iniciales.'
 
     def handle(self, *args, **options):
-        #self.importar_distritos_y_localidades()
+        self.importar_distritos_y_localidades()
         self.importar_escuelas()
 
         self.crear_regiones()
