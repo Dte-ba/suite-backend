@@ -9,7 +9,8 @@ class Command(BaseCommand):
     help = 'Genera todos los datos iniciales.'
 
     def handle(self, *args, **options):
-        self.importar_distritos_y_localidades()
+        #self.importar_distritos_y_localidades()
+        self.importar_escuelas()
 
         self.crear_regiones()
         self.crear_tipos_de_financiamiento()
@@ -42,6 +43,39 @@ class Command(BaseCommand):
             objeto_distrito.save()
 
             print objeto_distrito, " -> ", objeto_localidad, "de la", objeto_distrito.region
+
+    def importar_escuelas(self):
+        escuelas = self.obtener_datos_desde_api('escuelas')['escuelas']
+
+        for escuela in escuelas:
+            objeto_escuela, created = models.Escuela.objects.get_or_create(nombre=escuela['nombre'].title())
+            objeto_area, created = models.Area.objects.get_or_create(nombre=escuela['area'].title())
+            objeto_localidad, created = models.Localidad.objects.get_or_create(nombre=escuela['localidad'].title())
+            objeto_tipoDeFinanciamiento, created = models.TipoDeFinanciamiento.objects.get_or_create(nombre=escuela['tipo_financiamiento'].title())
+            objeto_nivel, created = models.Nivel.objects.get_or_create(nombre=escuela['nivel'].title())
+            objeto_tipoDeGestion, created = models.TipoDeGestion.objects.get_or_create(nombre=escuela['tipo_gestion'].title())
+            #objeto_programa, created = models.Programa.objects.get_or_create(nombre=escuela['programa'].title())
+
+            objeto_escuela.cue = escuela['cue']
+            objeto_escuela.direccion = escuela['direccion']
+            objeto_escuela.telefono = escuela['telefono']
+            objeto_escuela.latitud = escuela['latitud']
+            objeto_escuela.longitud = escuela['longitud']
+
+            objeto_escuela.area = objeto_area
+            objeto_escuela.localidad = objeto_localidad
+            objeto_escuela.tipoDeFinanciamiento = objeto_tipoDeFinanciamiento
+            objeto_escuela.nivel = objeto_nivel
+            objeto_escuela.tipoDeGestion = objeto_tipoDeGestion
+            #objeto_escuela.programas = objeto_programa
+
+            objeto_escuela.save()
+
+
+
+            #print " Escuela ", objeto_escuela
+            print "================", objeto_escuela, "\n CUE: ", objeto_escuela.cue, "\n Direccion: ", objeto_escuela.direccion, "\n Tel: ", objeto_escuela.telefono, "\n ", objeto_escuela.localidad, "\n ", objeto_escuela.area, "\n ", objeto_escuela.nivel, "\n ", objeto_escuela.tipoDeFinanciamiento, "\n ", objeto_escuela.tipoDeGestion
+            #, "\n Programa: ", objeto_escuela.programas
 
 
     def obtener_datos_desde_api(self, data):
