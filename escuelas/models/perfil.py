@@ -29,7 +29,7 @@ class Perfil(models.Model):
     direccionPiso = models.CharField(max_length=3, default=None, blank=True, null=True)
     direccionDepto = models.CharField(max_length=3, default=None, blank=True, null=True)
     direccionTorre = models.CharField(max_length=200, default=None, blank=True, null=True)
-    codigoPosal = models.CharField(max_length=15, default=None, blank=True, null=True)
+    codigoPostal = models.CharField(max_length=15, default=None, blank=True, null=True)
     # Ver si partido es lo mismo que distrito
     localidad = models.ForeignKey('Localidad', related_name='perfiles', default=None, blank=True, null=True) # Evaluar si la lista de localidades es la mejor opción.
     telefonoCelular = models.CharField(max_length=25, default=None, blank=True, null=True)
@@ -39,7 +39,7 @@ class Perfil(models.Model):
     # permisosSuite =
     region = models.ForeignKey('region', related_name='perfiles', default=None, blank=True, null=True)
     cargo = models.CharField(max_length=200, default=None, blank=True, null=True) # Evaluar hacer un select en base a modelo
-    programa = models.CharField(max_length=200, default=None, blank=True, null=True) # Evaluar hacer un select en base a modelo. Este campo es Programa/Contrato, no sería el mismo model que el programa de escuelas
+    Contrato = models.CharField(max_length=200, default=None, blank=True, null=True) # Evaluar hacer un select en base a modelo. Este campo es Programa/Contrato, no sería el mismo model que el programa de escuelas
     expediente = models.CharField(max_length=25, default=None, blank=True, null=True)
     fechaDeIngreso = models.DateField(default="2010-10-10")
     fechaDeReuncia = models.DateField(default=None, blank=True,null=True)
