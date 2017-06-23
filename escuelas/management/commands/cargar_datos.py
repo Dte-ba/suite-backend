@@ -1,3 +1,4 @@
+# encoding=utf8
 from django.core.management.base import BaseCommand
 from escuelas import models
 
@@ -10,14 +11,17 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         self.importar_distritos_y_localidades()
-        self.importar_escuelas()
-
         self.crear_regiones()
         self.crear_tipos_de_financiamiento()
         self.crear_niveles()
         self.crear_tipos_de_gestion()
         self.crear_areas()
         self.crear_programas()
+        self.crear_cargos()
+        self.crear_experiencias()
+        self.crear_contratos()
+
+        self.importar_escuelas()
 
     def crear_regiones(self):
         numeros = range(1, 26)
@@ -49,7 +53,7 @@ class Command(BaseCommand):
 
         for escuela in escuelas:
             print "Intentando crear el registro escuela id_original:", escuela['id']
-            
+
             objeto_escuela, created = models.Escuela.objects.get_or_create(nombre=escuela['nombre'].title())
             objeto_area, created = models.Area.objects.get_or_create(nombre=escuela['area'].title())
             objeto_localidad, created = models.Localidad.objects.get_or_create(nombre=escuela['localidad'].title())
@@ -127,4 +131,41 @@ class Command(BaseCommand):
 
         for nombre in nombres:
             p, created = models.Programa.objects.get_or_create(nombre=nombre)
+            print(p)
+
+    def crear_experiencias(self):
+        nombres = [
+            "Técnico",
+            "Pedagógico",
+            "Administrativo",
+            "Diseño",
+            "Comunicación"
+            ]
+
+        for nombre in nombres:
+            p, created = models.Experiencia.objects.get_or_create(nombre=nombre)
+            print(p)
+
+    def crear_contratos(self):
+        nombres = [
+            "PLANIED",
+            "Planta/PLANIED",
+            "Planta",
+            "ConIg",
+            "Ord. Tec."
+
+            ]
+
+        for nombre in nombres:
+            p, created = models.Contrato.objects.get_or_create(nombre=nombre)
+            print(p)
+
+    def crear_cargos(self):
+        nombres = [
+            ("FED", "Facilitador Educación Digital"),
+            ("Coord", "Coordinador")
+            ]
+
+        for nombre in nombres:
+            p, created = models.Cargo.objects.get_or_create(nombre=nombre[0], descripcion=nombre[1])
             print(p)
