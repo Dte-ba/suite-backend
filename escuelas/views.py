@@ -90,3 +90,8 @@ class ContratoViewSet(viewsets.ModelViewSet):
     resource_name = 'contrato'
     queryset = models.Contrato.objects.all()
     serializer_class = serializers.ContratoSerializer
+
+class PisoViewSet(viewsets.ModelViewSet):
+    resource_name = 'piso'
+    queryset = models.Piso.objects.all()
+    serializer_class = serializers.PisoSerializer

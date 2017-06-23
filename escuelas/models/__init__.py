@@ -13,6 +13,7 @@ from distrito import Distrito
 from experiencia import Experiencia
 from cargo import Cargo
 from contrato import Contrato
+from piso import Piso
 
 Contacto;
 Escuela;
@@ -29,3 +30,4 @@ Distrito;
 Experiencia;
 Cargo;
 Contrato;
+Piso;

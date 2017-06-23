@@ -15,6 +15,7 @@ class Escuela(models.Model):
     tipoDeGestion = models.ForeignKey('TipoDeGestion', related_name='escuelas', default=None, blank=True, null=True)
     area = models.ForeignKey('Area', related_name='escuelas', default=None, blank=True, null=True)
     programas = models.ManyToManyField('Programa', related_name='escuelas')
+    piso = models.ForeignKey('Piso', related_name='escuelas', default=None, blank=True, null=True)
 
 
     def __unicode__(self):

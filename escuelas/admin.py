@@ -16,6 +16,7 @@ admin.site.register(models.Localidad)
 admin.site.register(models.Experiencia)
 admin.site.register(models.Cargo)
 admin.site.register(models.Contrato)
+admin.site.register(models.Piso)
 
 class DistritoInline(admin.TabularInline):
     model = models.Distrito

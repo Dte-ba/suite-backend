@@ -23,6 +23,7 @@ router.register(r'niveles', views.NivelViewSet)
 router.register(r'experiencias', views.ExperienciaViewSet)
 router.register(r'cargos', views.CargoViewSet)
 router.register(r'contratos', views.ContratoViewSet)
+router.register(r'pisos', views.PisoViewSet)
 
 urlpatterns = [
     url(r'^$', views.home, name='home'),

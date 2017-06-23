@@ -109,3 +109,9 @@ class ContratoSerializer(CustomSerializer):
     class Meta:
         model = models.Contrato
         fields = '__all__'
+
+class PisoSerializer(CustomSerializer):
+
+    class Meta:
+        model = models.Piso
+        fields = '__all__'
