@@ -48,6 +48,8 @@ class Command(BaseCommand):
         escuelas = self.obtener_datos_desde_api('escuelas')['escuelas']
 
         for escuela in escuelas:
+            print "Intentando crear el registro escuela id_original:", escuela['id']
+            
             objeto_escuela, created = models.Escuela.objects.get_or_create(nombre=escuela['nombre'].title())
             objeto_area, created = models.Area.objects.get_or_create(nombre=escuela['area'].title())
             objeto_localidad, created = models.Localidad.objects.get_or_create(nombre=escuela['localidad'].title())
@@ -74,7 +76,9 @@ class Command(BaseCommand):
 
 
             #print " Escuela ", objeto_escuela
-            print "================", objeto_escuela, "\n CUE: ", objeto_escuela.cue, "\n Direccion: ", objeto_escuela.direccion, "\n Tel: ", objeto_escuela.telefono, "\n ", objeto_escuela.localidad, "\n ", objeto_escuela.area, "\n ", objeto_escuela.nivel, "\n ", objeto_escuela.tipoDeFinanciamiento, "\n ", objeto_escuela.tipoDeGestion
+            print "Se ha creado el registro:"
+            print objeto_escuela, "\n CUE: ", objeto_escuela.cue, "\n Direccion: ", objeto_escuela.direccion, "\n Tel: ", objeto_escuela.telefono, "\n ", objeto_escuela.localidad, "\n ", objeto_escuela.area, "\n ", objeto_escuela.nivel, "\n ", objeto_escuela.tipoDeFinanciamiento, "\n ", objeto_escuela.tipoDeGestion
+            print "==========="
             #, "\n Programa: ", objeto_escuela.programas
 
 
