@@ -75,3 +75,18 @@ class NivelViewSet(viewsets.ModelViewSet):
     resource_name = 'nivel'
     queryset = models.Nivel.objects.all()
     serializer_class = serializers.NivelSerializer
+
+class ExperienciaViewSet(viewsets.ModelViewSet):
+    resource_name = 'experiencia'
+    queryset = models.Experiencia.objects.all()
+    serializer_class = serializers.ExperienciaSerializer
+
+class CargoViewSet(viewsets.ModelViewSet):
+    resource_name = 'cargo'
+    queryset = models.Cargo.objects.all()
+    serializer_class = serializers.CargoSerializer
+
+class ContratoViewSet(viewsets.ModelViewSet):
+    resource_name = 'contrato'
+    queryset = models.Contrato.objects.all()
+    serializer_class = serializers.ContratoSerializer

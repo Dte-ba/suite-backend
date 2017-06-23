@@ -10,6 +10,9 @@ from area import Area
 from programa import Programa
 from localidad import Localidad
 from distrito import Distrito
+from experiencia import Experiencia
+from cargo import Cargo
+from contrato import Contrato
 
 Contacto;
 Escuela;
@@ -23,3 +26,6 @@ Area;
 Programa;
 Localidad;
 Distrito;
+Experiencia;
+Cargo;
+Contrato;

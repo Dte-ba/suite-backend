@@ -13,6 +13,10 @@ admin.site.register(models.Area)
 admin.site.register(models.Programa)
 admin.site.register(models.Localidad)
 
+admin.site.register(models.Experiencia)
+admin.site.register(models.Cargo)
+admin.site.register(models.Contrato)
+
 class DistritoInline(admin.TabularInline):
     model = models.Distrito
 

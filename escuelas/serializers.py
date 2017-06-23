@@ -91,3 +91,21 @@ class NivelSerializer(CustomSerializer):
     class Meta:
         model = models.Nivel
         fields = '__all__'
+
+class ExperienciaSerializer(CustomSerializer):
+
+    class Meta:
+        model = models.Experiencia
+        fields = '__all__'
+
+class CargoSerializer(CustomSerializer):
+
+    class Meta:
+        model = models.Cargo
+        fields = '__all__'
+
+class ContratoSerializer(CustomSerializer):
+
+    class Meta:
+        model = models.Contrato
+        fields = '__all__'

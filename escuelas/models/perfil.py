@@ -9,7 +9,7 @@ def upload_to(instance, filename):
 
 class Perfil(models.Model):
 
-    user = models.OneToOneField(User, on_delete=models.CASCADE, default=1)
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
 
     # 1) Datos Personales
     image = models.ImageField('image', blank=True, null=True, upload_to=upload_to)
@@ -17,7 +17,7 @@ class Perfil(models.Model):
     apellido = models.CharField(max_length=200, default="")
     fechadenacimiento = models.DateField(default="2010-10-10")
     titulo = models.CharField(max_length=200, default=None, blank=True, null=True)
-    # Perfil / Experiencia - definir
+    experiencia = models.ForeignKey('Experiencia', related_name='perfiles', default=None, blank=True, null=True)
     dni = models.CharField(max_length=200, default="0000")
     cuit = models.CharField(max_length=200, default="0000")
     cbu = models.CharField(max_length=50, default=None, blank=True, null=True)
@@ -38,8 +38,8 @@ class Perfil(models.Model):
     # 2) Datos administrativos
     # permisosSuite =
     region = models.ForeignKey('region', related_name='perfiles', default=None, blank=True, null=True)
-    cargo = models.CharField(max_length=200, default=None, blank=True, null=True) # Evaluar hacer un select en base a modelo
-    Contrato = models.CharField(max_length=200, default=None, blank=True, null=True) # Evaluar hacer un select en base a modelo. Este campo es Programa/Contrato, no sería el mismo model que el programa de escuelas
+    cargo = models.ForeignKey('cargo', related_name='perfiles', default=None, blank=True, null=True)
+    Contrato = models.ForeignKey('contrato', related_name='perfiles', default=None, blank=True, null=True)
     expediente = models.CharField(max_length=25, default=None, blank=True, null=True)
     fechaDeIngreso = models.DateField(default="2010-10-10")
     fechaDeReuncia = models.DateField(default=None, blank=True,null=True)
@@ -58,7 +58,7 @@ class Perfil(models.Model):
     # Depende de que esté creado el módulo de stock.
 
     def __unicode__(self):
-        return self.dni
+        return u"Perfil: " + self.apellido + ", " + self.nombre + " - DNI: " + self.dni
 
     class Meta:
         db_table = 'perfiles'
