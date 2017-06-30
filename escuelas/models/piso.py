@@ -3,7 +3,7 @@ from django.db import models
 
 class Piso(models.Model):
     servidor = models.CharField(max_length=255)
-    serie = models.CharField(max_length=255)
+    serie = models.CharField(max_length=255, default=None, blank=True, null=True)
     ups = models.BooleanField()
     rack = models.BooleanField()
     estado = models.BooleanField()

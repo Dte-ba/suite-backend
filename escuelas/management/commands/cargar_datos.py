@@ -11,7 +11,7 @@ class Command(BaseCommand):
     help = 'Genera todos los datos iniciales.'
 
     def handle(self, *args, **options):
-        #self.importar_distritos_y_localidades()
+        self.importar_distritos_y_localidades()
         self.crear_cargos_escolares()
         self.crear_regiones()
         self.crear_tipos_de_financiamiento()
@@ -24,6 +24,8 @@ class Command(BaseCommand):
         self.crear_contratos()
 
         self.importar_escuelas()
+        self.importar_contactos()
+        self.importar_pisos()
 
     def crear_regiones(self):
         numeros = range(1, 26)
@@ -87,6 +89,62 @@ class Command(BaseCommand):
             print "==========="
             #, "\n Programa: ", objeto_escuela.programas
 
+    def importar_contactos(self):
+        contactos = self.obtener_datos_desde_api('contactos')['contactos']
+
+        for contacto in contactos:
+            objeto_escuela = models.Escuela.objects.get(cue=contacto['escuela'])
+            objeto_cargo = models.CargoEscolar.objects.get(nombre=contacto['cargo'])
+            objeto_contacto, created = models.Contacto.objects.get_or_create(nombre=contacto['nombre'].title())
+            #
+            objeto_contacto.cargo = objeto_cargo
+            objeto_contacto.escuela = objeto_escuela
+            if contacto['email']:
+                objeto_contacto.email = contacto['email'].lower()
+
+            objeto_contacto.telefono_particular = contacto['telefono']
+            objeto_contacto.telefono_celular = contacto['celular']
+            if contacto['horario']:
+                objeto_contacto.horario = contacto['horario'].title()
+
+            objeto_contacto.save()
+
+            print "Se ha creado el registro:"
+            print "Nombre: ", objeto_contacto, "\n Teléfono Particular ", objeto_contacto.telefono_particular, "\n Teléfono Celular: ", objeto_contacto.telefono_celular, "\n Email: ", objeto_contacto.email, "\n Horario: ", objeto_contacto.horario
+            print "==========="
+
+    def importar_pisos(self):
+        pisos = self.obtener_datos_desde_api('pisos')['pisos']
+
+        for piso in pisos:
+            print "Busando piso para escuela: ", piso['cue']
+            objeto_escuela = models.Escuela.objects.get(cue=piso['cue'])
+            objeto_piso, created = models.Piso.objects.get_or_create(servidor=piso['marca'])
+            #
+            objeto_piso.serie = piso['serie']
+
+            if piso['ups']:
+                if piso['ups'] == "SI":
+                    objeto_piso.ups = 1
+                else:
+                    objeto_piso.ups = 0
+
+            if piso['rack']:
+                if piso['rack'] == "SI":
+                    objeto_piso.rack = 1
+                else:
+                    objeto_piso.rack = 0
+
+            objeto_piso.estado = piso['estado']
+
+            objeto_escuela.piso = objeto_piso
+
+            objeto_piso.save()
+            objeto_escuela.save()
+
+            print "Se ha creado el registro:"
+            print "Piso de escuela ", piso['cue'], ": \n Servidor: ", piso['marca'], "\n Serie: ", piso['serie'], "\n UPS: ", piso['ups'], "\n Rack: ", piso['rack'], "\n Estado: ", piso['piso_estado']
+            print "==========="
 
     def obtener_datos_desde_api(self, data):
         url = BASE_URL + data
