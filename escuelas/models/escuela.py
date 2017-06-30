@@ -19,7 +19,7 @@ class Escuela(models.Model):
 
 
     def __unicode__(self):
-        return self.nombre + self.tipoDeFinanciamiento
+        return self.nombre
 
     class Meta:
         db_table = 'escuelas'

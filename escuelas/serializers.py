@@ -132,3 +132,9 @@ class ContratoSerializer(CustomSerializer):
     class Meta:
         model = models.Contrato
         fields = '__all__'
+
+class CargoEscolarSerializer(CustomSerializer):
+
+    class Meta:
+        model = models.CargoEscolar
+        fields = '__all__'

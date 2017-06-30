@@ -14,6 +14,7 @@ from experiencia import Experiencia
 from cargo import Cargo
 from contrato import Contrato
 from piso import Piso
+from cargo_escolar import CargoEscolar
 
 Contacto;
 Escuela;
@@ -31,3 +32,4 @@ Experiencia;
 Cargo;
 Contrato;
 Piso;
+CargoEscolar;

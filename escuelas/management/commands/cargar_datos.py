@@ -11,7 +11,8 @@ class Command(BaseCommand):
     help = 'Genera todos los datos iniciales.'
 
     def handle(self, *args, **options):
-        self.importar_distritos_y_localidades()
+        #self.importar_distritos_y_localidades()
+        self.crear_cargos_escolares()
         self.crear_regiones()
         self.crear_tipos_de_financiamiento()
         self.crear_niveles()
@@ -169,4 +170,21 @@ class Command(BaseCommand):
 
         for nombre in nombres:
             p, created = models.Cargo.objects.get_or_create(nombre=nombre[0], descripcion=nombre[1])
+            print(p)
+
+    def crear_cargos_escolares(self):
+        nombres = [
+            "Director",
+            "Vice Director",
+            "Secretario",
+            "Maestro",
+            "EMATP",
+            "Prosecretario",
+            "Preceptor",
+            "Profesor",
+            "Otro"
+            ]
+
+        for nombre in nombres:
+            p, created = models.CargoEscolar.objects.get_or_create(nombre=nombre)
             print(p)

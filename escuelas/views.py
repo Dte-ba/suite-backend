@@ -95,3 +95,8 @@ class PisoViewSet(viewsets.ModelViewSet):
     resource_name = 'piso'
     queryset = models.Piso.objects.all()
     serializer_class = serializers.PisoSerializer
+
+class CargoEscolarViewSet(viewsets.ModelViewSet):
+    resource_name = 'cargoEscolar'
+    queryset = models.CargoEscolar.objects.all()
+    serializer_class = serializers.CargoEscolarSerializer

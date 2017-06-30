@@ -9,6 +9,7 @@ class Contacto(models.Model):
     email = models.EmailField(max_length=254)
 
     escuela = models.ForeignKey('Escuela', related_name='contactos', on_delete=models.CASCADE)
+    cargo = models.ForeignKey('CargoEscolar', related_name='contactos', on_delete=models.CASCADE, default=None, blank=True, null=True)
 
     def __unicode__(self):
         return self.nombre
