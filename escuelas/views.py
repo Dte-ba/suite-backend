@@ -36,12 +36,6 @@ class PerfilViewSet(viewsets.ModelViewSet):
     queryset = models.Perfil.objects.all()
     serializer_class = serializers.PerfilSerializer
 
-    def partial_update(self, request, pk=None):
-        #file_obj = request.FILES['demo']
-        print(request.data)
-        #print(file_obj)
-        return viewsets.ModelViewSet.partial_update(self, request, pk)
-
 class DistritoViewSet(viewsets.ModelViewSet):
     resource_name = 'distrito'
     queryset = models.Distrito.objects.all()

@@ -39,7 +39,7 @@ class Perfil(models.Model):
     # permisosSuite =
     region = models.ForeignKey('region', related_name='perfiles', default=None, blank=True, null=True)
     cargo = models.ForeignKey('cargo', related_name='perfiles', default=None, blank=True, null=True)
-    Contrato = models.ForeignKey('contrato', related_name='perfiles', default=None, blank=True, null=True)
+    contrato = models.ForeignKey('contrato', related_name='perfiles', default=None, blank=True, null=True)
     expediente = models.CharField(max_length=25, default=None, blank=True, null=True)
     fechaDeIngreso = models.DateField(default="2010-10-10")
     fechaDeReuncia = models.DateField(default=None, blank=True,null=True)
@@ -63,6 +63,9 @@ class Perfil(models.Model):
     class Meta:
         db_table = 'perfiles'
         verbose_name_plural = "perfiles"
+
+    class JSONAPIMeta:
+        resource_name = 'perfiles'
 
 @receiver(post_save, sender=User)
 def create_user_profile(sender, instance, created, **kwargs):
