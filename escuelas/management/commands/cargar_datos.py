@@ -31,7 +31,7 @@ class Command(BaseCommand):
         self.importar_escuelas()
         self.importar_contactos()
         self.importar_pisos()
-        #self.vincular_programas()
+        self.vincular_programas()
 
     def crear_regiones(self):
         numeros = range(1, 26)
@@ -70,7 +70,9 @@ class Command(BaseCommand):
             print "Intentando crear el registro escuela id_original:", escuela['id']
 
             objeto_escuela, created = models.Escuela.objects.get_or_create(cue=escuela['cue'])
+
             objeto_area, created = models.Area.objects.get_or_create(nombre=escuela['area'].title())
+
             objeto_localidad, created = models.Localidad.objects.get_or_create(nombre=escuela['localidad'].title())
             objeto_tipoDeFinanciamiento, created = models.TipoDeFinanciamiento.objects.get_or_create(nombre=escuela['tipo_financiamiento'].title())
             objeto_nivel, created = models.Nivel.objects.get_or_create(nombre=escuela['nivel'].title())
@@ -84,6 +86,7 @@ class Command(BaseCommand):
             objeto_escuela.longitud = escuela['longitud']
 
             objeto_escuela.area = objeto_area
+
             objeto_escuela.localidad = objeto_localidad
             objeto_escuela.tipoDeFinanciamiento = objeto_tipoDeFinanciamiento
             objeto_escuela.nivel = objeto_nivel
@@ -129,25 +132,36 @@ class Command(BaseCommand):
         pisos = self.obtener_datos_desde_api('pisos')['pisos']
 
         for piso in pisos:
-            print "Busando piso para escuela: ", piso['cue']
+
+            if piso['marca']:
+                marca = piso['marca']
+            else:
+                marca = "Desconocido"
+
+            print "Buscando piso para escuela: ", piso['cue']
             objeto_escuela = models.Escuela.objects.get(cue=piso['cue'])
-            objeto_piso, created = models.Piso.objects.get_or_create(servidor=piso['marca'])
+            objeto_piso, created = models.Piso.objects.get_or_create(servidor=marca)
             #
             objeto_piso.serie = piso['serie']
 
             if piso['ups']:
                 if piso['ups'] == "SI":
-                    objeto_piso.ups = 1
+                    objeto_piso.ups = True
                 else:
-                    objeto_piso.ups = 0
+                    objeto_piso.ups = False
+            else:
+                objeto_piso.ups = False
+
 
             if piso['rack']:
                 if piso['rack'] == "SI":
-                    objeto_piso.rack = 1
+                    objeto_piso.rack = True
                 else:
-                    objeto_piso.rack = 0
+                    objeto_piso.rack = False
+            else:
+                objeto_piso.rack = False
 
-            objeto_piso.estado = piso['estado']
+            objeto_piso.estado = piso['piso_estado']
 
             objeto_escuela.piso = objeto_piso
 
@@ -165,9 +179,10 @@ class Command(BaseCommand):
             print "Busando programas para escuela: ", programa['cue']
 
             objeto_escuela = models.Escuela.objects.get(cue=programa['cue'])
-            objeto_escuela.programas = programa['programa']
 
-            #objeto_escuela.save()
+            objeto_escuela.programas.add(models.Programa.objects.get(nombre=programa['programa']))
+
+            objeto_escuela.save()
 
             print "Se ha vinculado el registro:"
             print "Programa: ", programa['programa'], "a la escuela con CUE ", programa['cue']
