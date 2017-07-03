@@ -4,9 +4,9 @@ from django.db import models
 class Piso(models.Model):
     servidor = models.CharField(max_length=255)
     serie = models.CharField(max_length=255, default=None, blank=True, null=True)
-    ups = models.BooleanField()
-    rack = models.BooleanField()
-    estado = models.BooleanField()
+    ups = models.BooleanField(default=False)
+    rack = models.BooleanField(default=False)
+    estado = models.BooleanField(default=False)
 
     def __unicode__(self):
         return u"Piso: " + self.servidor + " Serie " + self.serie
