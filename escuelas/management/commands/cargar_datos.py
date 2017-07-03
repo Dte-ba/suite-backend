@@ -26,6 +26,7 @@ class Command(BaseCommand):
         self.importar_escuelas()
         self.importar_contactos()
         self.importar_pisos()
+        #self.vincular_programas()
 
     def crear_regiones(self):
         numeros = range(1, 26)
@@ -93,6 +94,7 @@ class Command(BaseCommand):
         contactos = self.obtener_datos_desde_api('contactos')['contactos']
 
         for contacto in contactos:
+            print "Buscando escuela para el contacto: ", contacto['escuela']
             objeto_escuela = models.Escuela.objects.get(cue=contacto['escuela'])
             objeto_cargo = models.CargoEscolar.objects.get(nombre=contacto['cargo'])
             objeto_contacto, created = models.Contacto.objects.get_or_create(nombre=contacto['nombre'].title())
@@ -144,6 +146,21 @@ class Command(BaseCommand):
 
             print "Se ha creado el registro:"
             print "Piso de escuela ", piso['cue'], ": \n Servidor: ", piso['marca'], "\n Serie: ", piso['serie'], "\n UPS: ", piso['ups'], "\n Rack: ", piso['rack'], "\n Estado: ", piso['piso_estado']
+            print "==========="
+
+    def vincular_programas(self):
+        programas = self.obtener_datos_desde_api('programas')['programas']
+
+        for programa in programas:
+            print "Busando programas para escuela: ", programa['cue']
+
+            objeto_escuela = models.Escuela.objects.get(cue=programa['cue'])
+            objeto_escuela.programas = programa['programa']
+
+            #objeto_escuela.save()
+
+            print "Se ha vinculado el registro:"
+            print "Programa: ", programa['programa'], "a la escuela con CUE ", programa['cue']
             print "==========="
 
     def obtener_datos_desde_api(self, data):
