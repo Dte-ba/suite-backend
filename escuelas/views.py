@@ -2,9 +2,15 @@
 from django.shortcuts import render
 from django.contrib.auth.models import User
 from rest_framework import viewsets
+from rest_framework import pagination
 
 import serializers
 import models
+
+class LargeResultsSetPagination(pagination.PageNumberPagination):
+    page_size = 1000
+    page_size_query_param = 'page_size'
+    max_page_size = 10000
 
 def home(request):
     return render(request, 'home.html')
@@ -45,6 +51,7 @@ class LocalidadViewSet(viewsets.ModelViewSet):
     resource_name = 'localidad'
     queryset = models.Localidad.objects.all()
     serializer_class = serializers.LocalidadSerializer
+    pagination_class = LargeResultsSetPagination
 
 class ProgramaViewSet(viewsets.ModelViewSet):
     resource_name = 'programa'
