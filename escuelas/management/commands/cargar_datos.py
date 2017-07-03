@@ -1,11 +1,16 @@
 # coding: utf-8
 from __future__ import unicode_literals
+
+import time
 from django.core.management.base import BaseCommand
 from escuelas import models
 
 import requests
 
 BASE_URL = 'http://suite-api.dtelab.com.ar/api/'
+
+def esperar(segundos):
+    time.sleep(segundos)
 
 class Command(BaseCommand):
     help = 'Genera todos los datos iniciales.'
@@ -54,12 +59,17 @@ class Command(BaseCommand):
             print objeto_distrito, " -> ", objeto_localidad, "de la", objeto_distrito.region
 
     def importar_escuelas(self):
-        escuelas = self.obtener_datos_desde_api('escuelas')['escuelas']
+        resultado = self.obtener_datos_desde_api('escuelas')
+
+        print("Se importarán %d escuelas en total." %(resultado['cantidad']))
+        esperar(2)
+
+        escuelas = resultado['escuelas']
 
         for escuela in escuelas:
             print "Intentando crear el registro escuela id_original:", escuela['id']
 
-            objeto_escuela, created = models.Escuela.objects.get_or_create(nombre=escuela['nombre'].title())
+            objeto_escuela, created = models.Escuela.objects.get_or_create(cue=escuela['cue'])
             objeto_area, created = models.Area.objects.get_or_create(nombre=escuela['area'].title())
             objeto_localidad, created = models.Localidad.objects.get_or_create(nombre=escuela['localidad'].title())
             objeto_tipoDeFinanciamiento, created = models.TipoDeFinanciamiento.objects.get_or_create(nombre=escuela['tipo_financiamiento'].title())
@@ -67,7 +77,7 @@ class Command(BaseCommand):
             objeto_tipoDeGestion, created = models.TipoDeGestion.objects.get_or_create(nombre=escuela['tipo_gestion'].title())
             #objeto_programa, created = models.Programa.objects.get_or_create(nombre=escuela['programa'].title())
 
-            objeto_escuela.cue = escuela['cue']
+            objeto_escuela.nombre = escuela['nombre'].title()
             objeto_escuela.direccion = escuela['direccion']
             objeto_escuela.telefono = escuela['telefono']
             objeto_escuela.latitud = escuela['latitud']

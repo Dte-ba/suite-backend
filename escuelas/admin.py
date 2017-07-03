@@ -2,7 +2,13 @@ from django.contrib import admin
 import models
 
 admin.site.register(models.Contacto)
-admin.site.register(models.Escuela)
+
+class EscuelaAdmin(admin.ModelAdmin):
+    model = models.Escuela
+    list_display = ('cue','nombre', 'localidad')
+    search_fields = ('cue', 'nombre')
+
+admin.site.register(models.Escuela, EscuelaAdmin)
 admin.site.register(models.Evento)
 admin.site.register(models.Perfil)
 
@@ -17,6 +23,7 @@ admin.site.register(models.Experiencia)
 admin.site.register(models.Cargo)
 admin.site.register(models.Contrato)
 admin.site.register(models.Piso)
+
 
 class DistritoInline(admin.TabularInline):
     model = models.Distrito
