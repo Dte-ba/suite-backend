@@ -5,7 +5,7 @@ admin.site.register(models.Contacto)
 
 class EscuelaAdmin(admin.ModelAdmin):
     model = models.Escuela
-    list_display = ('cue','nombre', 'localidad')
+    list_display = ('cue', 'nombre', 'localidad')
     search_fields = ('cue', 'nombre')
 
 admin.site.register(models.Escuela, EscuelaAdmin)
@@ -22,7 +22,12 @@ admin.site.register(models.Localidad)
 admin.site.register(models.Experiencia)
 admin.site.register(models.Cargo)
 admin.site.register(models.Contrato)
-admin.site.register(models.Piso)
+
+class PisoAdmin(admin.ModelAdmin):
+    model = models.Piso
+    list_display = ('servidor', 'serie', 'ups', 'rack', 'estado')
+
+admin.site.register(models.Piso, PisoAdmin)
 
 
 class DistritoInline(admin.TabularInline):

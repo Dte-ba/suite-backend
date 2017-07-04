@@ -8,9 +8,6 @@ class Piso(models.Model):
     rack = models.BooleanField(default=False)
     estado = models.BooleanField(default=False)
 
-    def __unicode__(self):
-        return u"Piso: " + self.servidor + " Serie " + self.serie
-
     class Meta:
         db_table = 'pisos'
         verbose_name_plural = 'pisos'
