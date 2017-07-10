@@ -3,6 +3,7 @@ from django.shortcuts import render
 from django.contrib.auth.models import User
 from rest_framework import viewsets
 from rest_framework import pagination
+from django.db.models import Q
 
 import serializers
 import models
@@ -23,6 +24,18 @@ class EscuelaViewSet(viewsets.ModelViewSet):
     queryset = models.Escuela.objects.all()
     serializer_class = serializers.EscuelaSerializer
 
+    def get_queryset(self):
+        queryset = models.Escuela.objects.all()
+        query = self.request.query_params.get('query', None)
+
+        if query:
+            filtro_cue = Q(cue__icontains=query)
+            filtro_nombre = Q(nombre__icontains=query)
+
+            queryset = queryset.filter(filtro_cue | filtro_nombre)
+
+        return queryset
+
 class ContactoViewSet(viewsets.ModelViewSet):
     queryset = models.Contacto.objects.all()
     serializer_class = serializers.ContactoSerializer
@@ -36,6 +49,7 @@ class RegionViewSet(viewsets.ModelViewSet):
     resource_name = 'regiones'
     queryset = models.Region.objects.all()
     serializer_class = serializers.RegionSerializer
+    pagination_class = LargeResultsSetPagination
 
 class PerfilViewSet(viewsets.ModelViewSet):
     resource_name = 'perfiles'
@@ -46,6 +60,7 @@ class DistritoViewSet(viewsets.ModelViewSet):
     resource_name = 'distrito'
     queryset = models.Distrito.objects.all()
     serializer_class = serializers.DistritoSerializer
+    pagination_class = LargeResultsSetPagination
 
 class LocalidadViewSet(viewsets.ModelViewSet):
     resource_name = 'localidad'
