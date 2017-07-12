@@ -15,6 +15,10 @@ from cargo import Cargo
 from contrato import Contrato
 from piso import Piso
 from cargo_escolar import CargoEscolar
+from tarea import Tarea
+from prioridad_tarea import PrioridadTarea
+from motivo_tarea import MotivoTarea
+from estado_tarea import EstadoTarea
 
 Contacto;
 Escuela;
@@ -33,3 +37,7 @@ Cargo;
 Contrato;
 Piso;
 CargoEscolar;
+Tarea;
+PrioridadTarea;
+MotivoTarea;
+EstadoTarea;

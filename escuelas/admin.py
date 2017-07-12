@@ -23,6 +23,11 @@ admin.site.register(models.Experiencia)
 admin.site.register(models.Cargo)
 admin.site.register(models.Contrato)
 
+admin.site.register(models.Tarea)
+admin.site.register(models.MotivoTarea)
+admin.site.register(models.PrioridadTarea)
+admin.site.register(models.EstadoTarea)
+
 class PisoAdmin(admin.ModelAdmin):
     model = models.Piso
     list_display = ('servidor', 'serie', 'ups', 'rack', 'estado')
