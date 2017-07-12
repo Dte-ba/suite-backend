@@ -27,6 +27,9 @@ class Command(BaseCommand):
         self.crear_cargos()
         self.crear_experiencias()
         self.crear_contratos()
+        self.crear_motivos_de_tareas()
+        self.crear_estados_de_tareas()
+        self.crear_prioridades_de_tareas()
 
         self.importar_escuelas()
         self.importar_contactos()
@@ -199,6 +202,50 @@ class Command(BaseCommand):
 
         for nombre in nombres:
             p, created = models.TipoDeFinanciamiento.objects.get_or_create(nombre=nombre)
+            print(p)
+
+    def crear_motivos_de_tareas(self):
+        nombres = [
+            "Servidor robado",
+            "Servidor roto",
+            "Piso tecnológico",
+            "Paquetes de provisión",
+            "Movimiento de equipamiento",
+            "Problemas eléctricos",
+            "Switch roto",
+            "UPS roto",
+            "Mantenimiento básico de piso",
+            "Ampliacion de piso",
+            "Reingeniería de piso",
+            "Mudanza de piso",
+            "Reclamos del territorio"
+        ]
+
+        for nombre in nombres:
+            p, created = models.MotivoTarea.objects.get_or_create(nombre=nombre)
+            print(p)
+
+    def crear_estados_de_tareas(self):
+        nombres = [
+            "Abierto",
+            "En Progreso",
+            "En Espera",
+            "Cerrado"
+        ]
+
+        for nombre in nombres:
+            p, created = models.EstadoTarea.objects.get_or_create(nombre=nombre)
+            print(p)
+
+    def crear_prioridades_de_tareas(self):
+        nombres = [
+            "Alta",
+            "Media",
+            "Baja"
+        ]
+
+        for nombre in nombres:
+            p, created = models.PrioridadTarea.objects.get_or_create(nombre=nombre)
             print(p)
 
     def crear_niveles(self):
