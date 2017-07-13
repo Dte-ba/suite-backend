@@ -44,7 +44,7 @@ class Perfil(models.Model):
     contrato = models.ForeignKey('contrato', related_name='perfiles', default=None, blank=True, null=True)
     expediente = models.CharField(max_length=25, default=None, blank=True, null=True)
     fechaDeIngreso = models.DateField(default="2010-10-10")
-    fechaDeReuncia = models.DateField(default=None, blank=True,null=True)
+    fechaDeRenuncia = models.DateField(default=None, blank=True,null=True)
     emailLaboral = models.CharField(max_length=200, default=None, blank=True, null=True)
 
     # 3) Disponibilidad Horaria (?):
