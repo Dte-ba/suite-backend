@@ -5,6 +5,7 @@ from rest_framework import viewsets
 from rest_framework import pagination
 from django.db.models import Q
 
+from rest_framework.response import Response
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
 
@@ -60,6 +61,27 @@ class PerfilViewSet(viewsets.ModelViewSet):
     resource_name = 'perfiles'
     queryset = models.Perfil.objects.all()
     serializer_class = serializers.PerfilSerializer
+
+class MiPerfilViewSet(viewsets.ViewSet):
+    authentication_classes = (TokenAuthentication,)
+    permission_classes = (IsAuthenticated,)
+
+    def list(self, request):
+        if not request.user.is_authenticated():
+            return Response({'error': 'El usuario no esta autenticado.'})
+
+        perfil = models.Perfil.objects.get(user=request.user)
+
+        data = {
+            'username': request.user.username,
+            'nombre': perfil.nombre,
+            'apellido': perfil.apellido,
+            'permisosComoLista': perfil.obtenerListaDePermisos(),
+            'permisos': perfil.obtenerPermisosComoDiccionario(),
+            'grupos': perfil.obtenerListaDeGrupos(),
+            'idPerfil': perfil.id
+        }
+        return Response(data)
 
 class DistritoViewSet(viewsets.ModelViewSet):
     resource_name = 'distrito'

@@ -1,6 +1,7 @@
 # coding: utf-8
 from django.db import models
 from django.contrib.auth.models import User
+from django.contrib.auth.models import Group
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 
@@ -10,6 +11,7 @@ def upload_to(instance, filename):
 class Perfil(models.Model):
 
     user = models.OneToOneField(User, on_delete=models.CASCADE)
+    grupo = models.ForeignKey(Group, related_name="perfiles", default=None, null=True)
 
     # 1) Datos Personales
     image = models.ImageField('image', blank=True, null=True, upload_to=upload_to)
@@ -66,6 +68,37 @@ class Perfil(models.Model):
 
     class JSONAPIMeta:
         resource_name = 'perfiles'
+
+    def obtenerListaDeGrupos(self):
+        if self.grupo:
+            return [{'id': self.grupo.id, 'nombre': self.grupo.name}]
+        else:
+            return []
+
+    def obtenerListaDePermisos(self):
+        permisos = []
+
+        if not self.grupo:
+            return permisos
+
+        for permiso in self.grupo.permissions.all():
+
+            permisos.append({
+                'titulo': permiso.name,
+                'nombre': permiso.codename,
+                'modulo': permiso.content_type.model,
+                'identificador': permiso.content_type.model + "." + permiso.codename,
+                'aplicacion': permiso.content_type.app_label,
+            })
+
+
+        return permisos
+
+    def obtenerPermisosComoDiccionario(self):
+        listaDePermisos = self.obtenerListaDePermisos()
+
+        return dict([(k['identificador'], True) for k in listaDePermisos])
+
 
 @receiver(post_save, sender=User)
 def create_user_profile(sender, instance, created, **kwargs):

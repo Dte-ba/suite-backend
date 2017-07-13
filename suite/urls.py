@@ -27,6 +27,8 @@ router.register(r'contratos', views.ContratoViewSet)
 router.register(r'pisos', views.PisoViewSet)
 router.register(r'cargos-escolares', views.CargoEscolarViewSet)
 
+router.register(r'mi-perfil', views.MiPerfilViewSet, 'Perfil')
+
 urlpatterns = [
     url(r'^$', views.home, name='home'),
     url(r'^api/', include(router.urls)),
