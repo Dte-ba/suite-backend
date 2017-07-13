@@ -7,9 +7,6 @@ import django
 import pprint
 from openpyxl import load_workbook
 
-from django.db import models
-from django.contrib.auth.models import User
-
 sys.path.append("..")
 sys.path.append(".")
 
@@ -119,10 +116,10 @@ for indice, fila in enumerate(wb.active.rows):
         fechaDeIngreso=formatear_fecha(valores['fechaDeIngreso'])
 
         if valores['perfil']:
-            perfil=valores['perfil']
+            experiencia=valores['perfil']
         else:
             log(u"No tiene perfil")
-            perfil="Sin Datos"
+            experiencia="Sin Datos"
 
         dni=str(valores['dni'])
 
@@ -148,7 +145,7 @@ for indice, fila in enumerate(wb.active.rows):
             email_laboral=valores['email_laboral']
         else:
             log(u"No tiene email laboral")
-            email_laboral="abc@abc.gob.ar"
+            email_laboral=apellido+"@abc.gob.ar"
 
         if valores['direccion']:
             direccion=valores['direccion']
@@ -163,7 +160,7 @@ for indice, fila in enumerate(wb.active.rows):
             fechaDeNacimiento=formatear_fecha(valores['fechaDeNacimiento'])
         else:
             log(u"No tiene fecha de nacimiento")
-            fechaDeNacimiento="Sin Datos"
+            fechaDeNacimiento=None
 
         if valores['telefono_celular']:
             telefono_celular=valores['telefono_celular']
@@ -177,28 +174,34 @@ for indice, fila in enumerate(wb.active.rows):
         else:
             telefono_particular="Sin Datos"
 
-        # (user, nuevo) = models.objects.get_or_create(
-        #
-        # )
+        username=email_laboral
+        default_pass="dte_"+dni
 
-        (perfil, nuevo) = models.Perfil.objects.get_or_create(
-            nombre = nombre,
-            apellido = apellido,
-            fechadenacimiento = fechaDeNacimiento,
-            titulo = titulo,
-            dni = dni,
-            cuit = cuil,
-            cbu = cbu,
-            email = email,
-            direccionCalle = direccion,
-            codigoPostal = codigo_postal,
-            telefonoCelular = telefono_celular,
-            telefonoAlternativo = telefono_particular,
-            expediente = expediente,
-            fechaDeIngreso = fechaDeIngreso,
-            fechaDeRenuncia = fechaDeRenuncia,
-            emailLaboral = email_laboral
-        )
+
+        user, created = User.objects.get_or_create(username=email_laboral, password=default_pass)
+
+        user.save()
+
+        perfil = models.Perfil.objects.get(user=user)
+
+        perfil.nombre = nombre
+        perfil.apellido = apellido
+        perfil.fechadenacimiento = fechaDeNacimiento
+        perfil.titulo = titulo
+        perfil.dni = dni
+        perfil.cuit = cuil
+        perfil.cbu = cbu
+        perfil.email = email
+        perfil.direccionCalle = direccion
+        perfil.codigoPostal = codigo_postal
+        perfil.telefonoCelular = telefono_celular
+        perfil.telefonoAlternativo = telefono_particular
+        perfil.expediente = expediente
+        perfil.fechaDeIngreso = fechaDeIngreso
+        perfil.fechaDeRenuncia = fechaDeRenuncia
+        perfil.emailLaboral = email_laboral
+
+        perfil.save()
 
     except TypeError, e:
         print("-----")
@@ -216,69 +219,40 @@ for indice, fila in enumerate(wb.active.rows):
     #     log(u"Fila %d - ****** OMITIDA, la fila contiene caracteres incorrectos." %(indice + 1), nivel=0)
     #     continue
 
-    if nuevo:
-        log(u"Fila %d - Creando perfil para consultor: '%s'" %(indice + 1, valores["consultor"]), nivel=0)
-        print("")
-        print("Apellido: " + apellido)
-        print("Nombres: " + nombre)
-        print("Region: " + region)
-        print("Cargo: " + cargo)
-        print("Contrato: " + contrato)
-        print("Carga horaria: " + carga_horaria)
-        print("Expediente: " + expediente)
-        print("Fecha de Ingreso: " + fechaDeIngreso)
-        print("Fecha de Renuncia: " + fechaDeRenuncia)
-        print("Titulo: " + titulo)
-        print("Perfil: " + perfil)
-        print("DNI: " + dni)
-        print("CUIL: " + cuil)
-        print("CBU: " + cbu)
-        print("Email: " + email)
-        print("Email Laboral: " + email_laboral)
-        print("Direccion: " + direccion)
-        print("Localidad: " + localidad)
-        print("Codigo Postal: " + codigo_postal)
-        print("Fecha de nacimiento: " + fechaDeNacimiento)
-        print("Telefono Celular: " + telefono_celular)
-        print("Telefono Particular: " + telefono_particular)
-
-        print("-----")
-        print("")
-    else:
-        log(u"Fila %d - Actualizando perfil para consultor: '%s'" %(indice + 1, valores["consultor"]), nivel=0)
-        print("")
-        print("Apellido: " + apellido)
-        print("Nombres: " + nombre)
-        print("Region: " + region)
-        print("Cargo: " + cargo)
-        print("Contrato: " + contrato)
-        print("Carga horaria: " + carga_horaria)
-        print("Expediente: " + expediente)
-        print("Fecha de Ingreso: " + fechaDeIngreso)
-        print("Fecha de Renuncia: " + fechaDeRenuncia)
-        print("Titulo: " + titulo)
-        print("Perfil: " + perfil)
-        print("DNI: " + dni)
-        print("CUIL: " + cuil)
-        print("CBU: " + cbu)
-        print("Email: " + email)
-        print("Email Laboral: " + email_laboral)
-        print("Direccion: " + direccion)
-        print("Localidad: " + localidad)
-        print("Codigo Postal: " + codigo_postal)
-        print("Fecha de nacimiento: " + fechaDeNacimiento)
-        print("Telefono Celular: " + telefono_celular)
-        print("Telefono Particular: " + telefono_particular)
-
-        print("-----")
-        print("")
+    log(u"Fila %d - Cargando datos de perfil para consultor: '%s'" %(indice + 1, valores["consultor"]), nivel=0)
+    print("")
+    print("Apellido: " + apellido)
+    print("Nombres: " + nombre)
+    print("Region: " + region)
+    print("Cargo: " + cargo)
+    print("Contrato: " + contrato)
+    print("Carga horaria: " + carga_horaria)
+    print("Expediente: " + expediente)
+    #print("Fecha de Ingreso: " + fechaDeIngreso)
+    # print("Fecha de Renuncia: " + fechaDeRenuncia)
+    print("Titulo: " + titulo)
+    print("Perfil: " + experiencia)
+    print("DNI: " + dni)
+    print("CUIL: " + cuil)
+    print("CBU: " + cbu)
+    print("Email: " + email)
+    print("Email Laboral: " + email_laboral)
+    print("Direccion: " + direccion)
+    print("Localidad: " + localidad)
+    print("Codigo Postal: " + codigo_postal)
+    #print("Fecha de nacimiento: " + fechaDeNacimiento)
+    print("Telefono Celular: " + telefono_celular)
+    print("Telefono Particular: " + telefono_particular)
+    print("Username: " + username)
+    print("Password:" + default_pass)
+    print("-----")
+    print("")
 
     filas_procesadas += 1
 
     if indice > LIMITE_DE_FILAS:
         break
 
-        perfil.save()
 
 log("Terminó la ejecución")
 

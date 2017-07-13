@@ -17,7 +17,7 @@ class Perfil(models.Model):
     image = models.ImageField('image', blank=True, null=True, upload_to=upload_to)
     nombre = models.CharField(max_length=200, default="")
     apellido = models.CharField(max_length=200, default="")
-    fechadenacimiento = models.DateField(default="2010-10-10")
+    fechadenacimiento = models.DateField(default=None, blank=True,null=True)
     titulo = models.CharField(max_length=200, default=None, blank=True, null=True)
     experiencia = models.ForeignKey('Experiencia', related_name='perfiles', default=None, blank=True, null=True)
     dni = models.CharField(max_length=200, default="0000")
