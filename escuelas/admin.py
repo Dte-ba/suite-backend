@@ -8,9 +8,14 @@ class EscuelaAdmin(admin.ModelAdmin):
     list_display = ('cue', 'nombre', 'localidad')
     search_fields = ('cue', 'nombre')
 
+class PerfilAdmin(admin.ModelAdmin):
+    model = models.Perfil
+    list_display = ('user', 'nombre', 'apellido', 'grupo', 'dni', 'email')
+    search_fields = ('user', 'nombre', 'apelido', 'dni')
+
 admin.site.register(models.Escuela, EscuelaAdmin)
 admin.site.register(models.Evento)
-admin.site.register(models.Perfil)
+admin.site.register(models.Perfil, PerfilAdmin)
 
 admin.site.register(models.TipoDeFinanciamiento)
 admin.site.register(models.Nivel)
