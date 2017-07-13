@@ -312,7 +312,11 @@ class Command(BaseCommand):
     def crear_cargos(self):
         nombres = [
             ("FED", "Facilitador Educación Digital"),
-            ("Coord", "Coordinador")
+            ("Coord", "Coordinador"),
+            ("Adm", "Administrativo"),
+            ("Coord EF", "Coordinador EF"),
+            ("FED esp", "Facilitador Educación Digital Especial"),
+            ("Coord Prov", "Coordinador Provincial")
             ]
 
         for nombre in nombres:

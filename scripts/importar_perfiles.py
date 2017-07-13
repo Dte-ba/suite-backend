@@ -94,6 +94,10 @@ for indice, fila in enumerate(wb.active.rows):
             fechaDeRenuncia=None
 
         region=str(valores['region'])
+
+        if region=="ESP/NC" or region=="NC" or region=="Nc" or region=="NC Esp" or region=="NC Prov." or region=="NC Sup" or region=="NC. Prov":
+            region="27"
+
         cargo=valores['cargo']
         contrato=valores['contrato']
         carga_horaria=valores['carga_horaria']
@@ -153,7 +157,7 @@ for indice, fila in enumerate(wb.active.rows):
             log(u"No tiene direccion")
             direccion="Sin Datos"
 
-        localidad=valores['localidad']
+        localidad=valores['localidad'].title()
         codigo_postal=str(valores['codigo_postal'])
 
         if valores['fechaDeNacimiento']:
@@ -200,6 +204,12 @@ for indice, fila in enumerate(wb.active.rows):
         perfil.fechaDeIngreso = fechaDeIngreso
         perfil.fechaDeRenuncia = fechaDeRenuncia
         perfil.emailLaboral = email_laboral
+
+        perfil.region = models.Region.objects.get(numero=int(region))
+        # perfil.experiencia = models.Experiencia.objects.get(nombre=experiencia)
+        # perfil.localidad = models.Localidad.objects.get(nombre=localidad)
+        perfil.cargo = models.Cargo.objects.get(nombre=cargo)
+        perfil.contrato = models.Contrato.objects.get(nombre=contrato)
 
         perfil.save()
 
