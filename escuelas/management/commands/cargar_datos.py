@@ -4,13 +4,28 @@ from __future__ import unicode_literals
 import time
 from django.core.management.base import BaseCommand
 from escuelas import models
-
+import progressbar
 import requests
+
+MODO_VERBOSE = False
+
+def log(*k):
+    global MODO_VERBOSE
+
+    if MODO_VERBOSE:
+        print(k)
 
 BASE_URL = 'http://suite-api.dtelab.com.ar/api/'
 
 def esperar(segundos):
     time.sleep(segundos)
+
+def barra_de_progreso(simple=True):
+    if simple:
+        return progressbar.ProgressBar(widgets=[progressbar.SimpleProgress()])
+    else:
+        return progressbar.ProgressBar()
+
 
 class Command(BaseCommand):
     help = 'Genera todos los datos iniciales.'
@@ -39,17 +54,25 @@ class Command(BaseCommand):
     def crear_regiones(self):
         numeros = range(1, 26)
 
-        for n in numeros:
+        print("Creando Regiones")
+        bar = barra_de_progreso()
+
+        for n in bar(numeros):
             p, created = models.Region.objects.get_or_create(numero=n)
-            print(p)
+            log(p)
 
         p, created = models.Region.objects.get_or_create(numero=27)
-        print(p)
+
+        if MODO_VERBOSE:
+            print(p)
 
     def importar_distritos_y_localidades(self):
         localidades = self.obtener_datos_desde_api('localidades')['localidades']
 
-        for localidad in localidades:
+        print("Creando Localidades")
+        bar = barra_de_progreso(simple=False)
+
+        for localidad in bar(localidades):
             objeto_distrito, created = models.Distrito.objects.get_or_create(nombre=localidad['distrito'].title())
             objeto_localidad, created = models.Localidad.objects.get_or_create(nombre=localidad['localidad'].title())
 
@@ -59,7 +82,8 @@ class Command(BaseCommand):
             objeto_distrito.region, created = models.Region.objects.get_or_create(numero=int(localidad['region']))
             objeto_distrito.save()
 
-            print objeto_distrito, " -> ", objeto_localidad, "de la", objeto_distrito.region
+            if MODO_VERBOSE:
+                print objeto_distrito, " -> ", objeto_localidad, "de la", objeto_distrito.region
 
     def importar_escuelas(self):
         resultado = self.obtener_datos_desde_api('escuelas')
@@ -69,8 +93,12 @@ class Command(BaseCommand):
 
         escuelas = resultado['escuelas']
 
-        for escuela in escuelas:
-            print "Intentando crear el registro escuela id_original:", escuela['id']
+        bar = barra_de_progreso(simple=False)
+
+        for escuela in bar(escuelas):
+
+            if MODO_VERBOSE:
+                print "Intentando crear el registro escuela id_original:", escuela['id']
 
             objeto_escuela, created = models.Escuela.objects.get_or_create(cue=escuela['cue'])
 
@@ -98,19 +126,18 @@ class Command(BaseCommand):
 
             objeto_escuela.save()
 
-
-
-            #print " Escuela ", objeto_escuela
-            print "Se ha creado el registro:"
-            print objeto_escuela, "\n CUE: ", objeto_escuela.cue, "\n Direccion: ", objeto_escuela.direccion, "\n Tel: ", objeto_escuela.telefono, "\n ", objeto_escuela.localidad, "\n ", objeto_escuela.area, "\n ", objeto_escuela.nivel, "\n ", objeto_escuela.tipoDeFinanciamiento, "\n ", objeto_escuela.tipoDeGestion
-            print "==========="
-            #, "\n Programa: ", objeto_escuela.programas
+            log("Se ha creado el registro:")
+            log(objeto_escuela, "\n CUE: ", objeto_escuela.cue, "\n Direccion: ", objeto_escuela.direccion, "\n Tel: ", objeto_escuela.telefono, "\n ", objeto_escuela.localidad, "\n ", objeto_escuela.area, "\n ", objeto_escuela.nivel, "\n ", objeto_escuela.tipoDeFinanciamiento, "\n ", objeto_escuela.tipoDeGestion)
+            log("===========")
 
     def importar_contactos(self):
         contactos = self.obtener_datos_desde_api('contactos')['contactos']
 
-        for contacto in contactos:
-            print "Buscando escuela para el contacto: ", contacto['escuela']
+        print("Importando Contactos")
+        bar = barra_de_progreso(simple=False)
+
+        for contacto in bar(contactos):
+            log("Buscando escuela para el contacto: ", contacto['escuela'])
             objeto_escuela = models.Escuela.objects.get(cue=contacto['escuela'])
             objeto_cargo = models.CargoEscolar.objects.get(nombre=contacto['cargo'])
             objeto_contacto, created = models.Contacto.objects.get_or_create(nombre=contacto['nombre'].title())
@@ -127,21 +154,24 @@ class Command(BaseCommand):
 
             objeto_contacto.save()
 
-            print "Se ha creado el registro:"
-            print "Nombre: ", objeto_contacto, "\n Teléfono Particular ", objeto_contacto.telefono_particular, "\n Teléfono Celular: ", objeto_contacto.telefono_celular, "\n Email: ", objeto_contacto.email, "\n Horario: ", objeto_contacto.horario
-            print "==========="
+            log("Se ha creado el registro:")
+            log("Nombre: ", objeto_contacto, "\n Teléfono Particular ", objeto_contacto.telefono_particular, "\n Teléfono Celular: ", objeto_contacto.telefono_celular, "\n Email: ", objeto_contacto.email, "\n Horario: ", objeto_contacto.horario)
+            log("===========")
 
     def importar_pisos(self):
         pisos = self.obtener_datos_desde_api('pisos')['pisos']
 
-        for piso in pisos:
+        print("Importando Pisos")
+        bar = barra_de_progreso(simple=False)
+
+        for piso in bar(pisos):
 
             if piso['marca']:
                 marca = piso['marca']
             else:
                 marca = "Desconocido"
 
-            print "Buscando piso para escuela: ", piso['cue']
+            log("Buscando piso para escuela: ", piso['cue'])
             objeto_escuela = models.Escuela.objects.get(cue=piso['cue'])
             objeto_piso, created = models.Piso.objects.get_or_create(servidor=marca)
             #
@@ -171,15 +201,18 @@ class Command(BaseCommand):
             objeto_piso.save()
             objeto_escuela.save()
 
-            print "Se ha creado el registro:"
-            print "Piso de escuela ", piso['cue'], ": \n Servidor: ", piso['marca'], "\n Serie: ", piso['serie'], "\n UPS: ", piso['ups'], "\n Rack: ", piso['rack'], "\n Estado: ", piso['piso_estado']
-            print "==========="
+            log("Se ha creado el registro:")
+            log("Piso de escuela ", piso['cue'], ": \n Servidor: ", piso['marca'], "\n Serie: ", piso['serie'], "\n UPS: ", piso['ups'], "\n Rack: ", piso['rack'], "\n Estado: ", piso['piso_estado'])
+            log("===========")
 
     def vincular_programas(self):
         programas = self.obtener_datos_desde_api('programas')['programas']
 
-        for programa in programas:
-            print "Busando programas para escuela: ", programa['cue']
+        print("Vinculando Programas")
+        bar = barra_de_progreso(simple=False)
+
+        for programa in bar(programas):
+            log("Busando programas para escuela: ", programa['cue'])
 
             objeto_escuela = models.Escuela.objects.get(cue=programa['cue'])
 
@@ -187,9 +220,9 @@ class Command(BaseCommand):
 
             objeto_escuela.save()
 
-            print "Se ha vinculado el registro:"
-            print "Programa: ", programa['programa'], "a la escuela con CUE ", programa['cue']
-            print "==========="
+            log("Se ha vinculado el registro:")
+            log("Programa: ", programa['programa'], "a la escuela con CUE ", programa['cue'])
+            log("===========")
 
     def obtener_datos_desde_api(self, data):
         url = BASE_URL + data
@@ -200,9 +233,12 @@ class Command(BaseCommand):
     def crear_tipos_de_financiamiento(self):
         nombres = ["Nacional", "Provincial", "Municipal", "Propio"]
 
-        for nombre in nombres:
+        print("Creando Tipos de Financiamiento")
+        bar = barra_de_progreso()
+
+        for nombre in bar(nombres):
             p, created = models.TipoDeFinanciamiento.objects.get_or_create(nombre=nombre)
-            print(p)
+            log(p)
 
     def crear_motivos_de_tareas(self):
         nombres = [
@@ -221,9 +257,12 @@ class Command(BaseCommand):
             "Reclamos del territorio"
         ]
 
-        for nombre in nombres:
+        print("Creando Motivos de Tareas")
+        bar = barra_de_progreso()
+
+        for nombre in bar(nombres):
             p, created = models.MotivoTarea.objects.get_or_create(nombre=nombre)
-            print(p)
+            log(p)
 
     def crear_estados_de_tareas(self):
         nombres = [
@@ -233,9 +272,12 @@ class Command(BaseCommand):
             "Cerrado"
         ]
 
-        for nombre in nombres:
+        print("Creando Estados de Tareas")
+        bar = barra_de_progreso()
+
+        for nombre in bar(nombres):
             p, created = models.EstadoTarea.objects.get_or_create(nombre=nombre)
-            print(p)
+            log(p)
 
     def crear_prioridades_de_tareas(self):
         nombres = [
@@ -244,30 +286,42 @@ class Command(BaseCommand):
             "Baja"
         ]
 
-        for nombre in nombres:
+        print("Creando Prioridades de Tareas")
+        bar = barra_de_progreso()
+
+        for nombre in bar(nombres):
             p, created = models.PrioridadTarea.objects.get_or_create(nombre=nombre)
-            print(p)
+            log(p)
 
     def crear_niveles(self):
         nombres = ["Inicial", "Primaria", "Secundaria", "Superior"]
 
-        for nombre in nombres:
+        print("Creando Niveles")
+        bar = barra_de_progreso()
+
+        for nombre in bar(nombres):
             p, created = models.Nivel.objects.get_or_create(nombre=nombre)
-            print(p)
+            log(p)
 
     def crear_tipos_de_gestion(self):
         nombres = ["Estatal", "Privada", "Compartida"]
 
-        for nombre in nombres:
+        print("Creando Tipos de Gestión")
+        bar = barra_de_progreso()
+
+        for nombre in bar(nombres):
             p, created = models.TipoDeGestion.objects.get_or_create(nombre=nombre)
-            print(p)
+            log(p)
 
     def crear_areas(self):
         nombres = ["Urbana", "Rural"]
 
-        for nombre in nombres:
+        print("Creando Areas")
+        bar = barra_de_progreso()
+
+        for nombre in bar(nombres):
             p, created = models.Area.objects.get_or_create(nombre=nombre)
-            print(p)
+            log(p)
 
     def crear_programas(self):
         nombres = [
@@ -278,9 +332,12 @@ class Command(BaseCommand):
             "Escuelas del Futuro"
             ]
 
-        for nombre in nombres:
+        print("Creando Programas")
+        bar = barra_de_progreso()
+
+        for nombre in bar(nombres):
             p, created = models.Programa.objects.get_or_create(nombre=nombre)
-            print(p)
+            log(p)
 
     def crear_experiencias(self):
         nombres = [
@@ -291,9 +348,12 @@ class Command(BaseCommand):
             "Comunicación"
             ]
 
-        for nombre in nombres:
+        print("Creando Experiencias")
+        bar = barra_de_progreso()
+
+        for nombre in bar(nombres):
             p, created = models.Experiencia.objects.get_or_create(nombre=nombre)
-            print(p)
+            log(p)
 
     def crear_contratos(self):
         nombres = [
@@ -305,9 +365,13 @@ class Command(BaseCommand):
 
             ]
 
-        for nombre in nombres:
+        print("Creando Contactos")
+        bar = barra_de_progreso()
+
+
+        for nombre in bar(nombres):
             p, created = models.Contrato.objects.get_or_create(nombre=nombre)
-            print(p)
+            log(p)
 
     def crear_cargos(self):
         nombres = [
@@ -319,9 +383,12 @@ class Command(BaseCommand):
             ("Coord Prov", "Coordinador Provincial")
             ]
 
-        for nombre in nombres:
+        print("Creando Cargos")
+        bar = barra_de_progreso()
+
+        for nombre in bar(nombres):
             p, created = models.Cargo.objects.get_or_create(nombre=nombre[0], descripcion=nombre[1])
-            print(p)
+            log(p)
 
     def crear_cargos_escolares(self):
         nombres = [
@@ -336,6 +403,9 @@ class Command(BaseCommand):
             "Otro"
             ]
 
-        for nombre in nombres:
+        print("Creando Cargos Escolares")
+        bar = barra_de_progreso()
+
+        for nombre in bar(nombres):
             p, created = models.CargoEscolar.objects.get_or_create(nombre=nombre)
-            print(p)
+            log(p)
