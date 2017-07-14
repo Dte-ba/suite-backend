@@ -2,12 +2,13 @@
 from __future__ import unicode_literals
 
 import time
+from datetime import datetime
 from django.core.management.base import BaseCommand
 from escuelas import models
 import progressbar
 import requests
 
-MODO_VERBOSE = False
+MODO_VERBOSE = True
 
 def log(*k):
     global MODO_VERBOSE
@@ -26,30 +27,31 @@ def barra_de_progreso(simple=True):
     else:
         return progressbar.ProgressBar()
 
-
 class Command(BaseCommand):
     help = 'Genera todos los datos iniciales.'
 
     def handle(self, *args, **options):
-        self.importar_distritos_y_localidades()
-        self.crear_cargos_escolares()
-        self.crear_regiones()
-        self.crear_tipos_de_financiamiento()
-        self.crear_niveles()
-        self.crear_tipos_de_gestion()
-        self.crear_areas()
-        self.crear_programas()
-        self.crear_cargos()
-        self.crear_experiencias()
-        self.crear_contratos()
-        self.crear_motivos_de_tareas()
-        self.crear_estados_de_tareas()
-        self.crear_prioridades_de_tareas()
+        # self.importar_distritos_y_localidades()
+        # self.crear_cargos_escolares()
+        # self.crear_regiones()
+        # self.crear_tipos_de_financiamiento()
+        # self.crear_niveles()
+        # self.crear_tipos_de_gestion()
+        # self.crear_areas()
+        # self.crear_programas()
+        # self.crear_cargos()
+        # self.crear_experiencias()
+        # self.crear_contratos()
+        # self.crear_motivos_de_tareas()
+        # self.crear_estados_de_tareas()
+        # self.crear_prioridades_de_tareas()
+        #
+        # self.importar_escuelas()
+        # self.importar_contactos()
+        # self.importar_pisos()
+        # self.vincular_programas()
 
-        self.importar_escuelas()
-        self.importar_contactos()
-        self.importar_pisos()
-        self.vincular_programas()
+        self.importar_tareas()
 
     def crear_regiones(self):
         numeros = range(1, 26)
@@ -203,6 +205,51 @@ class Command(BaseCommand):
 
             log("Se ha creado el registro:")
             log("Piso de escuela ", piso['cue'], ": \n Servidor: ", piso['marca'], "\n Serie: ", piso['serie'], "\n UPS: ", piso['ups'], "\n Rack: ", piso['rack'], "\n Estado: ", piso['piso_estado'])
+            log("===========")
+
+    def importar_tareas(self):
+        tareas = self.obtener_datos_desde_api('tickets')['tickets']
+
+        print("Importando Tareas")
+        bar = barra_de_progreso(simple=False)
+
+        for tarea in bar(tareas):
+            log("Se intenta crear el registro con id_original: " + str(tarea['id_ticket_original']) + " y DNI de usuario: " + str(tarea['dni_usuario']))
+            objeto_tarea, created = models.Tarea.objects.get_or_create(id_ticket_original=tarea['id_ticket_original'])
+
+            dni_usuario = tarea['dni_usuario']
+
+            objeto_escuela = models.Escuela.objects.get(cue=tarea['cue'])
+            objeto_autor = models.Perfil.objects.get(dni=dni_usuario)
+            objeto_motivo = models.MotivoTarea.objects.get(nombre=tarea['motivo'])
+            objeto_estado = models.EstadoTarea.objects.get(nombre=tarea['estado'])
+
+            prioridad = tarea['prioridad']
+            if prioridad == 1:
+                prioridad = "Alta"
+            elif prioridad == 2:
+                prioridad = "Media"
+            elif prioridad == 3:
+                prioridad = "Baja"
+
+            objeto_prioridad = models.PrioridadTarea.objects.get(nombre=prioridad)
+
+            # fecha_alta = tarea['fecha_alta']
+            #
+            # objeto_tarea.fechaDeAlta = fecha_alta
+            objeto_tarea.titulo = "Tarea #: " + str(tarea['id_ticket_original'])
+            objeto_tarea.descripcion = tarea['descripcion']
+            objeto_tarea.autor = objeto_autor
+            objeto_tarea.escuela = objeto_escuela
+            objeto_tarea.motivo = objeto_motivo
+            objeto_tarea.estado = objeto_estado
+            objeto_tarea.prioridad = objeto_prioridad
+
+            objeto_tarea.save()
+
+
+            log("Se ha creado el registro:")
+            log("Tarea con id_original: " + str(tarea['id_ticket_original']))
             log("===========")
 
     def vincular_programas(self):
