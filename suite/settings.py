@@ -20,6 +20,7 @@ ALLOWED_HOSTS = [
     '0.0.0.0',
     '127.0.0.1',
     'suite.dtelab.com.ar',
+    'suite.enjambrelab.com.ar',
     '104.236.57.216',
     'testing-suite-backend.dtelab.com.ar',
 ]
