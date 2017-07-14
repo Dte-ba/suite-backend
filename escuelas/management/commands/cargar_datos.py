@@ -50,7 +50,6 @@ class Command(BaseCommand):
         self.importar_contactos()
         self.importar_pisos()
         self.vincular_programas()
-
         self.importar_tareas()
 
     def crear_regiones(self):
@@ -209,18 +208,27 @@ class Command(BaseCommand):
 
     def importar_tareas(self):
         tareas = self.obtener_datos_desde_api('tickets')['tickets']
+        cantidad_de_tareas_creadas = 0
+        cantidad_de_tareas_omitidas = 0
 
         print("Importando Tareas")
         bar = barra_de_progreso(simple=False)
 
         for tarea in bar(tareas):
             log("Se intenta crear el registro con id_original: " + str(tarea['id_ticket_original']) + " y DNI de usuario: " + str(tarea['dni_usuario']))
-            objeto_tarea, created = models.Tarea.objects.get_or_create(id_ticket_original=tarea['id_ticket_original'])
 
             dni_usuario = tarea['dni_usuario']
 
+            try:
+                objeto_autor = models.Perfil.objects.get(dni=dni_usuario)
+            except models.Perfil.DoesNotExist:
+                log("Error, no existe registro de usuario buscado %s. No se registrará la tarea." %(dni_usuario))
+                cantidad_de_tareas_omitidas += 1
+                continue
+
+            objeto_tarea, created = models.Tarea.objects.get_or_create(id_ticket_original=tarea['id_ticket_original'])
+
             objeto_escuela = models.Escuela.objects.get(cue=tarea['cue'])
-            objeto_autor = models.Perfil.objects.get(dni=dni_usuario)
             objeto_motivo = models.MotivoTarea.objects.get(nombre=tarea['motivo'])
             objeto_estado = models.EstadoTarea.objects.get(nombre=tarea['estado'])
 
@@ -251,6 +259,11 @@ class Command(BaseCommand):
             log("Se ha creado el registro:")
             log("Tarea con id_original: " + str(tarea['id_ticket_original']))
             log("===========")
+            cantidad_de_tareas_creadas += 1
+
+        print("Resumen de tareas:")
+        print("   Se crearon %d tareas correctamente." %(cantidad_de_tareas_creadas))
+        print("   Se evitaron crear %d tareas porque correspondían a usuarios inexistentes." %(cantidad_de_tareas_omitidas))
 
     def vincular_programas(self):
         programas = self.obtener_datos_desde_api('programas')['programas']
