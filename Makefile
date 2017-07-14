@@ -20,6 +20,7 @@ comandos:
 	@echo "    ${G}crear_migraciones${N}   Genera las migraciones."
 	@echo "    ${G}crear_usuario_admin${N} Genera un usuario administrador."
 	@echo "    ${G}cargar_datos${N}        Carga toda la información inicial de los datos."
+	@echo "    ${G}cargar_usuarios${N}     Carga toda la información de usuarios."
 	@echo ""
 	@echo "    ${G}generar_estaticos${N}   Genera los archivos estáticos."
 	@echo "    ${G}migrar${N}              Ejecuta las migraciones sobre la base de datos."
@@ -29,10 +30,6 @@ comandos:
 	@echo "    ${G}ejecutar${N}            Ejecuta el servidor en modo desarrollo."
 	@echo "    ${G}lint${N}                Busca errores o inconsistencias en el código."
 	@echo "    ${G}ayuda${N}               Muestra una listado de todos los comandos django."
-	@echo ""
-	@echo "  ${Y}Para gestionar datos${N}"
-	@echo ""
-	@echo "    ${G}importar_regiones${N}   Importa regiones desde un archivo."
 	@echo ""
 	@echo "  ${Y}Para gestionar datos${N}"
 	@echo ""
@@ -113,5 +110,5 @@ generar_estaticos:
 cargar_datos:
 	python manage.py cargar_datos
 
-importar_regiones:
-	python scripts/importar_regiones.py
+cargar_usuarios:
+	python scripts/importar_perfiles.py .//archivos_para_importacion/dte_perfiles_2017.xlsx

@@ -151,6 +151,8 @@ for indice, fila in enumerate(wb.active.rows):
             log(u"No tiene email laboral")
             email_laboral=apellido+"@abc.gob.ar"
 
+        email_laboral = email_laboral.lower()
+
         if valores['direccion']:
             direccion=valores['direccion']
         else:
@@ -182,7 +184,10 @@ for indice, fila in enumerate(wb.active.rows):
         default_pass="dte_"+dni
 
 
-        user, created = User.objects.get_or_create(username=email_laboral, password=default_pass)
+        try:
+            user = User.objects.get(username=email_laboral)
+        except user.DoesNotExist:
+            user = User.objects.create_superuser(email_laboral, email=email, password=default_pass)
 
         user.save()
 
@@ -212,7 +217,6 @@ for indice, fila in enumerate(wb.active.rows):
         perfil.contrato = models.Contrato.objects.get(nombre=contrato)
 
         perfil.save()
-
     except TypeError, e:
         print("-----")
         log(u"Fila %d - ****** OMITIDA, TypeError. La fila contiene caracteres incorrectos." %(indice + 1), nivel=0)
@@ -254,7 +258,7 @@ for indice, fila in enumerate(wb.active.rows):
     print("Telefono Celular: " + telefono_celular)
     print("Telefono Particular: " + telefono_particular)
     print("Username: " + username)
-    print("Password:" + default_pass)
+    print("Password: " + default_pass)
     print("-----")
     print("")
 
@@ -269,8 +273,10 @@ log("Terminó la ejecución")
 print("")
 print("Resumen:")
 print("")
-print(" - cantidad total de filas:                       " + str(indice))
+print(" - cantidad total de filas:                       " + str(indice - 1))
 print(" - filas procesadas:                              " + str(filas_procesadas))
+print(" - cantidad de filas que fallaron:                " + str(indice - 1 - filas_procesadas))
+
 print(" - filas que fallaron:                            " + str(filas_omitidas_lista))
 # print(" - filas con error u omitidas:                    " + str(filas_omitidas_o_con_errores))
 # print(" - cantidad de socios sin grupo familiar:         " + str(cantidad_de_socios_sin_grupo_familiar))
