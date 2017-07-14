@@ -13,8 +13,12 @@ class PerfilAdmin(admin.ModelAdmin):
     list_display = ('user', 'nombre', 'apellido', 'grupo', 'dni', 'email')
     search_fields = ('user', 'nombre', 'apelido', 'dni')
 
+class EventoAdmin(admin.ModelAdmin):
+    model = models.Evento
+    list_display = ('titulo', 'fechainicio', 'fechafin', 'todoElDia')
+
 admin.site.register(models.Escuela, EscuelaAdmin)
-admin.site.register(models.Evento)
+admin.site.register(models.Evento, EventoAdmin)
 admin.site.register(models.Perfil, PerfilAdmin)
 
 admin.site.register(models.TipoDeFinanciamiento)
