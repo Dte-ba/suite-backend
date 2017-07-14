@@ -45,7 +45,7 @@ class Command(BaseCommand):
         self.crear_motivos_de_tareas()
         self.crear_estados_de_tareas()
         self.crear_prioridades_de_tareas()
-        
+
         self.importar_escuelas()
         self.importar_contactos()
         self.importar_pisos()
@@ -234,9 +234,9 @@ class Command(BaseCommand):
 
             objeto_prioridad = models.PrioridadTarea.objects.get(nombre=prioridad)
 
-            # fecha_alta = tarea['fecha_alta']
+            fecha_alta = tarea['fecha_alta']
             #
-            # objeto_tarea.fechaDeAlta = fecha_alta
+            objeto_tarea.fechaDeAlta = fecha_alta
             objeto_tarea.titulo = "Tarea #: " + str(tarea['id_ticket_original'])
             objeto_tarea.descripcion = tarea['descripcion']
             objeto_tarea.autor = objeto_autor
