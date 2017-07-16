@@ -9,6 +9,7 @@ Django==1.10.4
 django-cors-headers==2.0.2
 django-coverage==1.2.4
 django-extensions==1.7.5
+django-filter==1.0.4
 django-toolbelt==0.0.1
 djangorestframework==3.5.3
 djangorestframework-jsonapi==2.1.1
