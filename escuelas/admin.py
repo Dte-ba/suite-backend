@@ -15,7 +15,7 @@ class PerfilAdmin(admin.ModelAdmin):
 
 class EventoAdmin(admin.ModelAdmin):
     model = models.Evento
-    list_display = ('titulo', 'fechainicio', 'fechafin', 'todoElDia')
+    list_display = ('titulo', 'fecha', 'inicio', 'fin', 'todoElDia', 'responsable')
 
 admin.site.register(models.Escuela, EscuelaAdmin)
 admin.site.register(models.Evento, EventoAdmin)
