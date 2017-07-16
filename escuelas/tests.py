@@ -80,3 +80,33 @@ class SerializarPermisos(APITestCase):
         self.assertEqual(len(response.data['permisosComoLista']), 1)
         self.assertEqual(len(response.data['grupos']), 1, "Tiene un solo grupo")
         self.assertEqual(response.data['grupos'][0]['nombre'], 'coordinador', "Tiene asignado el grupo coordinador")
+
+
+class Filtar(APITestCase):
+
+    def test_puede_filtrar_perfiles(self):
+        # Comienza con un usuario básico
+        user = User.objects.create_user(username='test', password='123')
+        user2 = User.objects.create_user(username='hugo', password='123')
+
+        user.save()
+        user.perfil.nombre = "test"
+        user.perfil.save()
+
+        user2.save()
+        user2.perfil.nombre = "hugo"
+        user2.perfil.save()
+
+        # En este punto, tiene que existir un perfil de usuario que puede
+        # retornar la lista de permisos a traves de la api.
+        self.client.login(username='test', password='123')
+
+        # Forzando autenticación porque sin sessionStore de configuración
+        # la llamada a self.client.login no guarda la autenticación para las
+        # siguientes llamadas.
+        self.client.force_authenticate(user=user)
+        response = self.client.get('/api/perfiles', format='json')
+        self.assertEqual(response.data['meta']['pagination']['count'], 2);
+
+        response = self.client.get('/api/perfiles?search=hugo', format='json')
+        self.assertEqual(response.data['meta']['pagination']['count'], 1);

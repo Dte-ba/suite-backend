@@ -2,12 +2,13 @@
 from django.shortcuts import render
 from django.contrib.auth.models import User
 from rest_framework import viewsets
-from rest_framework import pagination
 from django.db.models import Q
-
 from rest_framework.response import Response
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
+
+from rest_framework.filters import SearchFilter
+from rest_framework.filters import DjangoFilterBackend
 
 import serializers
 import models
@@ -60,9 +61,12 @@ class RegionViewSet(viewsets.ModelViewSet):
     #pagination_class = LargeResultsSetPagination
 
 class PerfilViewSet(viewsets.ModelViewSet):
-    resource_name = 'perfiles'
     queryset = models.Perfil.objects.all()
+    resource_name = 'perfiles'
     serializer_class = serializers.PerfilSerializer
+    filter_backends = [SearchFilter, DjangoFilterBackend]
+    search_fields = ['nombre', 'apellido', "dni"]
+    filter_fields = ['dni', 'cuit']
 
 class MiPerfilViewSet(viewsets.ViewSet):
     authentication_classes = (TokenAuthentication,)
