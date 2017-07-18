@@ -1,6 +1,7 @@
 from django.contrib.auth.models import User
 from rest_framework import serializers
 import models
+from rest_framework_json_api.relations import ResourceRelatedField
 
 class CustomSerializer(serializers.HyperlinkedModelSerializer):
 
@@ -25,6 +26,8 @@ class ContactoSerializer(CustomSerializer):
         fields = '__all__'
 
 class EventoSerializer(CustomSerializer):
+
+    responsable = ResourceRelatedField(queryset=models.Perfil.objects)
 
     class Meta:
         model = models.Evento
