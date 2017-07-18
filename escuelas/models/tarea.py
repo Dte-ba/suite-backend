@@ -7,7 +7,7 @@ class Tarea(models.Model):
     fechaDeAlta = models.DateField(default=None, blank=True,null=True)
     autor = models.ForeignKey('Perfil', related_name='tareas_autor', default=None, blank=True, null=True) #usuario creador de la Tarea
     responsable = models.ForeignKey('Perfil', related_name='tareas_responsable', default=None, blank=True, null=True)# Responsable Asignado
-    descripcion = models.CharField(max_length=1024)
+    descripcion = models.TextField(max_length=1024)
     motivo = models.ForeignKey('MotivoTarea', related_name='tareas', on_delete=models.CASCADE, default=None, blank=True, null=True)
     estado = models.ForeignKey('EstadoTarea', related_name='tareas', on_delete=models.CASCADE, default=None, blank=True, null=True)
     prioridad = models.ForeignKey('PrioridadTarea', related_name='tareas', on_delete=models.CASCADE, default=None, blank=True, null=True)

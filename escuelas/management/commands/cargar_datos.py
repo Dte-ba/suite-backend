@@ -7,7 +7,7 @@ from escuelas import models
 import progressbar
 import requests
 
-MODO_VERBOSE = False
+MODO_VERBOSE = True
 
 def log(*k):
     global MODO_VERBOSE
@@ -50,6 +50,7 @@ class Command(BaseCommand):
         self.importar_pisos()
         self.vincular_programas()
         self.importar_tareas()
+        self.importar_comentarios_de_tareas()
 
     def crear_regiones(self):
         numeros = range(1, 26)
@@ -263,6 +264,53 @@ class Command(BaseCommand):
         print("Resumen de tareas:")
         print("   Se crearon %d tareas correctamente." %(cantidad_de_tareas_creadas))
         print("   Se evitaron crear %d tareas porque correspondían a usuarios inexistentes." %(cantidad_de_tareas_omitidas))
+
+    def importar_comentarios_de_tareas(self):
+        comentarios = self.obtener_datos_desde_api('comentarios_tickets')['comentarios_tickets']
+        cantidad_de_comentarios_de_tareas_creados = 0
+        cantidad_de_comentarios_de_tareas_omitidos = 0
+
+        print("Importando Comentarios de Tareas")
+        bar = barra_de_progreso(simple=False)
+
+        for comentario in bar(comentarios):
+            log("Se intenta crear el registro con id_original: " + str(comentario['id_ticket_original']) + " y DNI de usuario: " + str(comentario['dni_usuario']))
+
+            dni_usuario = comentario['dni_usuario']
+            id_ticket_original = comentario['id_ticket_original']
+
+            try:
+                objeto_autor = models.Perfil.objects.get(dni=dni_usuario)
+            except models.Perfil.DoesNotExist:
+                log("Error, no existe registro de usuario buscado %s. No se registrará la tarea." %(dni_usuario))
+                cantidad_de_comentarios_de_tareas_omitidos += 1
+                continue
+
+            try:
+                objeto_tarea = models.Tarea.objects.get(id_ticket_original=id_ticket_original)
+            except models.Tarea.DoesNotExist:
+                log("Error, no existe registro de tarea buscado %s. No se registrará el comentario." %(id_ticket_original))
+                cantidad_de_comentarios_de_tareas_omitidos += 1
+                continue
+
+
+
+            objeto_comentario, created = models.ComentarioTarea.objects.get_or_create(comentario=comentario['comentario'])
+            objeto_comentario.autor = objeto_autor
+            objeto_comentario.fechaDeAlta = comentario['fecha']
+            objeto_comentario.tarea = objeto_tarea
+
+            objeto_comentario.save()
+
+
+            log("Se ha creado el registro:")
+            log("Comentario de Tarea con id_original: " + str(comentario['id_ticket_original']))
+            log("===========")
+            cantidad_de_comentarios_de_tareas_creados += 1
+
+        print("Resumen de tareas:")
+        print("   Se crearon %d comentarios de tareas correctamente." %(cantidad_de_comentarios_de_tareas_creados))
+        print("   Se evitaron crear %d comentarios de tareas porque correspondían a usuarios inexistentes." %(cantidad_de_comentarios_de_tareas_omitidos))
 
     def vincular_programas(self):
         programas = self.obtener_datos_desde_api('programas')['programas']

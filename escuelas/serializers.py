@@ -139,3 +139,33 @@ class CargoEscolarSerializer(CustomSerializer):
     class Meta:
         model = models.CargoEscolar
         fields = '__all__'
+
+class ComentarioTareaSerializer(CustomSerializer):
+
+    class Meta:
+        model = models.ComentarioTarea
+        fields = '__all__'
+
+class MotivoTareaSerializer(CustomSerializer):
+
+    class Meta:
+        model = models.MotivoTarea
+        fields = '__all__'
+
+class EstadoTareaSerializer(CustomSerializer):
+
+    class Meta:
+        model = models.EstadoTarea
+        fields = '__all__'
+
+class PrioridadTareaSerializer(CustomSerializer):
+
+    class Meta:
+        model = models.PrioridadTarea
+        fields = '__all__'
+
+class TareaSerializer(CustomSerializer):
+
+    class Meta:
+        model = models.Tarea
+        fields = '__all__'

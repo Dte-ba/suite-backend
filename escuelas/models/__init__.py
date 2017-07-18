@@ -19,6 +19,7 @@ from tarea import Tarea
 from prioridad_tarea import PrioridadTarea
 from motivo_tarea import MotivoTarea
 from estado_tarea import EstadoTarea
+from comentario_tarea import ComentarioTarea
 
 Contacto;
 Escuela;
@@ -41,3 +42,4 @@ Tarea;
 PrioridadTarea;
 MotivoTarea;
 EstadoTarea;
+ComentarioTarea;

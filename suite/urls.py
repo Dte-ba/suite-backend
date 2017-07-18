@@ -26,6 +26,11 @@ router.register(r'cargos', views.CargoViewSet)
 router.register(r'contratos', views.ContratoViewSet)
 router.register(r'pisos', views.PisoViewSet)
 router.register(r'cargos-escolares', views.CargoEscolarViewSet)
+router.register(r'comentarios-de-tareas', views.ComentarioTareaViewSet)
+router.register(r'motivos-de-tareas', views.MotivoTareaViewSet)
+router.register(r'estados-de-tareas', views.EstadoTareaViewSet)
+router.register(r'prioridades-de-tareas', views.PrioridadTareaViewSet)
+router.register(r'tareas', views.TareaViewSet)
 
 router.register(r'mi-perfil', views.MiPerfilViewSet, 'Perfil')
 

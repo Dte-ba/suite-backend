@@ -32,10 +32,19 @@ admin.site.register(models.Experiencia)
 admin.site.register(models.Cargo)
 admin.site.register(models.Contrato)
 
-admin.site.register(models.Tarea)
+class ComentarioTareaInline(admin.TabularInline):
+    model = models.ComentarioTarea
+
+class TareaAdmin(admin.ModelAdmin):
+    inlines = [
+        ComentarioTareaInline,
+    ]
+
+admin.site.register(models.Tarea, TareaAdmin)
 admin.site.register(models.MotivoTarea)
 admin.site.register(models.PrioridadTarea)
 admin.site.register(models.EstadoTarea)
+admin.site.register(models.ComentarioTarea)
 
 class PisoAdmin(admin.ModelAdmin):
     model = models.Piso
