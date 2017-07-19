@@ -7,8 +7,9 @@ class Evento(models.Model):
     inicio = models.TimeField(default='00:00:00')
     fin = models.TimeField(default='00:00:00')
     todoElDia = models.BooleanField(default=False)
+    
     responsable = models.ForeignKey('Perfil', on_delete=models.CASCADE, related_name='eventos', default=None, blank=True, null=True)
-
+    escuela = models.ForeignKey('Escuela', on_delete=models.CASCADE, related_name='eventos', default=None, blank=True, null=True)
 
     def __unicode__(self):
         return self.titulo

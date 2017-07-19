@@ -32,6 +32,9 @@ class UserViewSet(viewsets.ModelViewSet):
 class EscuelaViewSet(viewsets.ModelViewSet):
     queryset = models.Escuela.objects.all()
     serializer_class = serializers.EscuelaSerializer
+    filter_backends = [SearchFilter, DjangoFilterBackend]
+    search_fields = ['cue', 'nombre']
+    filter_fields = ['localidad__distrito__region__numero']
 
     def get_queryset(self):
         queryset = models.Escuela.objects.all()
@@ -66,7 +69,7 @@ class PerfilViewSet(viewsets.ModelViewSet):
     serializer_class = serializers.PerfilSerializer
     filter_backends = [SearchFilter, DjangoFilterBackend]
     search_fields = ['nombre', 'apellido', 'dni', 'region__numero', 'cargo__nombre']
-    filter_fields = ['dni', 'cuit', 'region__numero']
+    filter_fields = ['region__numero']
 
 class MiPerfilViewSet(viewsets.ViewSet):
     authentication_classes = (TokenAuthentication,)

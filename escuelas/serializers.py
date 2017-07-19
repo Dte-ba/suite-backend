@@ -28,6 +28,7 @@ class ContactoSerializer(CustomSerializer):
 class EventoSerializer(CustomSerializer):
 
     responsable = ResourceRelatedField(queryset=models.Perfil.objects)
+    escuela = ResourceRelatedField(queryset=models.Escuela.objects)
 
     class Meta:
         model = models.Evento
