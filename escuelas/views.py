@@ -65,8 +65,8 @@ class PerfilViewSet(viewsets.ModelViewSet):
     resource_name = 'perfiles'
     serializer_class = serializers.PerfilSerializer
     filter_backends = [SearchFilter, DjangoFilterBackend]
-    search_fields = ['nombre', 'apellido', "dni"]
-    filter_fields = ['dni', 'cuit']
+    search_fields = ['nombre', 'apellido', 'dni', 'region__numero', 'cargo__nombre']
+    filter_fields = ['dni', 'cuit', 'region__numero']
 
 class MiPerfilViewSet(viewsets.ViewSet):
     authentication_classes = (TokenAuthentication,)
