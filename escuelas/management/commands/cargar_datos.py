@@ -7,7 +7,7 @@ from escuelas import models
 import progressbar
 import requests
 
-MODO_VERBOSE = True
+MODO_VERBOSE = False
 
 def log(*k):
     global MODO_VERBOSE

@@ -21,6 +21,7 @@ comandos:
 	@echo "    ${G}crear_usuario_admin${N} Genera un usuario administrador."
 	@echo "    ${G}cargar_datos${N}        Carga toda la información inicial de los datos."
 	@echo "    ${G}cargar_usuarios${N}     Carga toda la información de usuarios."
+	@echo "    ${G}cargar_usuarios_demo${N}Carga usuarios de prueba."
 	@echo ""
 	@echo "    ${G}generar_estaticos${N}   Genera los archivos estáticos."
 	@echo "    ${G}migrar${N}              Ejecuta las migraciones sobre la base de datos."
@@ -112,3 +113,6 @@ cargar_datos:
 
 cargar_usuarios:
 	python scripts/importar_perfiles.py .//archivos_para_importacion/dte_perfiles_2017.xlsx
+
+cargar_usuarios_demo:
+	python scripts/importar_usuarios_demo.py
