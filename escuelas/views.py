@@ -159,21 +159,35 @@ class ComentarioTareaViewSet(viewsets.ModelViewSet):
     serializer_class = serializers.ComentarioTareaSerializer
 
 class MotivoTareaViewSet(viewsets.ModelViewSet):
-    resource_name = 'motivoTarea'
+    resource_name = 'motivoDeTarea'
     queryset = models.MotivoTarea.objects.all()
     serializer_class = serializers.MotivoTareaSerializer
 
 class EstadoTareaViewSet(viewsets.ModelViewSet):
-    resource_name = 'estadoTarea'
+    resource_name = 'estadoDeTarea'
     queryset = models.EstadoTarea.objects.all()
     serializer_class = serializers.EstadoTareaSerializer
 
 class PrioridadTareaViewSet(viewsets.ModelViewSet):
-    resource_name = 'prioridadTarea'
+    resource_name = 'prioridadDeTarea'
     queryset = models.PrioridadTarea.objects.all()
     serializer_class = serializers.PrioridadTareaSerializer
 
 class TareaViewSet(viewsets.ModelViewSet):
-    resource_name = 'tarea'
     queryset = models.Tarea.objects.all()
     serializer_class = serializers.TareaSerializer
+    filter_backends = [SearchFilter, DjangoFilterBackend]
+    search_fields = ['titulo', 'fechaDeAlta']
+    filter_fields = ['autor__nombre']
+
+    def get_queryset(self):
+        queryset = models.Tarea.objects.all()
+        query = self.request.query_params.get('query', None)
+
+        if query:
+            filtro_titulo = Q(titulo__icontains=query)
+            filtro_fechaDeAlta = Q(fechaDeAlta__icontains=query)
+
+            queryset = queryset.filter(filtro_titulo | filtro_fechaDeAlta)
+
+        return queryset

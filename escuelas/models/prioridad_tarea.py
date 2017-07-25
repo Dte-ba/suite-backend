@@ -8,8 +8,8 @@ class PrioridadTarea(models.Model):
         return u"Prioridad: " + self.nombre
 
     class Meta:
-        db_table = 'prioridades'
-        verbose_name_plural = 'prioridades'
+        db_table = 'prioridadesDeTarea'
+        verbose_name_plural = 'prioridadesDeTarea'
 
     class JSONAPIMeta:
-        resource_name = "prioridades"
+        resource_name = "prioridadesDeTarea"

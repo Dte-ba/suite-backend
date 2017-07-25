@@ -172,4 +172,4 @@ class TareaSerializer(CustomSerializer):
 
     class Meta:
         model = models.Tarea
-        fields = '__all__'
+        fields = ('titulo', 'fechaDeAlta', 'autor', 'responsable', 'descripcion', 'motivo', 'estado', 'prioridad', 'escuela')

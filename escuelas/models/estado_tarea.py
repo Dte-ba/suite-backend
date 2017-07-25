@@ -8,8 +8,8 @@ class EstadoTarea(models.Model):
         return u"Estado: " + self.nombre
 
     class Meta:
-        db_table = 'estadosDeTareas'
-        verbose_name_plural = 'estadosDeTareas'
+        db_table = 'estadosDeTarea'
+        verbose_name_plural = 'estadosDeTarea'
 
     class JSONAPIMeta:
-        resource_name = "estadosDeTareas"
+        resource_name = "estadosDeTarea"

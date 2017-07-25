@@ -8,8 +8,8 @@ class MotivoTarea(models.Model):
         return u"Motivo: " + self.nombre
 
     class Meta:
-        db_table = 'motivosDeTareas'
-        verbose_name_plural = 'motivosDeTareas'
+        db_table = 'motivosDeTarea'
+        verbose_name_plural = 'motivosDeTarea'
 
     class JSONAPIMeta:
-        resource_name = "motivosDeTareas"
+        resource_name = "motivosDeTarea"
