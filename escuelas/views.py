@@ -159,17 +159,14 @@ class ComentarioTareaViewSet(viewsets.ModelViewSet):
     serializer_class = serializers.ComentarioTareaSerializer
 
 class MotivoTareaViewSet(viewsets.ModelViewSet):
-    resource_name = 'motivoDeTarea'
     queryset = models.MotivoTarea.objects.all()
     serializer_class = serializers.MotivoTareaSerializer
 
 class EstadoTareaViewSet(viewsets.ModelViewSet):
-    resource_name = 'estadoDeTarea'
     queryset = models.EstadoTarea.objects.all()
     serializer_class = serializers.EstadoTareaSerializer
 
 class PrioridadTareaViewSet(viewsets.ModelViewSet):
-    resource_name = 'prioridadDeTarea'
     queryset = models.PrioridadTarea.objects.all()
     serializer_class = serializers.PrioridadTareaSerializer
 
