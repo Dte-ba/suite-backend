@@ -48,7 +48,7 @@ admin.site.register(models.ComentarioTarea)
 
 class PisoAdmin(admin.ModelAdmin):
     model = models.Piso
-    list_display = ('servidor', 'serie', 'ups', 'rack', 'estado')
+    list_display = ('servidor', 'serie', 'ups', 'rack', 'estado', 'llave')
 
 admin.site.register(models.Piso, PisoAdmin)
 
