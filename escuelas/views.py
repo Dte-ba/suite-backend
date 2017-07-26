@@ -114,7 +114,6 @@ class TipoDeFinanciamientoViewSet(viewsets.ModelViewSet):
     serializer_class = serializers.TipoDeFinanciamientoSerializer
 
 class TipoDeGestionViewSet(viewsets.ModelViewSet):
-    resource_name = 'tipoDeGestion'
     queryset = models.TipoDeGestion.objects.all()
     serializer_class = serializers.TipoDeGestionSerializer
 

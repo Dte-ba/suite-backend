@@ -171,7 +171,7 @@ class PrioridadTareaSerializer(CustomSerializer):
 class TareaSerializer(CustomSerializer):
     autor = ResourceRelatedField(queryset=models.Perfil.objects)
     responsable = ResourceRelatedField(queryset=models.Perfil.objects)
-    motivo = ResourceRelatedField(queryset=models.MotivoTarea.objects)
+    motivo = MotivoTareaSerializer()
     estado = ResourceRelatedField(queryset=models.EstadoTarea.objects)
     prioridad = ResourceRelatedField(queryset=models.PrioridadTarea.objects)
     escuela = ResourceRelatedField(queryset=models.Escuela.objects)
