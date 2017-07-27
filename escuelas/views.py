@@ -153,7 +153,7 @@ class CargoEscolarViewSet(viewsets.ModelViewSet):
     serializer_class = serializers.CargoEscolarSerializer
 
 class ComentarioDeTareaViewSet(viewsets.ModelViewSet):
-    resource_name = 'comentarioDeTarea'
+    resource_name = 'comentarioDeTareas'
     queryset = models.ComentarioDeTarea.objects.all()
     serializer_class = serializers.ComentarioDeTareaSerializer
 

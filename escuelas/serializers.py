@@ -175,7 +175,9 @@ class TareaSerializer(CustomSerializer):
     estadoDeTarea = ResourceRelatedField(queryset=models.EstadoDeTarea.objects)
     prioridadDeTarea = ResourceRelatedField(queryset=models.PrioridadDeTarea.objects)
     escuela = ResourceRelatedField(queryset=models.Escuela.objects)
+    # comentarios_tarea = ComentarioDeTareaSerializer(many=True, read_only=True)
+    comentariosDeTarea = ResourceRelatedField(queryset=models.ComentarioDeTarea.objects, many=True)
 
     class Meta:
         model = models.Tarea
-        fields = ('titulo', 'fechaDeAlta', 'autor', 'responsable', 'descripcion', 'motivoDeTarea', 'estadoDeTarea', 'prioridadDeTarea', 'escuela')
+        fields = ('titulo', 'fechaDeAlta', 'autor', 'responsable', 'descripcion', 'motivoDeTarea', 'estadoDeTarea', 'prioridadDeTarea', 'escuela', 'comentariosDeTarea')
