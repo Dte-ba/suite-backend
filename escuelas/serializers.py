@@ -144,38 +144,38 @@ class CargoEscolarSerializer(CustomSerializer):
         model = models.CargoEscolar
         fields = '__all__'
 
-class ComentarioTareaSerializer(CustomSerializer):
+class ComentarioDeTareaSerializer(CustomSerializer):
 
     class Meta:
-        model = models.ComentarioTarea
+        model = models.ComentarioDeTarea
         fields = '__all__'
 
-class MotivoTareaSerializer(CustomSerializer):
+class MotivoDeTareaSerializer(CustomSerializer):
 
     class Meta:
-        model = models.MotivoTarea
+        model = models.MotivoDeTarea
         fields = '__all__'
 
-class EstadoTareaSerializer(CustomSerializer):
+class EstadoDeTareaSerializer(CustomSerializer):
 
     class Meta:
-        model = models.EstadoTarea
+        model = models.EstadoDeTarea
         fields = '__all__'
 
-class PrioridadTareaSerializer(CustomSerializer):
+class PrioridadDeTareaSerializer(CustomSerializer):
 
     class Meta:
-        model = models.PrioridadTarea
+        model = models.PrioridadDeTarea
         fields = '__all__'
 
 class TareaSerializer(CustomSerializer):
     autor = ResourceRelatedField(queryset=models.Perfil.objects)
     responsable = ResourceRelatedField(queryset=models.Perfil.objects)
-    motivo = MotivoTareaSerializer()
-    estado = ResourceRelatedField(queryset=models.EstadoTarea.objects)
-    prioridad = ResourceRelatedField(queryset=models.PrioridadTarea.objects)
+    motivoDeTarea = ResourceRelatedField(queryset=models.MotivoDeTarea.objects)
+    estadoDeTarea = ResourceRelatedField(queryset=models.EstadoDeTarea.objects)
+    prioridadDeTarea = PrioridadDeTareaSerializer()
     escuela = ResourceRelatedField(queryset=models.Escuela.objects)
 
     class Meta:
         model = models.Tarea
-        fields = ('titulo', 'fechaDeAlta', 'autor', 'responsable', 'descripcion', 'motivo', 'estado', 'prioridad', 'escuela')
+        fields = ('titulo', 'fechaDeAlta', 'autor', 'responsable', 'descripcion', 'motivoDeTarea', 'estadoDeTarea', 'prioridadDeTarea', 'escuela')

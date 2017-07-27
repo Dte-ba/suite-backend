@@ -229,8 +229,8 @@ class Command(BaseCommand):
             objeto_tarea, created = models.Tarea.objects.get_or_create(id_ticket_original=tarea['id_ticket_original'])
 
             objeto_escuela = models.Escuela.objects.get(cue=tarea['cue'])
-            objeto_motivo = models.MotivoTarea.objects.get(nombre=tarea['motivo'])
-            objeto_estado = models.EstadoTarea.objects.get(nombre=tarea['estado'])
+            objeto_motivo = models.MotivoDeTarea.objects.get(nombre=tarea['motivo'])
+            objeto_estado = models.EstadoDeTarea.objects.get(nombre=tarea['estado'])
 
             prioridad = tarea['prioridad']
             if prioridad == 1:
@@ -240,7 +240,7 @@ class Command(BaseCommand):
             elif prioridad == 3:
                 prioridad = "Baja"
 
-            objeto_prioridad = models.PrioridadTarea.objects.get(nombre=prioridad)
+            objeto_prioridad = models.PrioridadDeTarea.objects.get(nombre=prioridad)
 
             fecha_alta = tarea['fecha_alta']
             #
@@ -295,7 +295,7 @@ class Command(BaseCommand):
 
 
 
-            objeto_comentario, created = models.ComentarioTarea.objects.get_or_create(comentario=comentario['comentario'])
+            objeto_comentario, created = models.ComentarioDeTarea.objects.get_or_create(comentario=comentario['comentario'])
             objeto_comentario.autor = objeto_autor
             objeto_comentario.fechaDeAlta = comentario['fecha']
             objeto_comentario.tarea = objeto_tarea
@@ -368,7 +368,7 @@ class Command(BaseCommand):
         bar = barra_de_progreso()
 
         for nombre in bar(nombres):
-            p, created = models.MotivoTarea.objects.get_or_create(nombre=nombre)
+            p, created = models.MotivoDeTarea.objects.get_or_create(nombre=nombre)
             log(p)
 
     def crear_estados_de_tareas(self):
@@ -383,7 +383,7 @@ class Command(BaseCommand):
         bar = barra_de_progreso()
 
         for nombre in bar(nombres):
-            p, created = models.EstadoTarea.objects.get_or_create(nombre=nombre)
+            p, created = models.EstadoDeTarea.objects.get_or_create(nombre=nombre)
             log(p)
 
     def crear_prioridades_de_tareas(self):
@@ -397,7 +397,7 @@ class Command(BaseCommand):
         bar = barra_de_progreso()
 
         for nombre in bar(nombres):
-            p, created = models.PrioridadTarea.objects.get_or_create(nombre=nombre)
+            p, created = models.PrioridadDeTarea.objects.get_or_create(nombre=nombre)
             log(p)
 
     def crear_niveles(self):

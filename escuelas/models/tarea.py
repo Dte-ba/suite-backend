@@ -8,9 +8,9 @@ class Tarea(models.Model):
     autor = models.ForeignKey('Perfil', related_name='tareas_autor', default=None, blank=True, null=True) #usuario creador de la Tarea
     responsable = models.ForeignKey('Perfil', related_name='tareas_responsable', default=None, blank=True, null=True)# Responsable Asignado
     descripcion = models.TextField(max_length=1024)
-    motivo = models.ForeignKey('MotivoTarea', related_name='tareas', on_delete=models.CASCADE, default=None, blank=True, null=True)
-    estado = models.ForeignKey('EstadoTarea', related_name='tareas', on_delete=models.CASCADE, default=None, blank=True, null=True)
-    prioridad = models.ForeignKey('PrioridadTarea', related_name='tareas', on_delete=models.CASCADE, default=None, blank=True, null=True)
+    motivoDeTarea = models.ForeignKey('MotivoDeTarea', related_name='tareas', on_delete=models.CASCADE, default=None, blank=True, null=True)
+    estadoDeTarea = models.ForeignKey('EstadoDeTarea', related_name='tareas', on_delete=models.CASCADE, default=None, blank=True, null=True)
+    prioridadDeTarea = models.ForeignKey('PrioridadDeTarea', related_name='tareas', on_delete=models.CASCADE, default=None, blank=True, null=True)
 
     escuela = models.ForeignKey('Escuela', related_name='tareas', on_delete=models.CASCADE, default=None, blank=True, null=True)
 
