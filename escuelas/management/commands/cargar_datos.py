@@ -45,12 +45,12 @@ class Command(BaseCommand):
         self.crear_estados_de_tareas()
         self.crear_prioridades_de_tareas()
 
-        self.importar_escuelas()
-        self.importar_contactos()
-        self.importar_pisos()
-        self.vincular_programas()
+        # self.importar_escuelas()
+        # self.importar_contactos()
+        # self.importar_pisos()
+        # self.vincular_programas()
         self.importar_tareas()
-        self.importar_comentarios_de_tareas()
+        # self.importar_comentarios_de_tareas()
 
     def crear_regiones(self):
         numeros = range(1, 26)
@@ -216,6 +216,9 @@ class Command(BaseCommand):
 
         for tarea in bar(tareas):
             log("Se intenta crear el registro con id_original: " + str(tarea['id_ticket_original']) + " y DNI de usuario: " + str(tarea['dni_usuario']))
+            log("Prioridad de la tarea: " + str(tarea['prioridad']))
+            log("Motivo de la tarea: " + unicode(tarea['motivo']))
+            log("Estado de la tarea: " + str(tarea['estado']))
 
             dni_usuario = tarea['dni_usuario']
 
@@ -249,9 +252,9 @@ class Command(BaseCommand):
             objeto_tarea.descripcion = tarea['descripcion']
             objeto_tarea.autor = objeto_autor
             objeto_tarea.escuela = objeto_escuela
-            objeto_tarea.motivo = objeto_motivo
-            objeto_tarea.estado = objeto_estado
-            objeto_tarea.prioridad = objeto_prioridad
+            objeto_tarea.motivoDeTarea = objeto_motivo
+            objeto_tarea.estadoDeTarea = objeto_estado
+            objeto_tarea.prioridadDeTarea = objeto_prioridad
 
             objeto_tarea.save()
 
