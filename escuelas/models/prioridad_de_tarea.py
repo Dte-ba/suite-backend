@@ -10,6 +10,3 @@ class PrioridadDeTarea(models.Model):
     class Meta:
         db_table = 'prioridadesDeTarea'
         verbose_name_plural = 'prioridadesDeTarea'
-
-    class JSONAPIMeta:
-        resource_name = "prioridadesDeTarea"

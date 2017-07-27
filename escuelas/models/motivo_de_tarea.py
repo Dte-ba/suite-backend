@@ -10,6 +10,3 @@ class MotivoDeTarea(models.Model):
     class Meta:
         db_table = 'motivosDeTarea'
         verbose_name_plural = 'motivosDeTarea'
-
-    class JSONAPIMeta:
-        resource_name = "motivosDeTarea"
