@@ -1,13 +1,13 @@
 # coding: utf-8
 from __future__ import unicode_literals
-
+from datetime import datetime
 import time
 from django.core.management.base import BaseCommand
 from escuelas import models
 import progressbar
 import requests
 
-MODO_VERBOSE = False
+MODO_VERBOSE = True
 
 def log(*k):
     global MODO_VERBOSE
@@ -30,27 +30,29 @@ class Command(BaseCommand):
     help = 'Genera todos los datos iniciales.'
 
     def handle(self, *args, **options):
-        self.importar_distritos_y_localidades()
-        self.crear_cargos_escolares()
-        self.crear_regiones()
-        self.crear_tipos_de_financiamiento()
-        self.crear_niveles()
-        self.crear_tipos_de_gestion()
-        self.crear_areas()
-        self.crear_programas()
-        self.crear_cargos()
-        self.crear_experiencias()
-        self.crear_contratos()
-        self.crear_motivos_de_tareas()
-        self.crear_estados_de_tareas()
-        self.crear_prioridades_de_tareas()
-
+        # self.importar_distritos_y_localidades()
+        # self.crear_cargos_escolares()
+        # self.crear_regiones()
+        # self.crear_tipos_de_financiamiento()
+        # self.crear_niveles()
+        # self.crear_tipos_de_gestion()
+        # self.crear_areas()
+        # self.crear_programas()
+        # self.crear_cargos()
+        # self.crear_experiencias()
+        # self.crear_contratos()
+        # self.crear_motivos_de_tareas()
+        # self.crear_estados_de_tareas()
+        # self.crear_prioridades_de_tareas()
+        #
         # self.importar_escuelas()
         # self.importar_contactos()
         # self.importar_pisos()
         # self.vincular_programas()
-        self.importar_tareas()
+        # self.importar_tareas()
         # self.importar_comentarios_de_tareas()
+
+        self.importar_eventos()
 
     def crear_regiones(self):
         numeros = range(1, 26)
@@ -74,7 +76,7 @@ class Command(BaseCommand):
         bar = barra_de_progreso(simple=False)
 
         for localidad in bar(localidades):
-            objeto_distrito, created = models.Distrito.objects.get_or_create(nombre=localidad['distrito'].title())
+            objeto_distrito, Localidadescreated = models.Distrito.objects.get_or_create(nombre=localidad['distrito'].title())
             objeto_localidad, created = models.Localidad.objects.get_or_create(nombre=localidad['localidad'].title())
 
             objeto_localidad.distrito = objeto_distrito
@@ -85,6 +87,73 @@ class Command(BaseCommand):
 
             if MODO_VERBOSE:
                 print objeto_distrito, " -> ", objeto_localidad, "de la", objeto_distrito.region
+
+    def importar_eventos(self):
+        eventos = self.obtener_datos_desde_api('eventos')['eventos']
+
+        print("Creando Eventos")
+        bar = barra_de_progreso(simple=False)
+
+        for evento in bar(eventos):
+            legacy_id = evento['legacy_id']
+            fecha_inicio = evento['fecha_inicio']
+            fecha_final = evento['fecha_final']
+            fecha_carga = evento['fecha_de_carga']
+            fecha = fecha_inicio.date()
+            cue = evento['cue']
+            responsable = evento['usuario']
+            dni_usuario = evento['dni_usuario']
+            objetivo = evento['objetivo']
+            cantidad_de_participantes = evento['cantidad_de_participantes']
+            minuta = evento['minuta']
+            acta = evento['acta']
+            categoria = evento['categoria']
+            subcategoria = evento['subcategoria']
+            titulo = categoria + " " + subcategoria
+
+            if MODO_VERBOSE:
+                print "Se intenta buscar evento asociado a cue: " + str(cue)
+
+            objeto_evento, created = models.Evento.objects.get_or_create(legacy_id=legacy_id)
+
+            try:
+                objeto_responsable = models.Perfil.objects.get(dni=dni_usuario)
+            except models.Perfil.DoesNotExist:
+                log("Error, no existe registro de usuario buscado %s. No se registrará el evento." %(dni_usuario))
+                # cantidad_de_tareas_omitidas += 1
+                continue
+
+            try:
+                objeto_escuela = models.Escuela.objects.get(cue=cue)
+            except models.Escuela.DoesNotExist:
+                log("Error, no existe la escuela buscada con cue %s. No se registrará el evento." %(cue))
+                # cantidad_de_comentarios_de_tareas_omitidos += 1
+                continue
+
+            objeto_evento.titulo = titulo
+            objeto_evento.responsable = objeto_responsable
+            objeto_evento.escuela = objeto_escuela
+            objeto_evento.save()
+
+
+            if MODO_VERBOSE:
+                print "=============================="
+                print "   SE HA CREADO EL REGISTRO   "
+                print "=============================="
+                print "legacy_id:               " + str(legacy_id)
+                print "Titulo:                  " + titulo
+                print "Fecha:                   " + fecha
+                print "Inicio:                  " + fecha_inicio
+                print "Fin:                     " + fecha_final
+                print "Categoria:               " + categoria
+                print "Subcategoria:            " + subcategoria
+                print "Objetivo:                " + objetivo
+                print "Acta:                    " + acta
+                print "Responsable:             " + objeto_responsable.apellido + ", " + objeto_responsable.nombre + " (dni " + dni_usuario + ")"
+                print "Fecha de creacion:       " + fecha_carga
+                print "Cant. de Participantes:  " + str(cantidad_de_participantes)
+                print "Escuela:                 " + objeto_escuela.nombre + " " + str(cue)
+                print "=============================="
 
     def importar_escuelas(self):
         resultado = self.obtener_datos_desde_api('escuelas')
