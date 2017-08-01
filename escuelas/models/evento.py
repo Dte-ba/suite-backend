@@ -6,6 +6,7 @@ class Evento(models.Model):
 
     titulo = models.CharField(max_length=512)
     fecha = models.DateField(default='2017-01-10')
+    fecha_fin = models.DateField(default='2017-01-10')
     inicio = models.TimeField(default='00:00:00')
     fin = models.TimeField(default='00:00:00')
     todoElDia = models.BooleanField(default=False)

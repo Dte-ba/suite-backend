@@ -1,13 +1,12 @@
 # coding: utf-8
 from __future__ import unicode_literals
-from datetime import datetime
 import time
 from django.core.management.base import BaseCommand
 from escuelas import models
 import progressbar
 import requests
 
-MODO_VERBOSE = True
+MODO_VERBOSE = False
 
 def log(*k):
     global MODO_VERBOSE
@@ -97,9 +96,10 @@ class Command(BaseCommand):
         for evento in bar(eventos):
             legacy_id = evento['legacy_id']
             fecha_inicio = evento['fecha_inicio']
+            hora_inicio = evento['hora_inicio']
             fecha_final = evento['fecha_final']
+            hora_final = evento['hora_final']
             fecha_carga = evento['fecha_de_carga']
-            fecha = fecha_inicio.date()
             cue = evento['cue']
             responsable = evento['usuario']
             dni_usuario = evento['dni_usuario']
@@ -131,6 +131,10 @@ class Command(BaseCommand):
                 continue
 
             objeto_evento.titulo = titulo
+            objeto_evento.fecha = fecha_inicio
+            objeto_evento.inicio = hora_inicio
+            objeto_evento.fecha_fin = fecha_final
+            objeto_evento.fin = hora_final
             objeto_evento.responsable = objeto_responsable
             objeto_evento.escuela = objeto_escuela
             objeto_evento.save()
@@ -142,9 +146,8 @@ class Command(BaseCommand):
                 print "=============================="
                 print "legacy_id:               " + str(legacy_id)
                 print "Titulo:                  " + titulo
-                print "Fecha:                   " + fecha
-                print "Inicio:                  " + fecha_inicio
-                print "Fin:                     " + fecha_final
+                print "Inicio:                  " + fecha_inicio + " " + hora_inicio
+                print "Fin:                     " + fecha_final + " " + hora_final
                 print "Categoria:               " + categoria
                 print "Subcategoria:            " + subcategoria
                 print "Objetivo:                " + objetivo
