@@ -29,29 +29,30 @@ class Command(BaseCommand):
     help = 'Genera todos los datos iniciales.'
 
     def handle(self, *args, **options):
-        # self.importar_distritos_y_localidades()
-        # self.crear_cargos_escolares()
-        # self.crear_regiones()
-        # self.crear_tipos_de_financiamiento()
-        # self.crear_niveles()
-        # self.crear_tipos_de_gestion()
-        # self.crear_areas()
-        # self.crear_programas()
-        # self.crear_cargos()
-        # self.crear_experiencias()
-        # self.crear_contratos()
-        # self.crear_motivos_de_tareas()
-        # self.crear_estados_de_tareas()
-        # self.crear_prioridades_de_tareas()
-        #
-        # self.importar_escuelas()
-        # self.importar_contactos()
-        # self.importar_pisos()
-        # self.vincular_programas()
-        # self.importar_tareas()
-        # self.importar_comentarios_de_tareas()
+        self.importar_distritos_y_localidades()
+        self.crear_cargos_escolares()
+        self.crear_regiones()
+        self.crear_tipos_de_financiamiento()
+        self.crear_niveles()
+        self.crear_tipos_de_gestion()
+        self.crear_areas()
+        self.crear_programas()
+        self.crear_cargos()
+        self.crear_experiencias()
+        self.crear_contratos()
+        self.crear_motivos_de_tareas()
+        self.crear_estados_de_tareas()
+        self.crear_prioridades_de_tareas()
+
+        self.importar_escuelas()
+        self.importar_contactos()
+        self.importar_pisos()
+        self.vincular_programas()
+        self.importar_tareas()
+        self.importar_comentarios_de_tareas()
 
         self.importar_eventos()
+        self.vincular_acompaniantes()
 
     def crear_regiones(self):
         numeros = range(1, 26)
@@ -404,6 +405,41 @@ class Command(BaseCommand):
 
             log("Se ha vinculado el registro:")
             log("Programa: ", programa['programa'], "a la escuela con CUE ", programa['cue'])
+            log("===========")
+
+    def vincular_acompaniantes(self):
+        acompaniantes = self.obtener_datos_desde_api('acompaniantes_eventos')['acompaniantes_eventos']
+
+        print("Vinculando Acompañantes de eventos")
+        bar = barra_de_progreso(simple=False)
+
+        for acompaniante in bar(acompaniantes):
+
+            legacy_id = acompaniante['legacy_id']
+            dni_usuario = acompaniante['dni_usuario']
+
+            log("Busando acompaniantes para legacy_id: ", legacy_id)
+
+            try:
+                objeto_evento = models.Evento.objects.get(legacy_id=legacy_id)
+            except models.Evento.DoesNotExist:
+                log("Error, no existe registro de evento con legacy_id %s. No se registrará el acompañante." %(legacy_id))
+                # cantidad_de_comentarios_de_tareas_omitidos += 1
+                continue
+
+            try:
+                objeto_acompaniante = models.Perfil.objects.get(dni=dni_usuario)
+            except models.Perfil.DoesNotExist:
+                log("Error, no existe registro de usuario buscado %s. No se registrará el acompañante." %(dni_usuario))
+                # cantidad_de_tareas_omitidas += 1
+                continue
+
+            objeto_evento.acompaniantes.add(models.Perfil.objects.get(dni=dni_usuario))
+
+            objeto_evento.save()
+
+            log("Se ha vinculado el registro:")
+            log("Acomaniante: ", acompaniante['nombre'], "al evento con legacy_id ", acompaniante['legacy_id'])
             log("===========")
 
     def obtener_datos_desde_api(self, data):
