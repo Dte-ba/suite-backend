@@ -190,3 +190,8 @@ class TareaViewSet(viewsets.ModelViewSet):
             queryset = queryset.filter(filtro_titulo | filtro_fechaDeAlta)
 
         return queryset
+
+class CategoriaDeEventoViewSet(viewsets.ModelViewSet):
+    resource_name = 'categoriasDeEventos'
+    queryset = models.CategoriaDeEvento.objects.all()
+    serializer_class = serializers.CategoriaDeEventoSerializer

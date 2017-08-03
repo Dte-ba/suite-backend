@@ -181,3 +181,9 @@ class TareaSerializer(CustomSerializer):
     class Meta:
         model = models.Tarea
         fields = ('titulo', 'fechaDeAlta', 'autor', 'responsable', 'descripcion', 'motivoDeTarea', 'estadoDeTarea', 'prioridadDeTarea', 'escuela', 'comentariosDeTarea')
+
+class CategoriaDeEventoSerializer(CustomSerializer):
+
+    class Meta:
+        model = models.CategoriaDeEvento
+        fields = '__all__'

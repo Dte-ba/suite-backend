@@ -46,6 +46,12 @@ admin.site.register(models.PrioridadDeTarea)
 admin.site.register(models.EstadoDeTarea)
 admin.site.register(models.ComentarioDeTarea)
 
+class CategoriaDeEventoAdmin(admin.ModelAdmin):
+    model = models.CategoriaDeEvento
+    list_display = ('nombre', )
+
+admin.site.register(models.CategoriaDeEvento, CategoriaDeEventoAdmin)
+
 class PisoAdmin(admin.ModelAdmin):
     model = models.Piso
     list_display = ('servidor', 'serie', 'ups', 'rack', 'estado', 'llave')

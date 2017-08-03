@@ -20,6 +20,7 @@ from prioridad_de_tarea import PrioridadDeTarea
 from motivo_de_tarea import MotivoDeTarea
 from estado_de_tarea import EstadoDeTarea
 from comentario_de_tarea import ComentarioDeTarea
+from categoria_de_evento import CategoriaDeEvento
 
 Contacto;
 Escuela;
@@ -43,3 +44,4 @@ PrioridadDeTarea;
 MotivoDeTarea;
 EstadoDeTarea;
 ComentarioDeTarea;
+CategoriaDeEvento;
