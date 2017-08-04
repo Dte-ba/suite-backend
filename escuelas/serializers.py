@@ -187,3 +187,18 @@ class CategoriaDeEventoSerializer(CustomSerializer):
     class Meta:
         model = models.CategoriaDeEvento
         fields = '__all__'
+
+class EstadoDeValidacionSerializer(CustomSerializer):
+
+    class Meta:
+        model = models.EstadoDeValidacion
+        fields = '__all__'
+
+class ValidacionSerializer(CustomSerializer):
+    autor = ResourceRelatedField(queryset=models.Perfil.objects)
+    escuela = ResourceRelatedField(queryset=models.Escuela.objects)
+    estado = ResourceRelatedField(queryset=models.EstadoDeValidacion.objects)
+
+    class Meta:
+        model = models.Validacion
+        fields = '__all__'

@@ -29,30 +29,32 @@ class Command(BaseCommand):
     help = 'Genera todos los datos iniciales.'
 
     def handle(self, *args, **options):
-        self.importar_distritos_y_localidades()
-        self.crear_cargos_escolares()
-        self.crear_regiones()
-        self.crear_tipos_de_financiamiento()
-        self.crear_niveles()
-        self.crear_tipos_de_gestion()
-        self.crear_areas()
-        self.crear_programas()
-        self.crear_cargos()
-        self.crear_experiencias()
-        self.crear_contratos()
-        self.crear_motivos_de_tareas()
-        self.crear_estados_de_tareas()
-        self.crear_prioridades_de_tareas()
+        # self.importar_distritos_y_localidades()
+        # self.crear_cargos_escolares()
+        # self.crear_regiones()
+        # self.crear_tipos_de_financiamiento()
+        # self.crear_niveles()
+        # self.crear_tipos_de_gestion()
+        # self.crear_areas()
+        # self.crear_programas()
+        # self.crear_cargos()
+        # self.crear_experiencias()
+        # self.crear_contratos()
+        # self.crear_motivos_de_tareas()
+        # self.crear_estados_de_tareas()
+        # self.crear_prioridades_de_tareas()
+        self.crear_estados_de_validaciones()
 
-        self.importar_escuelas()
-        self.importar_contactos()
-        self.importar_pisos()
-        self.vincular_programas()
-        self.importar_tareas()
-        self.importar_comentarios_de_tareas()
-
-        self.importar_eventos()
-        self.vincular_acompaniantes()
+        #
+        # self.importar_escuelas()
+        # self.importar_contactos()
+        # self.importar_pisos()
+        # self.vincular_programas()
+        # self.importar_tareas()
+        # self.importar_comentarios_de_tareas()
+        #
+        # self.importar_eventos()
+        # self.vincular_acompaniantes()
 
     def crear_regiones(self):
         numeros = range(1, 26)
@@ -495,6 +497,23 @@ class Command(BaseCommand):
 
         for nombre in bar(nombres):
             p, created = models.EstadoDeTarea.objects.get_or_create(nombre=nombre)
+            log(p)
+
+    def crear_estados_de_validaciones(self):
+        nombres = [
+            "Pendiente", #1
+            "Revisión", #2
+            "Cerrado", #3,
+            "Eliminado", #4
+            "Conformacion", #5
+            "No valida" #6
+        ]
+
+        print("Creando Estados de Validaciones")
+        bar = barra_de_progreso()
+
+        for nombre in bar(nombres):
+            p, created = models.EstadoDeValidacion.objects.get_or_create(nombre=nombre)
             log(p)
 
     def crear_prioridades_de_tareas(self):

@@ -46,6 +46,14 @@ admin.site.register(models.PrioridadDeTarea)
 admin.site.register(models.EstadoDeTarea)
 admin.site.register(models.ComentarioDeTarea)
 
+admin.site.register(models.EstadoDeValidacion)
+
+class ValidacionAdmin(admin.ModelAdmin):
+    model = models.Validacion
+    list_display = ('fechaDeAlta', 'autor', 'cantidad', 'estado', 'observaciones', 'escuela')
+
+admin.site.register(models.Validacion, ValidacionAdmin)
+
 class CategoriaDeEventoAdmin(admin.ModelAdmin):
     model = models.CategoriaDeEvento
     list_display = ('nombre', )

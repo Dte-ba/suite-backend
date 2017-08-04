@@ -21,6 +21,8 @@ from motivo_de_tarea import MotivoDeTarea
 from estado_de_tarea import EstadoDeTarea
 from comentario_de_tarea import ComentarioDeTarea
 from categoria_de_evento import CategoriaDeEvento
+from estado_de_validacion import EstadoDeValidacion
+from validacion import Validacion
 
 Contacto;
 Escuela;
@@ -45,3 +47,5 @@ MotivoDeTarea;
 EstadoDeTarea;
 ComentarioDeTarea;
 CategoriaDeEvento;
+EstadoDeValidacion;
+Validacion;
