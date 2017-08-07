@@ -71,6 +71,20 @@ class PerfilViewSet(viewsets.ModelViewSet):
     search_fields = ['nombre', 'apellido', 'dni', 'region__numero', 'cargo__nombre']
     filter_fields = ['region__numero']
 
+    def get_queryset(self):
+        queryset = models.Perfil.objects.all()
+        query = self.request.query_params.get('query', None)
+
+        if query:
+            filtro_nombre = Q(nombre__icontains=query)
+            filtro_apellido = Q(apellido__icontains=query)
+            filtro_dni = Q(dni__icontains=query)
+            filtro_cargo = Q(cargo__nombre__icontains=query)
+
+            queryset = queryset.filter(filtro_nombre | filtro_apellido | filtro_dni | filtro_cargo)
+
+        return queryset
+
 class MiPerfilViewSet(viewsets.ViewSet):
     authentication_classes = (TokenAuthentication,)
     permission_classes = (IsAuthenticated,)
