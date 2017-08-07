@@ -209,3 +209,8 @@ class CategoriaDeEventoViewSet(viewsets.ModelViewSet):
     resource_name = 'categoriasDeEventos'
     queryset = models.CategoriaDeEvento.objects.all()
     serializer_class = serializers.CategoriaDeEventoSerializer
+
+class MotivoDeConformacionViewSet(viewsets.ModelViewSet):
+    resource_name = 'motivosDeConformacion'
+    queryset = models.MotivoDeConformacion.objects.all()
+    serializer_class = serializers.MotivoDeConformacionSerializer

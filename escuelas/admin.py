@@ -21,6 +21,8 @@ admin.site.register(models.Escuela, EscuelaAdmin)
 admin.site.register(models.Evento, EventoAdmin)
 admin.site.register(models.Perfil, PerfilAdmin)
 
+admin.site.register(models.MotivoDeConformacion)
+
 admin.site.register(models.TipoDeFinanciamiento)
 admin.site.register(models.Nivel)
 admin.site.register(models.TipoDeGestion)

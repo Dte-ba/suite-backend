@@ -29,32 +29,32 @@ class Command(BaseCommand):
     help = 'Genera todos los datos iniciales.'
 
     def handle(self, *args, **options):
-        self.importar_distritos_y_localidades()
-        self.crear_cargos_escolares()
-        self.crear_regiones()
-        self.crear_tipos_de_financiamiento()
-        self.crear_niveles()
-        self.crear_tipos_de_gestion()
-        self.crear_areas()
-        self.crear_programas()
-        self.crear_cargos()
-        self.crear_experiencias()
-        self.crear_contratos()
-        self.crear_motivos_de_tareas()
-        self.crear_estados_de_tareas()
-        self.crear_prioridades_de_tareas()
-        self.crear_estados_de_validaciones()
-
+        # self.importar_distritos_y_localidades()
+        # self.crear_cargos_escolares()
+        # self.crear_regiones()
+        # self.crear_tipos_de_financiamiento()
+        # self.crear_niveles()
+        # self.crear_tipos_de_gestion()
+        # self.crear_areas()
+        # self.crear_programas()
+        # self.crear_cargos()
+        # self.crear_experiencias()
+        # self.crear_contratos()
+        # self.crear_motivos_de_tareas()
+        # self.crear_estados_de_tareas()
+        # self.crear_prioridades_de_tareas()
+        # self.crear_estados_de_validaciones()
+        self.crear_motivos_de_conformaciones()
         #
-        self.importar_escuelas()
-        self.importar_contactos()
-        self.importar_pisos()
-        self.vincular_programas()
-        self.importar_tareas()
-        self.importar_comentarios_de_tareas()
-
-        self.importar_eventos()
-        self.vincular_acompaniantes()
+        # self.importar_escuelas()
+        # self.importar_contactos()
+        # self.importar_pisos()
+        # self.vincular_programas()
+        # self.importar_tareas()
+        # self.importar_comentarios_de_tareas()
+        #
+        # self.importar_eventos()
+        # self.vincular_acompaniantes()
 
     def crear_regiones(self):
         numeros = range(1, 26)
@@ -482,6 +482,22 @@ class Command(BaseCommand):
 
         for nombre in bar(nombres):
             p, created = models.MotivoDeTarea.objects.get_or_create(nombre=nombre)
+            log(p)
+
+    def crear_motivos_de_conformaciones(self):
+        nombres = [
+            "Comparte Piso",
+            "Comparte Edificio",
+            "CUE Nuevo",
+            "CUE Anterior",
+            "Se Unificó"
+        ]
+
+        print("Creando Motivos de Conformaciones")
+        bar = barra_de_progreso()
+
+        for nombre in bar(nombres):
+            p, created = models.MotivoDeConformacion.objects.get_or_create(nombre=nombre)
             log(p)
 
     def crear_estados_de_tareas(self):

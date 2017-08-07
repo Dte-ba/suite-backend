@@ -17,9 +17,14 @@ class Escuela(models.Model):
     programas = models.ManyToManyField('Programa', related_name='escuelas')
     piso = models.ForeignKey('Piso', related_name='escuelas', default=None, blank=True, null=True)
 
+    # Para conformaciones
+    parent_id = models.ForeignKey('self', on_delete=models.CASCADE, default=None, blank=True, null=True) # ID de escuela principal
+    fechaConformacion = models.DateField(default=None, blank=True, null=True)
+    motivoDeConformacion = models.ForeignKey('MotivoDeConformacion', related_name='escuelas', default=None, blank=True, null=True)
+
 
     def __unicode__(self):
-        return self.nombre
+        return self.cue + " " + self.nombre
 
     class Meta:
         db_table = 'escuelas'

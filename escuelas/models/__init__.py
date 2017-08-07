@@ -23,6 +23,7 @@ from comentario_de_tarea import ComentarioDeTarea
 from categoria_de_evento import CategoriaDeEvento
 from estado_de_validacion import EstadoDeValidacion
 from validacion import Validacion
+from motivo_de_conformacion import MotivoDeConformacion
 
 Contacto;
 Escuela;
@@ -49,3 +50,4 @@ ComentarioDeTarea;
 CategoriaDeEvento;
 EstadoDeValidacion;
 Validacion;
+MotivoDeConformacion;
