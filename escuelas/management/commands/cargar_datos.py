@@ -45,6 +45,7 @@ class Command(BaseCommand):
         self.crear_prioridades_de_tareas()
         self.crear_estados_de_validaciones()
         self.crear_motivos_de_conformaciones()
+        self.crear_categorias_de_eventos()
 
         self.importar_distritos_y_localidades()
         self.importar_escuelas()
@@ -699,4 +700,33 @@ class Command(BaseCommand):
 
         for nombre in bar(nombres):
             p, created = models.CargoEscolar.objects.get_or_create(nombre=nombre)
+            log(p)
+
+    def crear_categorias_de_eventos(self):
+        nombres = [
+            "Acciones especiales/Congresos",
+            "Acciones especiales/Desembarcos",
+            "Acciones especiales/Encuentros masivos",
+            "Acciones especiales/Prácticas profesionales",
+            "Asistencia/Administrativa",
+            "Asistencia/Pedagógica",
+            "Asistencia/Técnica",
+            "Escuelas del futuro/Seguimiento de actividades",
+            "Escuelas del futuro/Seguimiento de acciones",
+            "Capacitaciones/Sensibilización",
+            "Capacitaciones/Docentes",
+            "Capacitaciones/Alumnos",
+            "Reunión/Online",
+            "Reunión/Inspectores",
+            "Reunión/Referente de área",
+            "Reunión/Equipo",
+            "Reunión/Planificación",
+            "Reunión/Región Central",
+            ]
+
+        print("Creando Categorías de eventos")
+        bar = barra_de_progreso()
+
+        for nombre in bar(nombres):
+            p, created = models.CategoriaDeEvento.objects.get_or_create(nombre=nombre)
             log(p)
