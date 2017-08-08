@@ -37,7 +37,10 @@ class EscuelaViewSet(viewsets.ModelViewSet):
     filter_fields = ['localidad__distrito__region__numero']
 
     def get_queryset(self):
-        queryset = models.Escuela.objects.all()
+        solo_padre = Q(padre__isnull=True)
+        queryset = models.Escuela.objects.filter(solo_padre)
+
+        # queryset = models.Escuela.objects.all()
         query = self.request.query_params.get('query', None)
 
         if query:

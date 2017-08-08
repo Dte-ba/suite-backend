@@ -18,7 +18,7 @@ class Escuela(models.Model):
     piso = models.ForeignKey('Piso', related_name='escuelas', default=None, blank=True, null=True)
 
     # Para conformaciones
-    parent_id = models.ForeignKey('self', on_delete=models.CASCADE, default=None, blank=True, null=True) # ID de escuela principal
+    padre = models.ForeignKey('self', on_delete=models.CASCADE, default=None, blank=True, null=True) # ID de escuela principal
     fechaConformacion = models.DateField(default=None, blank=True, null=True)
     motivoDeConformacion = models.ForeignKey('MotivoDeConformacion', related_name='escuelas', default=None, blank=True, null=True)
 

@@ -118,12 +118,12 @@ class EscuelaSerializer(CustomSerializer):
     programas = ProgramaSerializer(many=True, read_only=True)
     piso = PisoSerializer()
     contactos = ContactoSerializer(many=True, read_only=True)
-    parent_id = ResourceRelatedField(queryset=models.Escuela.objects)
+    padre = ResourceRelatedField(queryset=models.Escuela.objects)
     motivoDeConformacion = ResourceRelatedField(queryset=models.MotivoDeConformacion.objects)
 
     class Meta:
         model = models.Escuela
-        fields = ('cue', 'nombre', 'direccion', 'telefono', 'email', 'latitud', 'longitud', 'localidad', 'tipoDeFinanciamiento', 'nivel', 'tipoDeGestion', 'area', 'programas', 'piso', 'contactos', 'parent_id', 'fechaConformacion', 'motivoDeConformacion')
+        fields = ('cue', 'nombre', 'direccion', 'telefono', 'email', 'latitud', 'longitud', 'localidad', 'tipoDeFinanciamiento', 'nivel', 'tipoDeGestion', 'area', 'programas', 'piso', 'contactos', 'padre', 'fechaConformacion', 'motivoDeConformacion')
 
     # class JSONAPIMeta:
     #     included_resources = ['localidad']

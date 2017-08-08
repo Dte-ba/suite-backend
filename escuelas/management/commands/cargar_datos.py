@@ -29,32 +29,33 @@ class Command(BaseCommand):
     help = 'Genera todos los datos iniciales.'
 
     def handle(self, *args, **options):
-        # self.importar_distritos_y_localidades()
-        # self.crear_cargos_escolares()
-        # self.crear_regiones()
-        # self.crear_tipos_de_financiamiento()
-        # self.crear_niveles()
-        # self.crear_tipos_de_gestion()
-        # self.crear_areas()
-        # self.crear_programas()
-        # self.crear_cargos()
-        # self.crear_experiencias()
-        # self.crear_contratos()
-        # self.crear_motivos_de_tareas()
-        # self.crear_estados_de_tareas()
-        # self.crear_prioridades_de_tareas()
-        # self.crear_estados_de_validaciones()
+
+        self.crear_cargos_escolares()
+        self.crear_regiones()
+        self.crear_tipos_de_financiamiento()
+        self.crear_niveles()
+        self.crear_tipos_de_gestion()
+        self.crear_areas()
+        self.crear_programas()
+        self.crear_cargos()
+        self.crear_experiencias()
+        self.crear_contratos()
+        self.crear_motivos_de_tareas()
+        self.crear_estados_de_tareas()
+        self.crear_prioridades_de_tareas()
+        self.crear_estados_de_validaciones()
         self.crear_motivos_de_conformaciones()
-        #
-        # self.importar_escuelas()
-        # self.importar_contactos()
-        # self.importar_pisos()
-        # self.vincular_programas()
-        # self.importar_tareas()
-        # self.importar_comentarios_de_tareas()
-        #
-        # self.importar_eventos()
-        # self.vincular_acompaniantes()
+
+        self.importar_distritos_y_localidades()
+        self.importar_escuelas()
+        self.importar_contactos()
+        self.importar_pisos()
+        self.vincular_programas()
+        self.importar_tareas()
+        self.importar_comentarios_de_tareas()
+        self.importar_eventos()
+        self.vincular_acompaniantes()
+        self.importar_conformaciones()
 
     def crear_regiones(self):
         numeros = range(1, 26)
@@ -205,6 +206,43 @@ class Command(BaseCommand):
             log("Se ha creado el registro:")
             log(objeto_escuela, "\n CUE: ", objeto_escuela.cue, "\n Direccion: ", objeto_escuela.direccion, "\n Tel: ", objeto_escuela.telefono, "\n ", objeto_escuela.localidad, "\n ", objeto_escuela.area, "\n ", objeto_escuela.nivel, "\n ", objeto_escuela.tipoDeFinanciamiento, "\n ", objeto_escuela.tipoDeGestion)
             log("===========")
+
+    def importar_conformaciones(self):
+        resultado = self.obtener_datos_desde_api('conformaciones')
+
+        print("Se importarán %d conformaciones en total." %(resultado['cantidad']))
+        esperar(2)
+
+        conformaciones = resultado['conformaciones']
+
+        bar = barra_de_progreso(simple=False)
+
+        for conformacion in bar(conformaciones):
+
+            cue_conformado = conformacion['cue_conformado']
+            cue_principal = conformacion['cue_principal']
+            motivo = conformacion['motivo']
+            fecha = conformacion['fecha']
+
+            if MODO_VERBOSE:
+                print "Intentando crear conformacion de escuela `", cue_conformado, "` con la escuela padre ", cue_principal, " y motivo ", motivo
+                print "======================================================================================================"
+                print "Escuela ", cue_conformado, " queda conformada con padre ", cue_principal
+                print "Fecha:   ", fecha
+                print "Motivo:  ", motivo
+                print "======================================================================================================"
+
+            objeto_escuela = models.Escuela.objects.get(cue=cue_conformado)
+            escuela_padre = models.Escuela.objects.get(cue=cue_principal)
+            objeto_motivo = models.MotivoDeConformacion.objects.get(nombre=motivo)
+
+            objeto_escuela.padre = escuela_padre
+            objeto_escuela.fechaConformacion = fecha
+            objeto_escuela.motivoDeConformacion = objeto_motivo
+
+            objeto_escuela.save()
+
+
 
     def importar_contactos(self):
         contactos = self.obtener_datos_desde_api('contactos')['contactos']
