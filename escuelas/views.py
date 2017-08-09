@@ -59,6 +59,21 @@ class EventoViewSet(viewsets.ModelViewSet):
     resource_name = 'eventos'
     queryset = models.Evento.objects.all()
     serializer_class = serializers.EventoSerializer
+    filter_backends = [SearchFilter, DjangoFilterBackend]
+    search_fields = ['escuela__nombre', 'escuela__cue']
+    filter_fields = ['escuela__cue']
+
+    def get_queryset(self):
+        queryset = models.Evento.objects.all()
+        query = self.request.query_params.get('query', None)
+
+        if query:
+            filtro_escuela = Q(escuela__nombre__icontains=query)
+            filtro_escuela_cue = Q(escuela__cue__icontains=query)
+
+            queryset = queryset.filter(filtro_escuela | filtro_escuela_cue)
+
+        return queryset
 
 class RegionViewSet(viewsets.ModelViewSet):
     resource_name = 'regiones'
