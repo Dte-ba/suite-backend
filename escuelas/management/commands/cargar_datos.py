@@ -6,7 +6,7 @@ from escuelas import models
 import progressbar
 import requests
 
-MODO_VERBOSE = False
+MODO_VERBOSE = True
 
 def log(*k):
     global MODO_VERBOSE
@@ -57,6 +57,8 @@ class Command(BaseCommand):
         self.importar_eventos()
         self.vincular_acompaniantes()
         self.importar_conformaciones()
+        self.importar_validaciones()
+        self.importar_comentarios_de_validaciones()
 
     def crear_regiones(self):
         numeros = range(1, 26)
@@ -243,6 +245,162 @@ class Command(BaseCommand):
 
             objeto_escuela.save()
 
+    def importar_validaciones(self):
+        resultado = self.obtener_datos_desde_api('validaciones')
+        cantidad_de_validaciones_creadas = 0
+        cantidad_de_validaciones_omitidas = 0
+        cantidad_de_validaciones_sin_escuela = 0
+        cantidad_de_validaciones_sin_usuario = 0
+        cantidad_de_validaciones_con_motivo_erroneo = 0
+
+        print("Se importarán %d validaciones en total." %(resultado['cantidad']))
+        esperar(2)
+
+        validaciones = resultado['validaciones']
+
+        bar = barra_de_progreso(simple=False)
+
+        for validacion in bar(validaciones):
+
+            legacy_id = validacion['legacy_id']
+            cue = validacion['cue']
+            escuela = validacion['escuela']
+            dni_usuario = validacion['dni_usuario']
+            usuario = validacion['usuario']
+            estado = validacion['estado']
+            fecha = validacion['fecha_de_alta']
+
+            if estado==1:
+                estado = "Pendiente"
+            elif estado==2:
+                estado = "Objetada"
+            elif estado==3:
+                estado = "Aprobada"
+            else:
+                estado = "NO IMPORTAR"
+
+            if MODO_VERBOSE:
+                print "Intentando crear validacion con legacy_id ", legacy_id, " y estado ", estado
+                print "======================================================================================================"
+                print "Escuela ", escuela, "  ", cue
+                print "Usuario: ", usuario, " (", dni_usuario, ")"
+                print "Fecha:   ", fecha
+                print "Estado:  ", estado
+                print "======================================================================================================"
+
+
+            try:
+                objeto_escuela = models.Escuela.objects.get(cue=cue)
+            except models.Escuela.DoesNotExist:
+                log("Error, no existe la escuela con cue %s. Se ignora el registro." %(cue))
+                cantidad_de_validaciones_omitidas += 1
+                cantidad_de_validaciones_sin_escuela += 1
+                continue
+
+            try:
+                objeto_usuario = models.Perfil.objects.get(dni=dni_usuario)
+            except models.Perfil.DoesNotExist:
+                log("Error, no existe el usuario con dni %s. Se ignora el registro." %(dni_usuario))
+                cantidad_de_validaciones_omitidas += 1
+                cantidad_de_validaciones_sin_usuario += 1
+                continue
+
+
+
+            try:
+                objeto_estado = models.EstadoDeValidacion.objects.get(nombre=estado)
+            except models.EstadoDeValidacion.DoesNotExist:
+                log("Error, estado %s no corresponde. Se ignora el registro." %(estado))
+                cantidad_de_validaciones_omitidas += 1
+                cantidad_de_validaciones_con_motivo_erroneo += 1
+                continue
+
+
+            objeto_validacion, created = models.Validacion.objects.get_or_create(legacy_id=legacy_id)
+            objeto_validacion.fechaDeAlta = fecha
+            objeto_validacion.autor = objeto_usuario
+            objeto_validacion.estado = objeto_estado
+            objeto_validacion.escuela = objeto_escuela
+
+            objeto_validacion.save()
+
+            cantidad_de_validaciones_creadas += 1
+
+        print("Resumen de validaciones:")
+        print("   Se crearon %d validaciones correctamente." %(cantidad_de_validaciones_creadas))
+        print("   Se evitaron crear %d validaciones:" %(cantidad_de_validaciones_omitidas))
+        print("     No se encontró la escuela de %s validaciones:" %(cantidad_de_validaciones_sin_escuela))
+        print("     No se encontró el usuario de %s validaciones:" %(cantidad_de_validaciones_sin_usuario))
+        print("     Hay %s validaciones con estado erróneo:" %(cantidad_de_validaciones_con_motivo_erroneo))
+
+    def importar_comentarios_de_validaciones(self):
+        resultado = self.obtener_datos_desde_api('historial_validaciones')
+        cantidad_de_validaciones_creadas = 0
+        cantidad_de_validaciones_omitidas = 0
+        cantidad_de_validaciones_sin_escuela = 0
+        cantidad_de_validaciones_sin_usuario = 0
+        cantidad_de_validaciones_con_motivo_erroneo = 0
+
+        print("Se importarán %d comentarios de validaciones en total." %(resultado['cantidad']))
+        esperar(2)
+
+        comentarios = resultado['historial_validaciones']
+
+        bar = barra_de_progreso(simple=False)
+
+        for comentario in bar(comentarios):
+
+            cantidad = comentario['cantidad']
+            usuario = comentario['usuario']
+            dni_usuario = comentario['dni_usuario']
+            fecha = comentario['fecha']
+            legacy_id = comentario['legacy_id']
+            validacion = comentario['validacion_legacy_id']
+            comentario = comentario['observaciones']
+
+            if MODO_VERBOSE:
+                print "Intentando crear comentario de validacion con legacy_id ", legacy_id
+                print "======================================================================================================"
+                print "ID Validacion:", validacion
+                print "Usuario: ", usuario, " (", dni_usuario, ")"
+                print "Fecha:   ", fecha
+                print "Comentario:  ", comentario
+                print "======================================================================================================"
+
+
+            try:
+                objeto_usuario = models.Perfil.objects.get(dni=dni_usuario)
+            except models.Perfil.DoesNotExist:
+                log("Error, no existe el usuario con dni %s. Se ignora el registro." %(dni_usuario))
+                cantidad_de_validaciones_omitidas += 1
+                cantidad_de_validaciones_sin_usuario += 1
+                continue
+
+            try:
+                objeto_validacion = models.Validacion.objects.get(legacy_id=validacion)
+            except models.Validacion.DoesNotExist:
+                log("Error, no existe la validacion con legacy_id %s. Se ignora el registro." %(validacion))
+                cantidad_de_validaciones_omitidas += 1
+                cantidad_de_validaciones_con_motivo_erroneo += 1
+                continue
+
+
+            objeto_comentario_de_validacion, created = models.ComentarioDeValidacion.objects.get_or_create(legacy_id=legacy_id)
+            objeto_comentario_de_validacion.validacion = objeto_validacion
+            objeto_comentario_de_validacion.fecha = fecha
+            objeto_comentario_de_validacion.autor = objeto_usuario
+            objeto_comentario_de_validacion.comentario = comentario
+            objeto_comentario_de_validacion.cantidad = cantidad
+
+            objeto_comentario_de_validacion.save()
+
+            cantidad_de_validaciones_creadas += 1
+
+        print("Resumen de comentarios de validaciones:")
+        print("   Se crearon %d comentarios correctamente." %(cantidad_de_validaciones_creadas))
+        print("   Se evitaron crear %d comentarios:" %(cantidad_de_validaciones_omitidas))
+        print("     No se encontró la validacion correspondiente a %s comentarios:" %(cantidad_de_validaciones_con_motivo_erroneo))
+        print("     No se encontró el usuario de %s comentarios:" %(cantidad_de_validaciones_sin_usuario))
 
 
     def importar_contactos(self):
@@ -556,12 +714,15 @@ class Command(BaseCommand):
 
     def crear_estados_de_validaciones(self):
         nombres = [
-            "Pendiente", #1
-            "Revisión", #2
-            "Cerrado", #3,
-            "Eliminado", #4
-            "Conformacion", #5
-            "No valida" #6
+            "Pendiente",
+            "Objetada",
+            "Aprobada"
+            # "Pendiente", #1
+            # "Revisión", #2
+            # "Cerrado", #3,
+            # "Eliminado", #4
+            # "Conformacion", #5
+            # "No valida" #6
         ]
 
         print("Creando Estados de Validaciones")

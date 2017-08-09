@@ -51,11 +51,18 @@ admin.site.register(models.ComentarioDeTarea)
 
 admin.site.register(models.EstadoDeValidacion)
 
+class ComentarioDeValidacionInline(admin.TabularInline):
+    model = models.ComentarioDeValidacion
+
 class ValidacionAdmin(admin.ModelAdmin):
     model = models.Validacion
     list_display = ('fechaDeAlta', 'autor', 'cantidad', 'estado', 'observaciones', 'escuela')
+    inlines = [
+        ComentarioDeValidacionInline,
+    ]
 
 admin.site.register(models.Validacion, ValidacionAdmin)
+admin.site.register(models.ComentarioDeValidacion)
 
 class CategoriaDeEventoAdmin(admin.ModelAdmin):
     model = models.CategoriaDeEvento

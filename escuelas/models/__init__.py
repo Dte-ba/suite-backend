@@ -24,6 +24,7 @@ from categoria_de_evento import CategoriaDeEvento
 from estado_de_validacion import EstadoDeValidacion
 from validacion import Validacion
 from motivo_de_conformacion import MotivoDeConformacion
+from comentario_de_validacion import ComentarioDeValidacion
 
 Contacto;
 Escuela;
@@ -51,3 +52,4 @@ CategoriaDeEvento;
 EstadoDeValidacion;
 Validacion;
 MotivoDeConformacion;
+ComentarioDeValidacion;
