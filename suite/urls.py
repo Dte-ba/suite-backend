@@ -32,6 +32,9 @@ router.register(r'estado-de-tareas', views.EstadoDeTareaViewSet)
 router.register(r'prioridad-de-tareas', views.PrioridadDeTareaViewSet)
 router.register(r'tareas', views.TareaViewSet)
 router.register(r'categorias-de-eventos', views.CategoriaDeEventoViewSet)
+router.register(r'comentarios-de-validacion', views.ComentarioDeValidacionViewSet)
+router.register(r'validaciones', views.ValidacionViewSet)
+router.register(r'estados-de-validacion', views.EstadoDeValidacionViewSet)
 
 router.register(r'mi-perfil', views.MiPerfilViewSet, 'Perfil')
 

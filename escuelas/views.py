@@ -217,3 +217,31 @@ class MotivoDeConformacionViewSet(viewsets.ModelViewSet):
     resource_name = 'motivosDeConformacion'
     queryset = models.MotivoDeConformacion.objects.all()
     serializer_class = serializers.MotivoDeConformacionSerializer
+
+class EstadoDeValidacionViewSet(viewsets.ModelViewSet):
+    queryset = models.EstadoDeValidacion.objects.all()
+    serializer_class = serializers.EstadoDeValidacionSerializer
+
+class ComentarioDeValidacionViewSet(viewsets.ModelViewSet):
+    queryset = models.ComentarioDeValidacion.objects.all()
+    serializer_class = serializers.ComentarioDeValidacionSerializer
+
+class ValidacionViewSet(viewsets.ModelViewSet):
+    queryset = models.Validacion.objects.all()
+    serializer_class = serializers.ValidacionSerializer
+    filter_backends = [SearchFilter, DjangoFilterBackend]
+    search_fields = ['autor__nombre', 'escuela__nombre', 'escuela__cue']
+    filter_fields = ['escuela__nombre']
+
+    def get_queryset(self):
+        queryset = models.Validacion.objects.all()
+        query = self.request.query_params.get('query', None)
+
+        if query:
+            filtro_autor = Q(autor__nombre__icontains=query)
+            filtro_escuela = Q(escuela__nombre__icontains=query)
+            filtro_escuela_cue = Q(escuela__cue__icontains=query)
+
+            queryset = queryset.filter(filtro_autor | filtro_escuela | filtro_escuela_cue)
+
+        return queryset

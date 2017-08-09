@@ -10,3 +10,6 @@ class EstadoDeValidacion(models.Model):
     class Meta:
         db_table = 'estadosDeValidacion'
         verbose_name_plural = 'estadosDeValidacion'
+
+    class JSONAPIMeta:
+        resource_name = 'estados-de-validacion'

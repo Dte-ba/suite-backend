@@ -202,11 +202,21 @@ class EstadoDeValidacionSerializer(CustomSerializer):
         model = models.EstadoDeValidacion
         fields = '__all__'
 
+
+class ComentarioDeValidacionSerializer(CustomSerializer):
+
+    autor = ResourceRelatedField(queryset=models.Perfil.objects)
+
+    class Meta:
+        model = models.ComentarioDeValidacion
+        fields = '__all__'
+
 class ValidacionSerializer(CustomSerializer):
     autor = ResourceRelatedField(queryset=models.Perfil.objects)
     escuela = ResourceRelatedField(queryset=models.Escuela.objects)
     estado = ResourceRelatedField(queryset=models.EstadoDeValidacion.objects)
+    comentariosDeValidacion = ResourceRelatedField(queryset=models.ComentarioDeValidacion.objects, many=True)
 
     class Meta:
         model = models.Validacion
-        fields = '__all__'
+        fields = ('autor', 'fechaDeAlta', 'escuela', 'estado', 'comentariosDeValidacion')

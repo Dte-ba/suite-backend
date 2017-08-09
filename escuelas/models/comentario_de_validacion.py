@@ -16,3 +16,6 @@ class ComentarioDeValidacion(models.Model):
     class Meta:
         db_table = 'comentariosDeValidacion'
         verbose_name_plural = "comentariosDeValidacion"
+
+    class JSONAPIMeta:
+        resource_name = 'comentarios-de-validacion'
