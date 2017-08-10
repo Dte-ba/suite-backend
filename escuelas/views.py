@@ -33,7 +33,7 @@ class EscuelaViewSet(viewsets.ModelViewSet):
     queryset = models.Escuela.objects.all()
     serializer_class = serializers.EscuelaSerializer
     filter_backends = [SearchFilter, DjangoFilterBackend]
-    search_fields = ['cue', 'nombre']
+    search_fields = ['cue', 'nombre', 'localidad__nombre', 'nivel__nombre', 'programas__nombre']
     filter_fields = ['localidad__distrito__region__numero']
 
     def get_queryset(self):
@@ -46,8 +46,11 @@ class EscuelaViewSet(viewsets.ModelViewSet):
         if query:
             filtro_cue = Q(cue__icontains=query)
             filtro_nombre = Q(nombre__icontains=query)
+            filtro_localidad = Q(localidad__nombre__icontains=query)
+            filtro_nivel = Q(nivel__nombre__icontains=query)
+            filtro_programas = Q(programas__nombre__icontains=query)
 
-            queryset = queryset.filter(filtro_cue | filtro_nombre)
+            queryset = queryset.filter(filtro_cue | filtro_nombre | filtro_localidad | filtro_nivel | filtro_programas)
 
         return queryset
 
