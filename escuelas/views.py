@@ -248,7 +248,7 @@ class ValidacionViewSet(viewsets.ModelViewSet):
     queryset = models.Validacion.objects.all()
     serializer_class = serializers.ValidacionSerializer
     filter_backends = [SearchFilter, DjangoFilterBackend]
-    search_fields = ['autor__nombre', 'escuela__nombre', 'escuela__cue']
+    search_fields = ['autor__nombre', 'escuela__nombre', 'escuela__cue', 'estado__nombre']
     filter_fields = ['escuela__nombre']
 
     def get_queryset(self):
@@ -259,7 +259,8 @@ class ValidacionViewSet(viewsets.ModelViewSet):
             filtro_autor = Q(autor__nombre__icontains=query)
             filtro_escuela = Q(escuela__nombre__icontains=query)
             filtro_escuela_cue = Q(escuela__cue__icontains=query)
+            filtro_estado = Q(estado__nombre__icontains=query)
 
-            queryset = queryset.filter(filtro_autor | filtro_escuela | filtro_escuela_cue)
+            queryset = queryset.filter(filtro_autor | filtro_escuela | filtro_escuela_cue | filtro_estado)
 
         return queryset
