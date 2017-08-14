@@ -10,6 +10,8 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.filters import SearchFilter
 from rest_framework.filters import DjangoFilterBackend
 
+from rest_framework.decorators import detail_route, list_route
+
 import serializers
 import models
 
@@ -264,3 +266,12 @@ class ValidacionViewSet(viewsets.ModelViewSet):
             queryset = queryset.filter(filtro_autor | filtro_escuela | filtro_escuela_cue | filtro_estado)
 
         return queryset
+
+    @list_route(methods=['get'])
+    def estadistica(self, request):
+        estadisticas = {
+            "aprobadas": models.Validacion.objects.filter(estado__nombre="Aprobada").count(),
+            "objetadas": models.Validacion.objects.filter(estado__nombre="Objetada").count(),
+            "pendientes": models.Validacion.objects.filter(estado__nombre="Pendiente").count(),
+        }
+        return Response(estadisticas)
