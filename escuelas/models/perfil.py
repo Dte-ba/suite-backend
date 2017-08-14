@@ -24,6 +24,7 @@ class Perfil(models.Model):
     cuit = models.CharField(max_length=200, default="0000")
     cbu = models.CharField(max_length=50, default=None, blank=True, null=True)
     email = models.CharField(max_length=200, default=None, blank=True, null=True)
+    estado = models.BooleanField(default=1)
 
     # Dirección Particular
     direccionCalle = models.CharField(max_length=200, default=None, blank=True, null=True)
