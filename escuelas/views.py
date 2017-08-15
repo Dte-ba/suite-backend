@@ -253,6 +253,16 @@ class TareaViewSet(viewsets.ModelViewSet):
 
         return queryset
 
+    @list_route(methods=['get'])
+    def estadistica(self, request):
+        estadisticas = {
+            "total": models.Tarea.objects.all().count(),
+            "pendientes": models.Tarea.objects.filter(estadoDeTarea__nombre="Abierto").count(),
+            "enProgreso": models.Tarea.objects.filter(estadoDeTarea__nombre="En Progreso").count(),
+            "prioridadAlta": models.Tarea.objects.filter(prioridadDeTarea__nombre="Alta").exclude(estadoDeTarea__nombre="Cerrado").count(),
+        }
+        return Response(estadisticas)
+
 class CategoriaDeEventoViewSet(viewsets.ModelViewSet):
     resource_name = 'categoriasDeEventos'
     queryset = models.CategoriaDeEvento.objects.all()
