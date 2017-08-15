@@ -20,8 +20,9 @@ def crear_usuario_de_prueba(email, nombre, region=1):
     try:
         user = User.objects.get(username=email)
     except User.DoesNotExist:
-        user = User.objects.create_superuser(email, email=email, password=default_pass)
-
+        user = User.objects.create_superuser(email, email=email)
+        user.set_password(default_pass)
+        
     user.save()
     perfil = models.Perfil.objects.get(user=user)
     perfil.nombre = nombre
