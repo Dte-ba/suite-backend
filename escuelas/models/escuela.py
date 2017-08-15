@@ -22,6 +22,7 @@ class Escuela(models.Model):
     fechaConformacion = models.DateField(default=None, blank=True, null=True)
     motivoDeConformacion = models.ForeignKey('MotivoDeConformacion', related_name='escuelas', default=None, blank=True, null=True)
 
+    estado = models.BooleanField(default=True, blank=True) # True = Abierta, False= Cerrada
 
     def __unicode__(self):
         return self.cue + " " + self.nombre

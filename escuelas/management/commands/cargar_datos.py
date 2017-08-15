@@ -30,25 +30,25 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
 
-        self.crear_cargos_escolares()
-        self.crear_regiones()
-        self.crear_tipos_de_financiamiento()
-        self.crear_niveles()
-        self.crear_tipos_de_gestion()
-        self.crear_areas()
-        self.crear_programas()
-        self.crear_cargos()
-        self.crear_experiencias()
-        self.crear_contratos()
-        self.crear_motivos_de_tareas()
-        self.crear_estados_de_tareas()
-        self.crear_prioridades_de_tareas()
-        self.crear_estados_de_validaciones()
-        self.crear_motivos_de_conformaciones()
-        self.crear_categorias_de_eventos()
+        # self.crear_cargos_escolares()
+        # self.crear_regiones()
+        # self.crear_tipos_de_financiamiento()
+        # self.crear_niveles()
+        # self.crear_tipos_de_gestion()
+        # self.crear_areas()
+        # self.crear_programas()
+        # self.crear_cargos()
+        # self.crear_experiencias()
+        # self.crear_contratos()
+        # self.crear_motivos_de_tareas()
+        # self.crear_estados_de_tareas()
+        # self.crear_prioridades_de_tareas()
+        # self.crear_estados_de_validaciones()
+        # self.crear_motivos_de_conformaciones()
+        # self.crear_categorias_de_eventos()
 
 #        self.importar_distritos_y_localidades()
-#        self.importar_escuelas()
+        # self.importar_escuelas()
 #        self.importar_contactos()
 #        self.importar_pisos()
 #        self.vincular_programas()
@@ -57,7 +57,7 @@ class Command(BaseCommand):
 #        self.importar_eventos()
 #        self.vincular_acompaniantes()
 #        self.importar_conformaciones()
-        self.importar_validaciones()
+        # self.importar_validaciones()
         self.importar_comentarios_de_validaciones()
 
     def crear_regiones(self):
@@ -203,6 +203,8 @@ class Command(BaseCommand):
             objeto_escuela.nivel = objeto_nivel
             objeto_escuela.tipoDeGestion = objeto_tipoDeGestion
             #objeto_escuela.programas = objeto_programa
+
+            objeto_escuela.estado = True
 
             objeto_escuela.save()
 

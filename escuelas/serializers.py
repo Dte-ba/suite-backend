@@ -129,7 +129,7 @@ class EscuelaSerializer(CustomSerializer):
 
     class Meta:
         model = models.Escuela
-        fields = ('cue', 'nombre', 'direccion', 'telefono', 'email', 'latitud', 'longitud', 'localidad', 'tipoDeFinanciamiento', 'nivel', 'tipoDeGestion', 'area', 'programas', 'piso', 'contactos', 'padre', 'fechaConformacion', 'motivoDeConformacion')
+        fields = ('cue', 'nombre', 'direccion', 'telefono', 'email', 'latitud', 'longitud', 'localidad', 'tipoDeFinanciamiento', 'nivel', 'tipoDeGestion', 'area', 'programas', 'piso', 'contactos', 'padre', 'fechaConformacion', 'motivoDeConformacion', 'estado')
 
     # class JSONAPIMeta:
     #     included_resources = ['localidad']

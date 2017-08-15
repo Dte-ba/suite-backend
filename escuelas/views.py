@@ -56,6 +56,22 @@ class EscuelaViewSet(viewsets.ModelViewSet):
 
         return queryset
 
+    @list_route(methods=['get'])
+    def estadistica(self, request):
+        estadisticas = {
+            "total": models.Escuela.objects.all().count(),
+            "abiertas": models.Escuela.objects.filter(estado=True).count(),
+            "cerradas": models.Escuela.objects.filter(estado=False).count(),
+            "pisoRoto": models.Escuela.objects.filter(piso__estado=False).count(),
+            "pisoFuncionando": models.Escuela.objects.filter(piso__estado=True).count(),
+            "conectarIgualdad": models.Escuela.objects.filter(programas__nombre="Conectar Igualdad").count(),
+            "pad": models.Escuela.objects.filter(programas__nombre="PAD").count(),
+            "responsabilidadEmpresarial": models.Escuela.objects.filter(programas__nombre="Responsabilidad Empresarial").count(),
+            "primariaDigital": models.Escuela.objects.filter(programas__nombre="Primaria Digital").count(),
+            "escuelasDelFuturo": models.Escuela.objects.filter(programas__nombre="Escuelas del Futuro").count(),
+        }
+        return Response(estadisticas)
+
 class ContactoViewSet(viewsets.ModelViewSet):
     queryset = models.Contacto.objects.all()
     serializer_class = serializers.ContactoSerializer
@@ -107,6 +123,15 @@ class PerfilViewSet(viewsets.ModelViewSet):
             queryset = queryset.filter(filtro_nombre | filtro_apellido | filtro_dni | filtro_cargo)
 
         return queryset
+
+    @list_route(methods=['get'])
+    def estadistica(self, request):
+        estadisticas = {
+            "total": models.Perfil.objects.all().count(),
+            "enDTE": models.Perfil.objects.filter(region__numero=27).count(),
+            "enTerritorio": models.Perfil.objects.all().exclude(region__numero=27).count(),
+        }
+        return Response(estadisticas)
 
 class MiPerfilViewSet(viewsets.ViewSet):
     authentication_classes = (TokenAuthentication,)
