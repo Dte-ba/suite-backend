@@ -29,6 +29,7 @@ class EventoSerializer(CustomSerializer):
 
     responsable = ResourceRelatedField(queryset=models.Perfil.objects)
     escuela = ResourceRelatedField(queryset=models.Escuela.objects)
+    acompaniantes = ResourceRelatedField(queryset=models.Perfil.objects)
 
     class Meta:
         model = models.Evento
@@ -41,6 +42,9 @@ class RegionSerializer(CustomSerializer):
         fields = "__all__"
 
 class PerfilSerializer(CustomSerializer):
+
+    #eventos_acompaniantes = EventoSerializer(many=True, read_only=True)
+
 
     class Meta:
         model = models.Perfil
@@ -64,6 +68,8 @@ class LocalidadSerializer(CustomSerializer):
         fields = "__all__"
 
 class ProgramaSerializer(CustomSerializer):
+
+    #escuelas = EscuelaSerializer(many=True, read_only=True)
 
     class Meta:
         model = models.Programa
