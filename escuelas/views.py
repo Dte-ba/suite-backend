@@ -270,6 +270,7 @@ class ValidacionViewSet(viewsets.ModelViewSet):
     @list_route(methods=['get'])
     def estadistica(self, request):
         estadisticas = {
+            "total": models.Validacion.objects.all().count(),
             "aprobadas": models.Validacion.objects.filter(estado__nombre="Aprobada").count(),
             "objetadas": models.Validacion.objects.filter(estado__nombre="Objetada").count(),
             "pendientes": models.Validacion.objects.filter(estado__nombre="Pendiente").count(),
