@@ -74,6 +74,7 @@ class ProgramaSerializer(CustomSerializer):
     class Meta:
         model = models.Programa
         fields = "__all__"
+        extra_fields = ['cantidadDeEscuelas']
 
 class TipoDeFinanciamientoSerializer(CustomSerializer):
 

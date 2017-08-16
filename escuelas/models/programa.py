@@ -13,3 +13,6 @@ class Programa(models.Model):
 
     class JSONAPIMeta:
         resource_name = "programas"
+
+    def cantidadDeEscuelas(self):
+        return self.escuelas.count()
