@@ -112,7 +112,7 @@ cargar_datos:
 	python manage.py cargar_datos
 
 cargar_usuarios:
-	python scripts/importar_perfiles.py .//archivos_para_importacion/dte_perfiles_2017.xlsx
+	python scripts/cargar_usuarios.py .//archivos_para_importacion/dte_perfiles_2017.xlsx
 
 cargar_usuarios_demo:
-	python scripts/importar_usuarios_demo.py
+	python scripts/cargar_usuarios_demo.py
