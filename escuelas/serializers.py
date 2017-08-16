@@ -29,11 +29,12 @@ class EventoSerializer(CustomSerializer):
 
     responsable = ResourceRelatedField(queryset=models.Perfil.objects)
     escuela = ResourceRelatedField(queryset=models.Escuela.objects)
-    acompaniantes = ResourceRelatedField(queryset=models.Perfil.objects)
+    # acompaniantes = ResourceRelatedField(queryset=models.Perfil.objects)
+    acompaniantes = ResourceRelatedField(queryset=models.Perfil.objects, many=True)
 
     class Meta:
         model = models.Evento
-        fields = '__all__'
+        fields = ('titulo', 'fecha', 'fecha_fin', 'inicio', 'fin', 'todoElDia', 'objetivo', 'responsable', 'escuela', 'acompaniantes', 'cantidadDeParticipantes', 'requiereTraslado')
 
 class RegionSerializer(CustomSerializer):
 
@@ -43,12 +44,11 @@ class RegionSerializer(CustomSerializer):
 
 class PerfilSerializer(CustomSerializer):
 
-    #eventos_acompaniantes = EventoSerializer(many=True, read_only=True)
-
+    eventos_acompaniantes = EventoSerializer(many=True, read_only=True)
 
     class Meta:
         model = models.Perfil
-        fields = '__all__'
+        fields = ('user', 'grupo', 'image', 'nombre', 'apellido', 'fechadenacimieto', 'titulo', 'experiencia', 'dni', 'cuit', 'cbu', 'email', 'estado', 'direccionCalle', 'direccionAltura', 'direccionPiso', 'direccionDepto', 'direccionTorre', 'codigoPostal', 'localidad', 'telefonoCelular', 'telefonoAlternativo', 'region', 'cargo', 'contrato', 'expediente', 'fechaDeIngreso', 'fechaDeRenuncia', 'emailLaboral', 'eventos_acompaniantes')
         read_only_fields = ('image',)
 
 class DistritoSerializer(CustomSerializer):
