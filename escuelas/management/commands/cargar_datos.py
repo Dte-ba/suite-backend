@@ -108,11 +108,11 @@ class Command(BaseCommand):
             hora_final = evento['hora_final']
             fecha_carga = evento['fecha_de_carga']
             cue = evento['cue']
-            responsable = evento['usuario']
+            #responsable = evento['usuario']
             dni_usuario = evento['dni_usuario']
             objetivo = evento['objetivo']
             cantidad_de_participantes = evento['cantidad_de_participantes']
-            minuta = evento['minuta']
+            #minuta = evento['minuta']
             acta = evento['acta']
             categoria = evento['categoria']
             subcategoria = evento['subcategoria']
@@ -339,7 +339,7 @@ class Command(BaseCommand):
         resultado = self.obtener_datos_desde_api('historial_validaciones')
         cantidad_de_validaciones_creadas = 0
         cantidad_de_validaciones_omitidas = 0
-        cantidad_de_validaciones_sin_escuela = 0
+        #cantidad_de_validaciones_sin_escuela = 0
         cantidad_de_validaciones_sin_usuario = 0
         cantidad_de_validaciones_con_motivo_erroneo = 0
 
@@ -629,7 +629,7 @@ class Command(BaseCommand):
                 continue
 
             try:
-                objeto_acompaniante = models.Perfil.objects.get(dni=dni_usuario)
+                models.Perfil.objects.get(dni=dni_usuario)
             except models.Perfil.DoesNotExist:
                 log("Error, no existe registro de usuario buscado %s. No se registrará el acompañante." %(dni_usuario))
                 # cantidad_de_tareas_omitidas += 1

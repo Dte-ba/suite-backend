@@ -43,6 +43,16 @@ class GeneralesTestCase(TestCase):
         response = self.client.get('/')
         self.assertEqual(response.status_code, 200)
 
+    def test_puede_conformar_escuelas(self):
+        ## Se generan 3 escuelas
+        escuela_1 = models.Escuela.objects.create(cue="1")
+        escuela_2 = models.Escuela.objects.create(cue="2")
+        escuela_3 = models.Escuela.objects.create(cue="3")
+
+        self.assertEqual(escuela_1, escuela_2)
+        self.assertEqual(escuela_1, escuela_3)
+
+
 class SerializarPermisos(APITestCase):
 
     def test_puede_serializar_permisos(self):

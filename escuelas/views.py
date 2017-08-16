@@ -10,7 +10,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.filters import SearchFilter
 from rest_framework.filters import DjangoFilterBackend
 
-from rest_framework.decorators import detail_route, list_route
+from rest_framework.decorators import list_route
 
 import serializers
 import models
