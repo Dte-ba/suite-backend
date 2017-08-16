@@ -187,7 +187,7 @@ for indice, fila in enumerate(wb.active.rows):
         try:
             user = User.objects.get(username=email_laboral)
         except User.DoesNotExist:
-            user = User.objects.create_superuser(email_laboral, email=email)
+            user = User(username=email_laboral, email=email)
             user.set_password(default_pass)
 
         user.save()
