@@ -29,7 +29,6 @@ comandos:
 	@echo "    ${G}test${N}                Ejecuta los tests."
 	@echo "    ${G}test_continuos${N}      Ejecuta los tests en forma contínua."
 	@echo "    ${G}ejecutar${N}            Ejecuta el servidor en modo desarrollo."
-	@echo "    ${G}lint${N}                Busca errores o inconsistencias en el código."
 	@echo "    ${G}ayuda${N}               Muestra una listado de todos los comandos django."
 	@echo ""
 	@echo "  ${Y}Para gestionar datos${N}"
@@ -55,7 +54,6 @@ migrar: dependencias
 test: dependencias
 	@clear;
 	@echo "${G}Ejecutando tests ...${N}"
-	@make lint
 	@${BIN_MANAGE_RELATIVO} test
 
 
@@ -84,9 +82,6 @@ crear_migraciones:
 
 crear_usuario_admin:
 	${BIN_MANAGE} createsuperuser
-
-lint:
-	@pyflakes escuelas
 
 _esta_instalado_graphviz:
 	@python utils/esta_instalado_graphviz.py
