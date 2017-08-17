@@ -481,13 +481,10 @@ define la variable de entorno DATABASE_URL:
 
 	dokku config:set DATABASE_URL=postgres://postgres:33bd2xxxxx@dokku-postgres-testing-suite-backend:5432/desarrollo_suite_backend
 
-
 Por último, para ejecutar comandos sobre el entorno de desarrollo hay que
 anteponer el prefijo `dokku run` y en algunos casos especificar el nombre
 de la configuración del entorno:
 
-
 	dokku run python manage.py migrate --settings=suite.desarrollo_settings
 	dokku run python manage.py createsuperuser --settings=suite.desarrollo_settings
-
 
