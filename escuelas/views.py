@@ -11,6 +11,7 @@ from rest_framework.filters import SearchFilter
 from rest_framework.filters import DjangoFilterBackend
 
 from rest_framework.decorators import list_route
+from rest_framework.decorators import detail_route
 
 import serializers
 import models
@@ -36,13 +37,13 @@ class EscuelaViewSet(viewsets.ModelViewSet):
     serializer_class = serializers.EscuelaSerializer
     filter_backends = [SearchFilter, DjangoFilterBackend]
     search_fields = ['cue', 'nombre', 'localidad__nombre', 'nivel__nombre', 'programas__nombre']
-    filter_fields = ['localidad__distrito__region__numero']
+    filter_fields = ['localidad__distrito__region__numero', 'conformada']
 
     def get_queryset(self):
-        solo_padre = Q(padre__isnull=True)
-        queryset = models.Escuela.objects.filter(solo_padre)
+        #solo_padre = Q(padre__isnull=True)
+        #queryset = models.Escuela.objects.filter(solo_padre)
 
-        # queryset = models.Escuela.objects.all()
+        queryset = models.Escuela.objects.all()
         query = self.request.query_params.get('query', None)
 
         if query:
@@ -58,19 +59,35 @@ class EscuelaViewSet(viewsets.ModelViewSet):
 
     @list_route(methods=['get'])
     def estadistica(self, request):
+        queryset = models.Escuela.objects.filter(padre__isnull=True)
+
         estadisticas = {
-            "total": models.Escuela.objects.all().count(),
-            "abiertas": models.Escuela.objects.filter(estado=True).count(),
-            "cerradas": models.Escuela.objects.filter(estado=False).count(),
-            "pisoRoto": models.Escuela.objects.filter(piso__estado=False).count(),
-            "pisoFuncionando": models.Escuela.objects.filter(piso__estado=True).count(),
-            "conectarIgualdad": models.Escuela.objects.filter(programas__nombre="Conectar Igualdad").count(),
-            "pad": models.Escuela.objects.filter(programas__nombre="PAD").count(),
-            "responsabilidadEmpresarial": models.Escuela.objects.filter(programas__nombre="Responsabilidad Empresarial").count(),
-            "primariaDigital": models.Escuela.objects.filter(programas__nombre="Primaria Digital").count(),
-            "escuelasDelFuturo": models.Escuela.objects.filter(programas__nombre="Escuelas del Futuro").count(),
+            "total": queryset.count(),
+            "abiertas": queryset.filter(estado=True).count(),
+            "cerradas": queryset.filter(estado=False).count(),
+            "pisoRoto": queryset.filter(piso__estado=False).count(),
+            "pisoFuncionando": queryset.filter(piso__estado=True).count(),
+            "conectarIgualdad": queryset.filter(programas__nombre="Conectar Igualdad").count(),
+            "pad": queryset.filter(programas__nombre="PAD").count(),
+            "responsabilidadEmpresarial": queryset.filter(programas__nombre="Responsabilidad Empresarial").count(),
+            "primariaDigital": queryset.filter(programas__nombre="Primaria Digital").count(),
+            "escuelasDelFuturo": queryset.filter(programas__nombre="Escuelas del Futuro").count(),
+            "conformadas": models.Escuela.objects.filter(padre__isnull=False).count(),
         }
         return Response(estadisticas)
+
+    @detail_route(methods=['post'])
+    def conformar(self, request, pk=None):
+        escuela_padre = self.get_object()
+
+        id_escuela = int(request.data['escuela_que_se_absorbera'][0])
+        id_motivo = int(request.data['motivo_id'][0])
+
+        escuela = models.Escuela.objects.get(id=id_escuela)
+        motivo = models.MotivoDeConformacion.objects.get(id=id_motivo)
+
+        escuela_padre.conformar_con(escuela, motivo)
+        return Response({'fechaConformacion': escuela.fechaConformacion})
 
 class ContactoViewSet(viewsets.ModelViewSet):
     queryset = models.Contacto.objects.all()

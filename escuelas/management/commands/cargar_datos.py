@@ -241,10 +241,7 @@ class Command(BaseCommand):
             escuela_padre = models.Escuela.objects.get(cue=cue_principal)
             objeto_motivo = models.MotivoDeConformacion.objects.get(nombre=motivo)
 
-            objeto_escuela.padre = escuela_padre
-            objeto_escuela.fechaConformacion = fecha
-            objeto_escuela.motivoDeConformacion = objeto_motivo
-
+            escuela_padre.conformar_con(objeto_escuela, objeto_motivo, fecha)
             objeto_escuela.save()
 
     def importar_validaciones(self):

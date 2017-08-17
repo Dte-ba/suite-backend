@@ -3,7 +3,6 @@ from django.contrib.auth.models import User
 from django.contrib.auth.models import Group
 from django.contrib.auth.models import Permission
 from django.contrib.contenttypes.models import ContentType
-from django.test import TestCase
 
 from rest_framework.test import APITestCase
 import models
@@ -37,20 +36,93 @@ class APIUsuariosTests(APITestCase):
         self.assertEqual(response.data['meta']['pagination']['count'], 1, "Tiene que retornarse un solo registro")
 
 
-class GeneralesTestCase(TestCase):
+class GeneralesTestCase(APITestCase):
 
     def test_pagina_principal_retorna_ok(self):
         response = self.client.get('/')
         self.assertEqual(response.status_code, 200)
 
     def test_puede_conformar_escuelas(self):
-        ## Se generan 3 escuelas
+        # Prepara el usuario para chequear contra la api
+        user = User.objects.create_user(username='test', password='123')
+        self.client.force_authenticate(user=user)
+
+        motivo = models.MotivoDeConformacion.objects.create(nombre="Prueba")
+
+        # Se generan 3 escuelas
         escuela_1 = models.Escuela.objects.create(cue="1")
         escuela_2 = models.Escuela.objects.create(cue="2")
         escuela_3 = models.Escuela.objects.create(cue="3")
 
-        self.assertEqual(escuela_1, escuela_2)
-        self.assertEqual(escuela_1, escuela_3)
+        # Inicialmente las 3 escuelas son de primer nivel, se retornan en /api/escuelas
+        response = self.client.get('/api/escuelas', format='json')
+        self.assertEqual(response.data['meta']['pagination']['count'], 3)
+
+        # Realizando una conformación. Escuela 1 va a absorver a escuela_2
+        escuela_1.conformar_con(escuela_2, motivo)
+
+        # Ahora la api tiene que retornar solo 2 escuelas
+        response = self.client.get('/api/escuelas?conformada=false', format='json')
+        self.assertEqual(response.data['meta']['pagination']['count'], 2)
+
+        # Se realiza una conformación más, la 1 absorbe a la 3.
+        escuela_1.conformar_con(escuela_3, motivo)
+        self.assertEqual(escuela_1.subescuelas.count(), 2)
+
+        self.assertTrue(escuela_3.conformada)
+
+        # Ahora la api tiene que retornar solo 1 escuela
+        response = self.client.get('/api/escuelas?conformada=false', format='json')
+        self.assertEqual(response.data['meta']['pagination']['count'], 1)
+
+        # No debería permitirse conformar una escuela más de una vez.
+        with self.assertRaises(AssertionError):
+            escuela_1.conformar_con(escuela_3, motivo)
+
+        # Ni una escuela con sigo misma
+        with self.assertRaises(AssertionError):
+            escuela_1.conformar_con(escuela_1, motivo)
+
+        # Ni una escuela que ya se conformó
+        with self.assertRaises(AssertionError):
+            escuela_3.conformar_con(escuela_1, motivo)
+
+
+        # Por último, la conformación se tiene que poder hacer desde la API
+        escuela_4 = models.Escuela.objects.create(cue="4")
+
+        # Inicialmente no está conformada
+        self.assertFalse(escuela_4.conformada)
+
+        data = {
+            'escuela_que_se_absorbera': escuela_4.id,
+            'motivo_id': motivo.id
+        }
+
+        response = self.client.post('/api/escuelas/%d/conformar' %(escuela_1.id), data)
+
+        # NOTA: Luego de hacer el request, se tiene que actualizar el objeto
+        escuela_4 = models.Escuela.objects.get(id=4)
+
+        self.assertEqual(escuela_4.padre, escuela_1)
+        self.assertTrue(escuela_4.motivoDeConformacion, 'tiene que tener un motivo')
+        self.assertTrue(escuela_4.fechaConformacion, 'tiene que tener una fecha')
+
+        # La escuela 4 se conformó, la api tiene que informarlo
+        response = self.client.get('/api/escuelas/4', format='json')
+        self.assertEqual(response.data['conformada'], True)
+
+        # La escuela 1 nunca se conformó
+        response = self.client.get('/api/escuelas/1', format='json')
+        self.assertEqual(response.data['conformada'], False)
+
+        self.assertEqual(escuela_1.subescuelas.count(), 3)
+
+        # Y las estadisticas funcionan filtrando conformadas.
+        response = self.client.get('/api/escuelas/estadistica', format='json')
+        self.assertEqual(response.data['total'], 1)
+        self.assertEqual(response.data['abiertas'], 1)
+        self.assertEqual(response.data['conformadas'], 3)
 
 
 class SerializarPermisos(APITestCase):

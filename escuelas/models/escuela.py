@@ -1,4 +1,5 @@
 # coding: utf-8
+import datetime
 from django.db import models
 
 class Escuela(models.Model):
@@ -18,9 +19,10 @@ class Escuela(models.Model):
     piso = models.ForeignKey('Piso', related_name='escuelas', default=None, blank=True, null=True)
 
     # Para conformaciones
-    padre = models.ForeignKey('self', on_delete=models.CASCADE, default=None, blank=True, null=True) # ID de escuela principal
+    padre = models.ForeignKey('self', related_name='subescuelas', on_delete=models.CASCADE, default=None, blank=True, null=True) # ID de escuela principal
     fechaConformacion = models.DateField(default=None, blank=True, null=True)
     motivoDeConformacion = models.ForeignKey('MotivoDeConformacion', related_name='escuelas', default=None, blank=True, null=True)
+    conformada = models.BooleanField(default=False)
 
     estado = models.BooleanField(default=True, blank=True) # True = Abierta, False= Cerrada
 
@@ -33,3 +35,15 @@ class Escuela(models.Model):
 
     class JSONAPIMeta:
         resource_name = 'escuelas'
+
+    def conformar_con(self, escuela_que_se_absorbera, motivo):
+        assert not escuela_que_se_absorbera.padre        # No permite re-absorber
+        assert not escuela_que_se_absorbera == self      # Ni conformarse consigo misma
+        assert not self.padre                           # Ni conformar una escuela ya conformada por otra
+
+        escuela_que_se_absorbera.padre = self
+        escuela_que_se_absorbera.motivoDeConformacion = motivo
+        escuela_que_se_absorbera.fechaConformacion = datetime.date.today()
+        escuela_que_se_absorbera.conformada = True
+
+        escuela_que_se_absorbera.save()
