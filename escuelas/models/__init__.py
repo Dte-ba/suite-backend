@@ -25,6 +25,8 @@ from estado_de_validacion import EstadoDeValidacion
 from validacion import Validacion
 from motivo_de_conformacion import MotivoDeConformacion
 from comentario_de_validacion import ComentarioDeValidacion
+from estado_de_paquete import EstadoDePaquete
+from paquete import Paquete
 
 Contacto;
 Escuela;
@@ -53,3 +55,5 @@ EstadoDeValidacion;
 Validacion;
 MotivoDeConformacion;
 ComentarioDeValidacion;
+EstadoDePaquete;
+Paquete;

@@ -5,7 +5,8 @@ def upload_to(filename):
     return 'piso_llave_servidor/{0}'.format(filename)
 
 class Piso(models.Model):
-    servidor = models.CharField(max_length=255)
+    legacy_id = models.IntegerField(default=None, blank=True, null=True) # Para historico de SUITE Legacy
+    servidor = models.CharField(max_length=255, default=None, blank=True, null=True)
     serie = models.CharField(max_length=255, default=None, blank=True, null=True)
     ups = models.BooleanField(default=False)
     rack = models.BooleanField(default=False)

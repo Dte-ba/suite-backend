@@ -46,6 +46,7 @@ class Command(BaseCommand):
         self.crear_estados_de_validaciones()
         self.crear_motivos_de_conformaciones()
         self.crear_categorias_de_eventos()
+        self.crear_estados_de_paquetes()
 
         self.importar_distritos_y_localidades()
         self.importar_escuelas()
@@ -59,6 +60,7 @@ class Command(BaseCommand):
         self.importar_conformaciones()
         self.importar_validaciones()
         self.importar_comentarios_de_validaciones()
+        self.importar_paquetes()
 
     def crear_regiones(self):
         numeros = range(1, 26)
@@ -243,6 +245,113 @@ class Command(BaseCommand):
 
             escuela_padre.conformar_con(objeto_escuela, objeto_motivo, fecha)
             objeto_escuela.save()
+
+    def importar_paquetes(self):
+        resultado = self.obtener_datos_desde_api('paquetes')
+
+        cantidad_de_paquetes_creados = 0
+        cantidad_de_paquetes_omitidos = 0
+        cantidad_de_paquetes_sin_escuela = 0
+
+        print("Se importarán %d paquetes de provisión en total." %(resultado['cantidad']))
+        esperar(2)
+
+        paquetes = resultado['paquetes']
+
+        bar = barra_de_progreso(simple=False)
+
+        for paquete in bar(paquetes):
+
+            legacy_id = paquete['legacy_id']
+            cue = paquete['cue']
+            ne = paquete['ne']
+            servidor_serie = paquete['servidor_serie']
+            idhardware = paquete['idhardware']
+            marca_de_arranque = paquete['marca_de_arranque']
+            llave_servidor = paquete['llave_servidor']
+            fecha_pedido = paquete['fecha_pedido']
+            comentario = paquete['comentario']
+            carpeta_paquete = paquete['carpeta_paquete']
+            fecha_envio_anses = paquete['fecha_envio_anses']
+            zipanses = paquete['zipanses']
+            estado = paquete['estado']
+            fecha_devolucion = paquete['fecha_devolucion']
+            leido = paquete['leido']
+
+
+            if MODO_VERBOSE:
+                print "======================================================================================================"
+                print "Intentando crear paquete de provisión para el cue ", cue
+                print "======================================================================================================"
+                print "legacy_id", legacy_id
+                print "CUE ", cue
+                print "Fecha de pedido:", fecha_pedido
+                print "NE:  ", ne
+                print "Servidor:  ", servidor_serie
+                print "idhardware:  ", idhardware
+                print "marca_de_arranque:  ", marca_de_arranque
+                print "Llave del servidor:  ", llave_servidor
+                print "Comentario:  ", comentario
+                print "Carpeta del paquete:  ", carpeta_paquete
+                print "Fecha de envío a ANSES:  ", fecha_envio_anses
+                print "ZIP ANSES:  ", zipanses
+                print "Estado:  ", estado
+                print "Fecha de devolición:  ", fecha_devolucion
+                print "Leido:  ", leido
+                print "======================================================================================================"
+
+            try:
+                objeto_escuela = models.Escuela.objects.get(cue=cue)
+            except models.Escuela.DoesNotExist:
+                log("Error, no existe la escuela con cue %s. Se ignora el registro." %(cue))
+                cantidad_de_paquetes_omitidos += 1
+                cantidad_de_paquetes_sin_escuela += 1
+                continue
+
+            if estado == 0:
+                estado = "Objetado"
+            elif estado == 1:
+                estado = "Pendiente"
+            elif estado == 2:
+                estado = "EducAr"
+            elif estado == 3:
+                estado = "Devuelto"
+            else:
+                estado = "Descargado"
+
+            objeto_estado = models.EstadoDePaquete.objects.get(nombre=estado)
+
+            if leido == 0:
+                leido = False
+            else:
+                leido = True
+
+            if fecha_envio_anses == "0000-00-00":
+                fecha_envio_anses = None
+
+            objeto_paquete, created = models.Paquete.objects.get_or_create(legacy_id=legacy_id)
+            objeto_paquete.escuela = objeto_escuela
+            objeto_paquete.fechaPedido = fecha_pedido
+            objeto_paquete.ne = ne
+            objeto_paquete.idHardware = idhardware
+            objeto_paquete.marcaDeArranque = marca_de_arranque
+            objeto_paquete.comentario = comentario
+            objeto_paquete.carpetaPaquete = carpeta_paquete
+            objeto_paquete.fechaEnvio = fecha_envio_anses
+            objeto_paquete.zipPaquete = zipanses
+            objeto_paquete.estado = objeto_estado
+            objeto_paquete.fechaDevolucion = fecha_devolucion
+            objeto_paquete.leido = leido
+
+            objeto_paquete.save()
+
+            cantidad_de_paquetes_creados += 1
+
+        print("Resumen de paquetes:")
+        print("   Se crearon %d paquetes correctamente." %(cantidad_de_paquetes_creados))
+        print("   Se evitaron crear %d paquetes:" %(cantidad_de_paquetes_omitidos))
+        print("     No se encontró la escuela de %s paquetes:" %(cantidad_de_paquetes_sin_escuela))
+
 
     def importar_validaciones(self):
         resultado = self.obtener_datos_desde_api('validaciones')
@@ -445,8 +554,9 @@ class Command(BaseCommand):
 
             log("Buscando piso para escuela: ", piso['cue'])
             objeto_escuela = models.Escuela.objects.get(cue=piso['cue'])
-            objeto_piso, created = models.Piso.objects.get_or_create(servidor=marca)
+            objeto_piso, created = models.Piso.objects.get_or_create(legacy_id=piso['legacy_id'])
             #
+            objeto_piso.servidor = piso['marca']
             objeto_piso.serie = piso['serie']
 
             if piso['ups']:
@@ -654,6 +764,16 @@ class Command(BaseCommand):
 
         for nombre in bar(nombres):
             p, created = models.TipoDeFinanciamiento.objects.get_or_create(nombre=nombre)
+            log(p)
+
+    def crear_estados_de_paquetes(self):
+        nombres = ["Objetado", "Pendiente", "EducAr", "Devuelto", "Descargado"]
+
+        print("Creando Estados de Paquetes")
+        bar = barra_de_progreso()
+
+        for nombre in bar(nombres):
+            p, created = models.EstadoDePaquete.objects.get_or_create(nombre=nombre)
             log(p)
 
     def crear_motivos_de_tareas(self):

@@ -73,6 +73,7 @@ admin.site.register(models.CategoriaDeEvento, CategoriaDeEventoAdmin)
 class PisoAdmin(admin.ModelAdmin):
     model = models.Piso
     list_display = ('servidor', 'serie', 'ups', 'rack', 'estado', 'llave')
+    search_fields = ('id', 'servidor', 'serie', 'estado', 'llave')
 
 admin.site.register(models.Piso, PisoAdmin)
 
@@ -95,3 +96,24 @@ class DistritoAdmin(admin.ModelAdmin):
 
 admin.site.register(models.Region, RegionAdmin)
 admin.site.register(models.Distrito, DistritoAdmin)
+
+class PaqueteAdmin(admin.ModelAdmin):
+    model = models.Paquete
+    list_display = (
+        'legacy_id',
+        'escuela',
+        'fechaPedido',
+        'ne',
+        'idHardware',
+        'marcaDeArranque',
+        'comentario',
+        'carpetaPaquete',
+        'fechaEnvio',
+        'zipPaquete',
+        'estado',
+        'fechaDevolucion',
+        'leido'
+    )
+    search_fields = ('legacy_id', 'estado', 'escuela')
+
+admin.site.register(models.Paquete, PaqueteAdmin)
