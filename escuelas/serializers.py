@@ -236,3 +236,32 @@ class ValidacionSerializer(CustomSerializer):
     class Meta:
         model = models.Validacion
         fields = ('autor', 'fechaDeAlta', 'escuela', 'estado', 'comentariosDeValidacion')
+
+
+class EstadoDePaqueteSerializer(CustomSerializer):
+
+    class Meta:
+        model = models.EstadoDePaquete
+        fields = '__all__'
+
+class PaqueteSerializer(CustomSerializer):
+
+    escuela = ResourceRelatedField(queryset=models.Escuela.objects)
+    estado = ResourceRelatedField(queryset=models.EstadoDePaquete.objects)
+
+    class Meta:
+        model = models.Paquete
+        fields = (
+            'escuela',
+            'fechaPedido',
+            'ne',
+            'idHardware',
+            'marcaDeArranque',
+            'comentario',
+            'carpetaPaquete',
+            'fechaEnvio',
+            'zipPaquete',
+            'estado',
+            'fechaDevolucion',
+            'leido'
+        )

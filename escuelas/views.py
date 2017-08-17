@@ -328,3 +328,39 @@ class ValidacionViewSet(viewsets.ModelViewSet):
             "pendientes": models.Validacion.objects.filter(estado__nombre="Pendiente").count(),
         }
         return Response(estadisticas)
+
+
+class EstadoDePaqueteViewSet(viewsets.ModelViewSet):
+    queryset = models.EstadoDePaquete.objects.all()
+    serializer_class = serializers.EstadoDePaqueteSerializer
+
+class PaqueteViewSet(viewsets.ModelViewSet):
+    queryset = models.Paquete.objects.all()
+    serializer_class = serializers.PaqueteSerializer
+    filter_backends = [SearchFilter, DjangoFilterBackend]
+    search_fields = ['escuela__nombre', 'escuela__cue', 'estado__nombre']
+    filter_fields = ['escuela__nombre']
+
+    def get_queryset(self):
+        queryset = models.Paquete.objects.all()
+        query = self.request.query_params.get('query', None)
+
+        if query:
+            filtro_escuela = Q(escuela__nombre__icontains=query)
+            filtro_escuela_cue = Q(escuela__cue__icontains=query)
+            filtro_estado = Q(estado__nombre__icontains=query)
+
+            queryset = queryset.filter(filtro_escuela | filtro_escuela_cue | filtro_estado)
+
+        return queryset
+
+    @list_route(methods=['get'])
+    def estadistica(self, request):
+        estadisticas = {
+            "total": models.Paquete.objects.all().count(),
+            "pendientes": models.Paquete.objects.filter(estado__nombre="Pendiente").count(),
+            "objetados": models.Paquete.objects.filter(estado__nombre="Objetada").count(),
+            "enviados": models.Paquete.objects.filter(estado__nombre="EducAr").count(),
+            "devueltos": models.Paquete.objects.filter(estado__nombre="Devuelto").count(),
+        }
+        return Response(estadisticas)

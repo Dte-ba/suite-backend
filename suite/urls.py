@@ -36,6 +36,8 @@ router.register(r'categorias-de-eventos', views.CategoriaDeEventoViewSet)
 router.register(r'comentarios-de-validacion', views.ComentarioDeValidacionViewSet)
 router.register(r'validaciones', views.ValidacionViewSet)
 router.register(r'estados-de-validacion', views.EstadoDeValidacionViewSet)
+router.register(r'estados-de-paquete', views.EstadoDePaqueteViewSet)
+router.register(r'paquetes', views.PaqueteViewSet)
 
 router.register(r'mi-perfil', views.MiPerfilViewSet, 'Perfil')
 
