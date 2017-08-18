@@ -29,7 +29,13 @@ admin.site.register(models.Nivel)
 admin.site.register(models.TipoDeGestion)
 admin.site.register(models.Area)
 admin.site.register(models.Programa)
-admin.site.register(models.Localidad)
+
+class LocalidadAdmin(admin.ModelAdmin):
+    model = models.Localidad
+    list_display = ('nombre', 'distrito')
+    search_fields = ('id', 'nombre')
+
+admin.site.register(models.Localidad, LocalidadAdmin)
 
 admin.site.register(models.Experiencia)
 admin.site.register(models.Cargo)
