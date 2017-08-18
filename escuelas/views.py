@@ -105,6 +105,8 @@ class EventoViewSet(viewsets.ModelViewSet):
         queryset = models.Evento.objects.all()
         query = self.request.query_params.get('query', None)
         informe = self.request.query_params.get('informe', None)
+        # fecha_in = date("2017-01-06")
+        # fecha_out = date("2017-31-06")
 
         if query:
             filtro_escuela = Q(escuela__nombre__icontains=query)
@@ -116,7 +118,10 @@ class EventoViewSet(viewsets.ModelViewSet):
 
         if informe:
             filtro_responsable = Q(responsable__dni=informe)
+            # filtro_fecha_in = Q(fecha=fecha_in)
+            # filtro_fecha_out = Q(fecha=fecha_out)
 
+            # queryset = queryset.filter(filtro_responsable, filtro_fecha_in, filtro_fecha_out)
             queryset = queryset.filter(filtro_responsable)
 
         return queryset
