@@ -36,14 +36,19 @@ class Escuela(models.Model):
     class JSONAPIMeta:
         resource_name = 'escuelas'
 
-    def conformar_con(self, escuela_que_se_absorbera, motivo):
+    def conformar_con(self, escuela_que_se_absorbera, motivo, fecha=None):
         assert not escuela_que_se_absorbera.padre        # No permite re-absorber
         assert not escuela_que_se_absorbera == self      # Ni conformarse consigo misma
         assert not self.padre                           # Ni conformar una escuela ya conformada por otra
 
         escuela_que_se_absorbera.padre = self
         escuela_que_se_absorbera.motivoDeConformacion = motivo
-        escuela_que_se_absorbera.fechaConformacion = datetime.date.today()
+
+        if fecha:
+            escuela_que_se_absorbera.fechaConformacion = fecha
+        else:
+            escuela_que_se_absorbera.fechaConformacion = datetime.date.today()
+            
         escuela_que_se_absorbera.conformada = True
 
         escuela_que_se_absorbera.save()

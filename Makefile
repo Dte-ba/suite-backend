@@ -16,12 +16,13 @@ comandos:
 	@echo ""
 	@echo "  ${Y}Para desarrolladores${N}"
 	@echo ""
-	@echo "    ${G}iniciar${N}             Instala todas las dependencias."
-	@echo "    ${G}crear_migraciones${N}   Genera las migraciones."
-	@echo "    ${G}crear_usuario_admin${N} Genera un usuario administrador."
-	@echo "    ${G}cargar_datos${N}        Carga toda la información inicial de los datos."
-	@echo "    ${G}cargar_usuarios${N}     Carga toda la información de usuarios."
-	@echo "    ${G}cargar_usuarios_demo${N}Carga usuarios de prueba."
+	@echo "    ${G}iniciar${N}                     Instala todas las dependencias."
+	@echo "    ${G}crear_migraciones${N}           Genera las migraciones."
+	@echo "    ${G}crear_usuario_admin${N}         Genera un usuario administrador."
+	@echo "    ${G}cargar_datos${N}                Carga toda la información inicial de los datos (escuelas + usuarios + etc...)."
+	@echo "    ${G}cargar_datos filtro='a'${N}     Permite lanzar la importación de un comando en particular."
+	@echo "    ${G}cargar_datos depuracion='1'${N} Activa el modo verbose."
+	@echo "    ${G}cargar_usuarios_demo${N}        Carga usuarios de prueba."
 	@echo ""
 	@echo "    ${G}generar_estaticos${N}   Genera los archivos estáticos."
 	@echo "    ${G}migrar${N}              Ejecuta las migraciones sobre la base de datos."
@@ -103,11 +104,11 @@ generar_fixture_desde_base_de_datos:
 generar_estaticos:
 	python manage.py collectstatic
 
-cargar_datos:
-	python manage.py cargar_datos
+filtro=""
+depuracion="0"
 
-cargar_usuarios:
-	python scripts/cargar_usuarios.py .//archivos_para_importacion/dte_perfiles_2017.xlsx
+cargar_datos:
+	python manage.py cargar_datos --filtro $(filtro) --depuracion $(depuracion)
 
 cargar_usuarios_demo:
 	python scripts/cargar_usuarios_demo.py

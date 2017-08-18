@@ -1,11 +1,18 @@
 # coding: utf-8
 from __future__ import unicode_literals
 import time
-from django.core.management.base import BaseCommand
-from escuelas import models
+import datetime
+
 import progressbar
 import requests
+from openpyxl import load_workbook
 
+from escuelas import models
+from django.contrib.auth.models import User
+from django.core.management.base import BaseCommand
+
+# Esta variable no se debe modificar. Se le puede cambiar el valor en tiempo
+# de ejecución invocando el comando "make cargar_datos depuracion=1"
 MODO_VERBOSE = False
 
 def log(*k):
@@ -28,39 +35,92 @@ def barra_de_progreso(simple=True):
 class Command(BaseCommand):
     help = 'Genera todos los datos iniciales.'
 
+    def add_arguments(self, parser):
+        parser.add_argument('--filtro', help="Aplica un filtro a los comandos que se ejecutaran")
+        parser.add_argument('--depuracion', help="Permite activar todos los detalles (verbose mode)")
+
     def handle(self, *args, **options):
+        global MODO_VERBOSE
+        filtro = options['filtro']
+        depuracion = options['depuracion']
 
-        self.crear_cargos_escolares()
-        self.crear_regiones()
-        self.crear_tipos_de_financiamiento()
-        self.crear_niveles()
-        self.crear_tipos_de_gestion()
-        self.crear_areas()
-        self.crear_programas()
-        self.crear_cargos()
-        self.crear_experiencias()
-        self.crear_contratos()
-        self.crear_motivos_de_tareas()
-        self.crear_estados_de_tareas()
-        self.crear_prioridades_de_tareas()
-        self.crear_estados_de_validaciones()
-        self.crear_motivos_de_conformaciones()
-        self.crear_categorias_de_eventos()
-        self.crear_estados_de_paquetes()
 
-        self.importar_distritos_y_localidades()
-        self.importar_escuelas()
-        self.importar_contactos()
-        self.importar_pisos()
-        self.vincular_programas()
-        self.importar_tareas()
-        self.importar_comentarios_de_tareas()
-        self.importar_eventos()
-        self.vincular_acompaniantes()
-        self.importar_conformaciones()
-        self.importar_validaciones()
-        self.importar_comentarios_de_validaciones()
-        self.importar_paquetes()
+        # A continuación están todos los comandos que el importador
+        # puede ejecutar. Cada comando es un método, con el mismo nombre
+        # que aparece como cadena.
+        #
+        # por ejemplo 'crear_areas' es la orden para ejecutar el método
+        # self.crear_areas().
+        comandos = [
+            'crear_cargos_escolares',
+            'crear_regiones',
+            'crear_tipos_de_financiamiento',
+            'crear_niveles',
+            'crear_tipos_de_gestion',
+            'crear_areas',
+            'crear_programas',
+            'crear_cargos',
+            'crear_experiencias',
+            'crear_contratos',
+            'crear_motivos_de_tareas',
+            'crear_estados_de_tareas',
+            'crear_prioridades_de_tareas',
+            'crear_estados_de_validaciones',
+            'crear_motivos_de_conformaciones',
+            'crear_categorias_de_eventos',
+            'crear_estados_de_paquetes',
+
+            'importar_distritos_y_localidades',
+            'importar_escuelas',
+
+            'importar_usuarios',
+
+            'importar_contactos',
+            'importar_pisos',
+            'vincular_programas',
+            'importar_tareas',
+            'importar_comentarios_de_tareas',
+            'importar_eventos',
+            'vincular_acompaniantes',
+            'importar_conformaciones',
+            'importar_validaciones',
+            'importar_comentarios_de_validaciones',
+            'importar_paquetes',
+        ]
+
+
+        print("Procesando comandos a ejecutar ...")
+        esperar(1)
+
+        if depuracion != '0':
+            print("Modo depuración activado.")
+            MODO_VERBOSE = True
+        else:
+            print("Modo depuración desactivado.")
+            MODO_VERBOSE = False
+
+        if filtro:
+            print("Ha aplicado el filtro: " + filtro)
+            comandos_filtrados = [x for x in comandos if filtro in x]
+            print("Solo se ejecutaran %d comandos (de los %d disponibles)" %(len(comandos_filtrados), len(comandos)))
+            self.ejecutar_comandos(comandos_filtrados)
+        else:
+            print("Se ejecutaran %d comandos" %(len(comandos)))
+            self.ejecutar_comandos(comandos)
+
+    def ejecutar_comandos(self, comandos):
+        esperar(1)
+        self.listar_comandos(comandos)
+        esperar(2)
+
+        for x in comandos:
+            metodo = getattr(self, x)
+            metodo()
+
+    def listar_comandos(self, comandos):
+        print("Se ejecutarán los comandos en este orden:")
+        for i, x in enumerate(comandos):
+            print ("  %d %s" %(i+1, x))
 
     def crear_regiones(self):
         numeros = range(1, 26)
@@ -214,6 +274,264 @@ class Command(BaseCommand):
             log(objeto_escuela, "\n CUE: ", objeto_escuela.cue, "\n Direccion: ", objeto_escuela.direccion, "\n Tel: ", objeto_escuela.telefono, "\n ", objeto_escuela.localidad, "\n ", objeto_escuela.area, "\n ", objeto_escuela.nivel, "\n ", objeto_escuela.tipoDeFinanciamiento, "\n ", objeto_escuela.tipoDeGestion)
             log("===========")
 
+    def importar_usuarios(self):
+        ARCHIVO = './/archivos_para_importacion/dte_perfiles_2017.xlsx'
+        LIMITE_DE_FILAS = 300
+
+        print("Comenzando la importación de usuarios")
+        log("Iniciando la importación del archivo: " + ARCHIVO)
+        wb = load_workbook(ARCHIVO)
+
+        columnas_como_string = ", ".join(wb.get_sheet_names())
+        log("Las páginas de la planilla son: " + columnas_como_string)
+
+        filas_procesadas = 0
+        filas_omitidas_o_con_errores = 0
+        filas_omitidas_lista = ""
+
+        def formatear_fecha(fecha):
+            if fecha:
+                return fecha.strftime('%Y-%m-%d')
+            else:
+                return fecha
+
+        def obtener_valores_desde_fila(fila):
+            return {
+                "region":               fila[0].value,
+                "cargo":                fila[1].value,
+                "contrato":             fila[2].value,
+                "carga_horaria":        fila[3].value,
+                "consultor":            fila[4].value.strip().capitalize(),
+                # "documentacion":        fila[5].value, # En principio, no nos interesa este dato.
+                "expediente":           fila[6].value,
+                "fechaDeRenuncia":      fila[7].value,
+                "titulo":               fila[8].value,
+                "fechaDeIngreso":       fila[9].value,
+                "perfil":               fila[10].value,
+                "dni":                  fila[11].value,
+                "cuil":                 fila[12].value,
+                "cbu":                  fila[13].value,
+                "email":                fila[14].value,
+                "email_laboral":        fila[15].value,
+                "direccion":            fila[16].value,
+                "localidad":            fila[17].value,
+                "codigo_postal":        fila[18].value,
+                "fechaDeNacimiento":    fila[19].value,
+                "telefono_celular":     fila[20].value,
+                "telefono_particular":  fila[21].value,
+                "telefono_alternativo": fila[22].value,
+            }
+
+        bar = barra_de_progreso(simple=False)
+        #for conformacion in bar(conformaciones):
+
+        for indice, fila in bar(enumerate(wb.active.rows)):
+
+            if indice is 0:
+                continue;             # Ignora la cabecera
+
+            if not fila[1].value:
+                log("Terminando en la fila %d porque no parece haber mas registros." %(indice + 1))
+                break
+
+            log("Procesando fila '%d'" %(indice +1))
+
+            try:
+                valores = obtener_valores_desde_fila(fila)
+
+                if valores['fechaDeRenuncia']:
+                    log("Renunció")
+                    fechaDeRenuncia=formatear_fecha(valores['fechaDeRenuncia'])
+                else:
+                    log("Perfil activo")
+                    fechaDeRenuncia=None
+
+                region=str(valores['region'])
+
+                if region=="ESP/NC" or region=="NC" or region=="Nc" or region=="NC Esp" or region=="NC Prov." or region=="NC Sup" or region=="NC. Prov":
+                    region="27"
+
+                cargo=valores['cargo']
+                contrato=valores['contrato']
+                carga_horaria=valores['carga_horaria']
+                consultor=valores['consultor'].split(',')
+                apellido=consultor[0]
+                nombre=consultor[1].title()
+
+                if valores['expediente']:
+                    log("No tiene expediente")
+                    expediente=valores['expediente']
+                else:
+                    expediente="Sin Datos"
+
+                if valores['titulo']:
+                    titulo=valores['titulo']
+                else:
+                    log("No tiene título")
+                    titulo="Sin Datos"
+
+                fechaDeIngreso=formatear_fecha(valores['fechaDeIngreso'])
+
+                if valores['perfil']:
+                    experiencia=valores['perfil']
+                else:
+                    log("No tiene perfil")
+                    experiencia="Sin Datos"
+
+                dni = str(valores['dni'])
+
+                if valores['cuil']:
+                    cuil=str(valores['cuil'])
+                else:
+                    log("No tiene CUIL")
+                    cuil="Sin Datos"
+
+                if valores['cbu']:
+                    cbu=valores['cbu']
+                else:
+                    log("No tiene cbu")
+                    cbu="Sin Datos"
+
+                if valores['email']:
+                    email=valores['email']
+                else:
+                    log("No tiene email")
+                    email="Sin Datos"
+
+                if valores['email_laboral']:
+                    email_laboral=valores['email_laboral']
+                else:
+                    log("No tiene email laboral")
+                    email_laboral=apellido+"@abc.gob.ar"
+
+                email_laboral = email_laboral.lower()
+
+                if valores['direccion']:
+                    direccion=valores['direccion']
+                else:
+                    log("No tiene direccion")
+                    direccion="Sin Datos"
+
+                localidad=valores['localidad'].title()
+                codigo_postal=str(valores['codigo_postal'])
+
+                if valores['fechaDeNacimiento']:
+                    fechaDeNacimiento=formatear_fecha(valores['fechaDeNacimiento'])
+                else:
+                    log("No tiene fecha de nacimiento")
+                    fechaDeNacimiento=None
+
+                if valores['telefono_celular']:
+                    telefono_celular=valores['telefono_celular']
+                else:
+                    log("No tiene telefono celular")
+                    telefono_celular="Sin Datos"
+
+                if valores['telefono_particular']:
+                    log("No tiene telefono Particular")
+                    telefono_particular=valores['telefono_particular']
+                else:
+                    telefono_particular="Sin Datos"
+
+                username=email_laboral
+                default_pass="dte_"+dni
+
+
+                try:
+                    user = User.objects.get(username=email_laboral)
+                except User.DoesNotExist:
+                    user = User(username=email_laboral, email=email)
+                    user.set_password(default_pass)
+
+                user.save()
+
+                perfil = models.Perfil.objects.get(user=user)
+
+                perfil.nombre = nombre
+                perfil.apellido = apellido
+                perfil.fechadenacimiento = fechaDeNacimiento
+                perfil.titulo = titulo
+                perfil.dni = dni
+                perfil.cuit = cuil
+                perfil.cbu = cbu
+                perfil.email = email
+                perfil.direccionCalle = direccion
+                perfil.codigoPostal = codigo_postal
+                perfil.telefonoCelular = telefono_celular
+                perfil.telefonoAlternativo = telefono_particular
+                perfil.expediente = expediente
+                perfil.fechaDeIngreso = fechaDeIngreso
+                perfil.fechaDeRenuncia = fechaDeRenuncia
+                perfil.emailLaboral = email_laboral
+
+                perfil.region = models.Region.objects.get(numero=int(region))
+                # perfil.experiencia = models.Experiencia.objects.get(nombre=experiencia)
+                # perfil.localidad = models.Localidad.objects.get(nombre=localidad)
+                perfil.cargo = models.Cargo.objects.get(nombre=cargo)
+                perfil.contrato = models.Contrato.objects.get(nombre=contrato)
+
+                perfil.save()
+            except TypeError, e:
+                log("-----")
+                log("Fila %d - ****** OMITIDA, TypeError. La fila contiene caracteres incorrectos." %(indice + 1))
+                filas_omitidas_o_con_errores += 1
+                filas_omitidas_lista += ", " + str(indice + 1)
+                log(e)
+                log("-----")
+                continue
+
+            log("Fila %d - Cargando datos de perfil para consultor: '%s'" %(indice + 1, valores["consultor"]))
+            log("")
+            log("Apellido: " + apellido)
+            log("Nombres: " + nombre)
+            log("Region: " + region)
+            log("Cargo: " + cargo)
+            log("Contrato: " + contrato)
+            log("Carga horaria: " + carga_horaria)
+            log("Expediente: " + expediente)
+            #log("Fecha de Ingreso: " + fechaDeIngreso)
+            # log("Fecha de Renuncia: " + fechaDeRenuncia)
+            log("Titulo: " + titulo)
+            log("Perfil: " + experiencia)
+            log("DNI: " + dni)
+            log("CUIL: " + cuil)
+            log("CBU: " + cbu)
+            log("Email: " + email)
+            log("Email Laboral: " + email_laboral)
+            log("Direccion: " + direccion)
+            log("Localidad: " + localidad)
+            log("Codigo Postal: " + codigo_postal)
+            #log("Fecha de nacimiento: " + fechaDeNacimiento)
+            log("Telefono Celular: " + telefono_celular)
+            log("Telefono Particular: " + telefono_particular)
+            log("Username: " + username)
+            log("Password: " + default_pass)
+            log("-----")
+            log("")
+
+            filas_procesadas += 1
+
+            if indice > LIMITE_DE_FILAS:
+                break
+
+
+        log("Terminó la ejecución")
+
+        log("")
+        log("Resumen:")
+        log("")
+        log(" - cantidad total de filas:                       " + str(indice - 1))
+        log(" - filas procesadas:                              " + str(filas_procesadas))
+        log(" - cantidad de filas que fallaron:                " + str(indice - 1 - filas_procesadas))
+
+        log(" - filas que fallaron:                            " + str(filas_omitidas_lista))
+        # log(" - filas con error u omitidas:                    " + str(filas_omitidas_o_con_errores))
+        # log(" - cantidad de socios sin grupo familiar:         " + str(cantidad_de_socios_sin_grupo_familiar))
+        # log(" - cantidad de perfiles que renunciaron: " + str(cantidad_de_perfiles_con_renuncia))
+        log("")
+        log("")
+
+
     def importar_conformaciones(self):
         resultado = self.obtener_datos_desde_api('conformaciones')
 
@@ -242,8 +560,9 @@ class Command(BaseCommand):
             objeto_escuela = models.Escuela.objects.get(cue=cue_conformado)
             escuela_padre = models.Escuela.objects.get(cue=cue_principal)
             objeto_motivo = models.MotivoDeConformacion.objects.get(nombre=motivo)
+            fecha_como_objeto = datetime.datetime.strptime(fecha, "%Y-%m-%d")
 
-            escuela_padre.conformar_con(objeto_escuela, objeto_motivo, fecha)
+            escuela_padre.conformar_con(objeto_escuela, objeto_motivo, fecha_como_objeto)
             objeto_escuela.save()
 
     def importar_paquetes(self):
