@@ -98,20 +98,36 @@ class EventoViewSet(viewsets.ModelViewSet):
     queryset = models.Evento.objects.all()
     serializer_class = serializers.EventoSerializer
     filter_backends = [SearchFilter, DjangoFilterBackend]
-    search_fields = ['escuela__nombre', 'escuela__cue']
+    search_fields = ['escuela__nombre', 'escuela__cue', 'responsable__apellido', 'responsable__dni']
     filter_fields = ['escuela__cue']
 
     def get_queryset(self):
         queryset = models.Evento.objects.all()
         query = self.request.query_params.get('query', None)
+        informe = self.request.query_params.get('informe', None)
 
         if query:
             filtro_escuela = Q(escuela__nombre__icontains=query)
             filtro_escuela_cue = Q(escuela__cue__icontains=query)
+            filtro_responsable_apellido = Q(responsable__apellido__icontains=query)
+            filtro_responsable_dni = Q(responsable__dni=query)
 
-            queryset = queryset.filter(filtro_escuela | filtro_escuela_cue)
+            queryset = queryset.filter(filtro_escuela | filtro_escuela_cue | filtro_responsable_apellido | filtro_responsable_dni)
+
+        if informe:
+            filtro_responsable = Q(responsable__dni=informe)
+
+            queryset = queryset.filter(filtro_responsable)
 
         return queryset
+
+    @list_route(methods=['get'])
+    def estadistica(self, request):
+        estadisticas = {
+            "total": models.Evento.objects.all().count()
+        }
+        return Response(estadisticas)
+
 
 class RegionViewSet(viewsets.ModelViewSet):
     resource_name = 'regiones'
@@ -124,7 +140,7 @@ class PerfilViewSet(viewsets.ModelViewSet):
     resource_name = 'perfiles'
     serializer_class = serializers.PerfilSerializer
     filter_backends = [SearchFilter, DjangoFilterBackend]
-    search_fields = ['nombre', 'apellido', 'dni', 'region__numero', 'cargo__nombre']
+    search_fields = ['nombre', 'apellido', 'dni', 'cargo__nombre']
     filter_fields = ['region__numero']
 
     def get_queryset(self):
