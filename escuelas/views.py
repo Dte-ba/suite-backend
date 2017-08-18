@@ -359,7 +359,7 @@ class PaqueteViewSet(viewsets.ModelViewSet):
         estadisticas = {
             "total": models.Paquete.objects.all().count(),
             "pendientes": models.Paquete.objects.filter(estado__nombre="Pendiente").count(),
-            "objetados": models.Paquete.objects.filter(estado__nombre="Objetada").count(),
+            "objetados": models.Paquete.objects.filter(estado__nombre="Objetado").count(),
             "enviados": models.Paquete.objects.filter(estado__nombre="EducAr").count(),
             "devueltos": models.Paquete.objects.filter(estado__nombre="Devuelto").count(),
         }
