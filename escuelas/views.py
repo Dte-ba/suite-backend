@@ -338,8 +338,8 @@ class PaqueteViewSet(viewsets.ModelViewSet):
     queryset = models.Paquete.objects.all()
     serializer_class = serializers.PaqueteSerializer
     filter_backends = [SearchFilter, DjangoFilterBackend]
-    search_fields = ['escuela__nombre', 'escuela__cue', 'estado__nombre']
-    filter_fields = ['escuela__nombre']
+    search_fields = ['escuela__nombre', 'escuela__cue', 'estado__nombre', 'idHardware', 'ne', 'escuela__piso__serie']
+    filter_fields = ['escuela__localidad__distrito__region__numero']
 
     def get_queryset(self):
         queryset = models.Paquete.objects.all()
@@ -349,8 +349,11 @@ class PaqueteViewSet(viewsets.ModelViewSet):
             filtro_escuela = Q(escuela__nombre__icontains=query)
             filtro_escuela_cue = Q(escuela__cue__icontains=query)
             filtro_estado = Q(estado__nombre__icontains=query)
+            filtro_idHardware = Q(idHardware__icontains=query)
+            filtro_ne = Q(ne__icontains=query)
+            filtro_serie = Q(escuela__piso__serie__icontains=query)
 
-            queryset = queryset.filter(filtro_escuela | filtro_escuela_cue | filtro_estado)
+            queryset = queryset.filter(filtro_escuela | filtro_escuela_cue | filtro_estado | filtro_idHardware | filtro_ne | filtro_serie)
 
         return queryset
 
