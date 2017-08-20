@@ -1391,5 +1391,5 @@ class Command(BaseCommand):
 
         for perfil in bar(models.Perfil.objects.all()):
             if not perfil.group:
-                perfil.group = Group.objects.get('Sin Definir')
+                perfil.group = Group.objects.get(name='Sin Definir')
                 perfil.save()
