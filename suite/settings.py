@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'escuelas.apps.EscuelasConfig',
     'django.contrib.admin',
     'django.contrib.auth',
+    'permisos.apps.PermisosConfig',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',

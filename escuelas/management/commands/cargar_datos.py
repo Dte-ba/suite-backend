@@ -10,6 +10,9 @@ from openpyxl import load_workbook
 from escuelas import models
 from django.contrib.auth.models import User
 from django.core.management.base import BaseCommand
+from django.contrib.auth.models import Group
+from django.contrib.auth.models import Permission
+from django.contrib.contenttypes.models import ContentType
 
 # Esta variable no se debe modificar. Se le puede cambiar el valor en tiempo
 # de ejecución invocando el comando "make cargar_datos depuracion=1"
@@ -86,6 +89,7 @@ class Command(BaseCommand):
             'importar_validaciones',
             'importar_comentarios_de_validaciones',
             'importar_paquetes',
+            'limpiar_e_importar_permisos_con_grupos',
         ]
 
 
@@ -100,10 +104,16 @@ class Command(BaseCommand):
             MODO_VERBOSE = False
 
         if filtro:
-            print("Ha aplicado el filtro: " + filtro)
+            print("Aplicando el filtro: " + filtro)
             comandos_filtrados = [x for x in comandos if filtro in x]
-            print("Solo se ejecutaran %d comandos (de los %d disponibles)" %(len(comandos_filtrados), len(comandos)))
-            self.ejecutar_comandos(comandos_filtrados)
+
+            cantidad_de_comandos = len(comandos_filtrados)
+
+            if cantidad_de_comandos == 0:
+                print("No hay ningún comando que coincida con el filtro.")
+            else:
+                print("Solo se ejecutaran %d comandos (de los %d disponibles)" %(cantidad_de_comandos, len(comandos)))
+                self.ejecutar_comandos(comandos_filtrados)
         else:
             print("Se ejecutaran %d comandos" %(len(comandos)))
             self.ejecutar_comandos(comandos)
@@ -1329,3 +1339,47 @@ class Command(BaseCommand):
         for nombre in bar(nombres):
             p, created = models.CategoriaDeEvento.objects.get_or_create(nombre=nombre)
             log(p)
+
+    def limpiar_e_importar_permisos_con_grupos(self):
+        # Elimina todos los permisos por omision de django.
+        print("Borrando los permisos estándar de django")
+        permisos_estandar = [x for x in Permission.objects.all() if x.name.startswith('Can ')]
+
+        if permisos_estandar:
+            print("Borrando %d" %(len(permisos_estandar)))
+            [x.delete() for x in permisos_estandar]
+        else:
+            print("No hay permisos estandar para borrar")
+
+        # Genera los permisos personalizados
+        permisos = [
+            'escuela.conformar',
+            'escuela.editar',
+            'escuela.listar',
+        ]
+
+        print("Actualizando el listado de permisos (creación o actualización)")
+        bar = barra_de_progreso()
+
+        for p in bar(permisos):
+            modelo, permiso = p.split('.')
+
+            tipo = ContentType.objects.get(app_label='escuelas', model=modelo)
+            Permission.objects.get_or_create(name=permiso, codename=p, content_type=tipo)
+
+        grupos = {
+            'coordinador': [
+                'escuela.conformar', 'escuela.editar', 'escuela.listar'
+            ],
+            'invitado': [
+                'escuela.listar'
+            ]
+        }
+
+        for nombre_de_grupo in grupos:
+
+            (grupo, _) = Group.objects.get_or_create(name=nombre_de_grupo)
+
+            for nombre_de_permiso in grupos[nombre_de_grupo]:
+                permiso = Permission.objects.get(codename=nombre_de_permiso)
+                grupo.permissions.add(permiso)
