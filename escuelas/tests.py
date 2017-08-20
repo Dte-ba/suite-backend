@@ -143,7 +143,7 @@ class Permisos(APITestCase):
         grupo.permissions.add(puede_crear)
 
         # Se agrega al usuario a ese grupo coordinador
-        user.perfil.grupo = grupo
+        user.perfil.group = grupo
 
         grupo.save()
         user.save()
@@ -205,13 +205,14 @@ class Permisos(APITestCase):
         self.assertEquals(item_1["perfiles"], [])
 
         # Si se vincula el grupo a un perfil ...
-        user.perfil.grupo = grupo
+        user.perfil.group = grupo
         grupo.save()
         user.save()
         user.perfil.save()
 
         response = self.client.get('/api/groups', format='json')
         item_1 = response.data['results'][0]
+        
         self.assertEquals(len(item_1["perfiles"]), 1)
         self.assertEquals(item_1["perfiles"][0]['type'], 'perfiles')
 

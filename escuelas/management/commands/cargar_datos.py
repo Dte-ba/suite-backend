@@ -1373,6 +1373,8 @@ class Command(BaseCommand):
             ],
             'Invitado': [
                 'escuela.listar'
+            ],
+            'Sin Definir': [
             ]
         }
 
@@ -1383,3 +1385,11 @@ class Command(BaseCommand):
             for nombre_de_permiso in grupos[nombre_de_grupo]:
                 permiso = Permission.objects.get(codename=nombre_de_permiso)
                 grupo.permissions.add(permiso)
+
+        print("Aplicando el grupo 'Sin definir' a todos los perfiles que no tengan grupo")
+        bar = barra_de_progreso()
+
+        for perfil in bar(models.Perfil.objects.all()):
+            if not perfil.group:
+                perfil.group = Group.objects.get('Sin Definir')
+                perfil.save()
