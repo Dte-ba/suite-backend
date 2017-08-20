@@ -219,6 +219,19 @@ class MiPerfilViewSet(viewsets.ViewSet):
         }
         return Response(data)
 
+    @detail_route(methods=['get'])
+    def detalle(self, request, pk=None):
+        """Emite el detalle completo de un grupo."""
+        grupo = Group.objects.get(id=pk)
+
+        permisos_del_grupo = grupo.permissions.all()
+        todos_los_permisos = Permission.objects.all()
+        permisos_que_no_tiene = set(todos_los_permisos) - set(permisos_del_grupo)
+
+        result = {p.codename: (p in permisos_del_grupo) for p in todos_los_permisos}
+
+        return Response({'permisos': result})
+
 class DistritoViewSet(viewsets.ModelViewSet):
     resource_name = 'distrito'
     queryset = models.Distrito.objects.all()

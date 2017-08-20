@@ -137,8 +137,11 @@ class Permisos(APITestCase):
 
         tipo = ContentType.objects.get(app_label='escuelas', model='evento')
 
-        puede_crear = Permission(name='Puede crear', codename='puede_crear_evento', content_type=tipo)
+        puede_crear = Permission(name='evento.crear', codename='evento.crear', content_type=tipo)
         puede_crear.save()
+
+        puede_listar = Permission(name='evento.listar', codename='evento.listar', content_type=tipo)
+        puede_listar.save()
 
         grupo.permissions.add(puede_crear)
 
@@ -163,6 +166,11 @@ class Permisos(APITestCase):
         self.assertEqual(len(response.data['permisosComoLista']), 1)
         self.assertEqual(len(response.data['grupos']), 1, "Tiene un solo grupo")
         self.assertEqual(response.data['grupos'][0]['nombre'], 'coordinador', "Tiene asignado el grupo coordinador")
+
+        response = self.client.get('/api/mi-perfil/1/detalle', format='json')
+
+        self.assertEqual(response.data['permisos']['evento.crear'], True);
+        self.assertEqual(response.data['permisos']['evento.listar'], False);
 
     def test_puede_obtener_una_lista_de_todos_los_permisos(self):
         user = User.objects.create_user(username='test', password='123')
@@ -212,7 +220,7 @@ class Permisos(APITestCase):
 
         response = self.client.get('/api/groups', format='json')
         item_1 = response.data['results'][0]
-        
+
         self.assertEquals(len(item_1["perfiles"]), 1)
         self.assertEquals(item_1["perfiles"][0]['type'], 'perfiles')
 

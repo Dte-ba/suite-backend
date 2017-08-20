@@ -32,18 +32,18 @@ router.register(r'motivos-de-conformacion', views.MotivoDeConformacionViewSet)
 router.register(r'estado-de-tareas', views.EstadoDeTareaViewSet)
 router.register(r'prioridad-de-tareas', views.PrioridadDeTareaViewSet)
 router.register(r'tareas', views.TareaViewSet)
-router.register(r'categorias-de-eventos', views.CategoriaDeEventoViewSet)
-router.register(r'comentarios-de-validacion', views.ComentarioDeValidacionViewSet)
-router.register(r'validaciones', views.ValidacionViewSet)
-router.register(r'estados-de-validacion', views.EstadoDeValidacionViewSet)
-router.register(r'estados-de-paquete', views.EstadoDePaqueteViewSet)
-router.register(r'paquetes', views.PaqueteViewSet)
+router.register('categorias-de-eventos', views.CategoriaDeEventoViewSet)
+router.register('comentarios-de-validacion', views.ComentarioDeValidacionViewSet)
+router.register('validaciones', views.ValidacionViewSet)
+router.register('estados-de-validacion', views.EstadoDeValidacionViewSet)
+router.register('estados-de-paquete', views.EstadoDePaqueteViewSet)
+router.register('paquetes', views.PaqueteViewSet)
 router.register('permissions', views.PermissionViewSet)
 router.register('groups', views.GroupViewSet)
 
 
 
-router.register(r'mi-perfil', views.MiPerfilViewSet, 'Perfil')
+router.register('mi-perfil', views.MiPerfilViewSet, 'Perfil')
 
 urlpatterns = [
     url(r'^$', views.home, name='home'),
