@@ -172,6 +172,18 @@ class Permisos(APITestCase):
         self.assertEqual(response.data['permisos']['evento.crear'], True);
         self.assertEqual(response.data['permisos']['evento.listar'], False);
 
+        self.assertEqual(len(response.data['permisosAgrupados']), 1);
+        self.assertEqual(response.data['permisosAgrupados'][0]['modulo'], 'evento');
+        self.assertEqual(len(response.data['permisosAgrupados'][0]['permisos']), 2);
+
+        self.assertEqual(response.data['permisosAgrupados'][0]['permisos'][0]['accion'], 'crear');
+        self.assertEqual(response.data['permisosAgrupados'][0]['permisos'][0]['permiso'], True);
+
+        self.assertEqual(response.data['permisosAgrupados'][0]['permisos'][1]['accion'], 'listar');
+        self.assertEqual(response.data['permisosAgrupados'][0]['permisos'][1]['permiso'], False);
+
+
+
     def test_puede_obtener_una_lista_de_todos_los_permisos(self):
         user = User.objects.create_user(username='test', password='123')
 

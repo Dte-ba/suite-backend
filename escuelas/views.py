@@ -228,9 +228,26 @@ class MiPerfilViewSet(viewsets.ViewSet):
         todos_los_permisos = Permission.objects.all()
         permisos_que_no_tiene = set(todos_los_permisos) - set(permisos_del_grupo)
 
-        result = {p.codename: (p in permisos_del_grupo) for p in todos_los_permisos}
+        permisos_como_diccionario = {p.codename: (p in permisos_del_grupo)
+                                                for p in todos_los_permisos}
 
-        return Response({'permisos': result})
+        permisos_agrupados = {}
+
+        for nombre_del_permiso in permisos_como_diccionario:
+            modulo, accion = nombre_del_permiso.split('.')
+            permiso = permisos_como_diccionario[nombre_del_permiso]
+
+            if modulo not in permisos_agrupados:
+                permisos_agrupados[modulo] = []
+
+            permisos_agrupados[modulo].append({'accion': accion, 'permiso': permiso})
+
+        permisos_agrupados_en_lista = [{'modulo': k, 'permisos': v} for k, v in permisos_agrupados.iteritems()]
+
+        return Response({
+            'permisos': permisos_como_diccionario,
+            'permisosAgrupados': permisos_agrupados_en_lista,
+        })
 
 class DistritoViewSet(viewsets.ModelViewSet):
     resource_name = 'distrito'
