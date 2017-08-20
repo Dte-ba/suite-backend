@@ -6,6 +6,7 @@ from django.contrib.contenttypes.models import ContentType
 
 from rest_framework.test import APITestCase
 import models
+import pprint
 
 class APIUsuariosTests(APITestCase):
 
@@ -125,13 +126,13 @@ class GeneralesTestCase(APITestCase):
         self.assertEqual(response.data['conformadas'], 3)
 
 
-class SerializarPermisos(APITestCase):
+class Permisos(APITestCase):
 
     def test_puede_serializar_permisos(self):
         # Comienza con un usuario básico
         user = User.objects.create_user(username='test', password='123')
 
-        # Se genera un grupo Cobrador, con dos permisos: cargar pagos y ver informes.
+        # Se genera un grupo Coordinador, con un permiso
         grupo = Group.objects.create(name='coordinador')
 
         tipo = ContentType.objects.get(app_label='escuelas', model='evento')
@@ -162,6 +163,57 @@ class SerializarPermisos(APITestCase):
         self.assertEqual(len(response.data['permisosComoLista']), 1)
         self.assertEqual(len(response.data['grupos']), 1, "Tiene un solo grupo")
         self.assertEqual(response.data['grupos'][0]['nombre'], 'coordinador', "Tiene asignado el grupo coordinador")
+
+    def test_puede_obtener_una_lista_de_todos_los_permisos(self):
+        user = User.objects.create_user(username='test', password='123')
+
+        grupo = Group.objects.create(name='coordinador')
+        tipo = ContentType.objects.get(app_label='escuelas', model='evento')
+        puede_crear_eventos = Permission(name='crear', codename='evento.crear', content_type=tipo)
+        puede_crear_eventos.save()
+
+        grupo.permissions.add(puede_crear_eventos)
+
+        self.client.force_authenticate(user=user)
+        response = self.client.get('/api/permissions', format='json')
+
+        self.assertEqual(len(response.data['results']), 1)
+        item_1 = response.data['results'][0]
+        self.assertEquals(item_1["name"], "crear")
+        self.assertEquals(item_1["codename"], "evento.crear")
+        self.assertEquals(item_1["content_type"], "evento")
+
+    def test_puede_obtener_grupos_junto_con_permisos(self):
+        user = User.objects.create_user(username='test', password='123')
+
+        grupo = Group.objects.create(name='coordinador')
+        tipo = ContentType.objects.get(app_label='escuelas', model='evento')
+        puede_crear_eventos = Permission(name='crear', codename='evento.crear', content_type=tipo)
+        puede_crear_eventos.save()
+
+        grupo.permissions.add(puede_crear_eventos)
+
+        self.client.force_authenticate(user=user)
+        response = self.client.get('/api/groups', format='json')
+
+        self.assertEqual(len(response.data['results']), 1)
+        item_1 = response.data['results'][0]
+
+        self.assertEquals(item_1["name"], "coordinador")
+
+        # Inicialmente este grupo no tiene perfil
+        self.assertEquals(item_1["perfiles"], [])
+
+        # Si se vincula el grupo a un perfil ...
+        user.perfil.grupo = grupo
+        grupo.save()
+        user.save()
+        user.perfil.save()
+
+        response = self.client.get('/api/groups', format='json')
+        item_1 = response.data['results'][0]
+        self.assertEquals(len(item_1["perfiles"]), 1)
+        self.assertEquals(item_1["perfiles"][0]['type'], 'perfiles')
 
 
 class Filtar(APITestCase):

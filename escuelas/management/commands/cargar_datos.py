@@ -1368,10 +1368,10 @@ class Command(BaseCommand):
             Permission.objects.get_or_create(name=permiso, codename=p, content_type=tipo)
 
         grupos = {
-            'coordinador': [
+            'Coordinador': [
                 'escuela.conformar', 'escuela.editar', 'escuela.listar'
             ],
-            'invitado': [
+            'Invitado': [
                 'escuela.listar'
             ]
         }

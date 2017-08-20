@@ -2,6 +2,7 @@ from django.contrib.auth.models import User
 from rest_framework import serializers
 import models
 from rest_framework_json_api.relations import ResourceRelatedField
+from django.contrib.auth.models import Permission, Group
 
 class CustomSerializer(serializers.HyperlinkedModelSerializer):
 
@@ -48,7 +49,7 @@ class PerfilSerializer(CustomSerializer):
 
     class Meta:
         model = models.Perfil
-        fields = ('user', 'grupo', 'image', 'nombre', 'apellido', 'fechadenacimiento', 'titulo', 'experiencia', 'dni', 'cuit', 'cbu', 'email', 'estado', 'direccionCalle', 'direccionAltura', 'direccionPiso', 'direccionDepto', 'direccionTorre', 'codigoPostal', 'localidad', 'telefonoCelular', 'telefonoAlternativo', 'region', 'cargo', 'contrato', 'expediente', 'fechaDeIngreso', 'fechaDeRenuncia', 'emailLaboral', 'eventos_acompaniantes')
+        fields = ('user', 'group', 'image', 'nombre', 'apellido', 'fechadenacimiento', 'titulo', 'experiencia', 'dni', 'cuit', 'cbu', 'email', 'estado', 'direccionCalle', 'direccionAltura', 'direccionPiso', 'direccionDepto', 'direccionTorre', 'codigoPostal', 'localidad', 'telefonoCelular', 'telefonoAlternativo', 'region', 'cargo', 'contrato', 'expediente', 'fechaDeIngreso', 'fechaDeRenuncia', 'emailLaboral', 'eventos_acompaniantes')
         read_only_fields = ('image',)
 
 class DistritoSerializer(CustomSerializer):
@@ -265,3 +266,18 @@ class PaqueteSerializer(CustomSerializer):
             'fechaDevolucion',
             'leido'
         )
+
+class PermissionSerializer(CustomSerializer):
+    content_type = serializers.CharField(source='content_type.model', read_only=True)
+
+    class Meta:
+        model = Permission
+        fields = ('name', 'codename', 'content_type')
+
+class GroupSerializer(serializers.HyperlinkedModelSerializer):
+    perfiles = ResourceRelatedField(read_only=True, many=True)
+    permissions = ResourceRelatedField(read_only=True, many=True)
+
+    class Meta:
+        model = Group
+        fields = ('url', 'name', 'perfiles', 'permissions')

@@ -11,7 +11,7 @@ def upload_to(instance, filename):
 class Perfil(models.Model):
 
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    grupo = models.ForeignKey(Group, related_name="perfiles", default=None, null=True)
+    group = models.ForeignKey(Group, related_name="perfiles", default=None, null=True)
 
     # 1) Datos Personales
     image = models.ImageField('image', blank=True, null=True, upload_to=upload_to)
@@ -71,27 +71,25 @@ class Perfil(models.Model):
         resource_name = 'perfiles'
 
     def obtenerListaDeGrupos(self):
-        if self.grupo:
-            return [{'id': self.grupo.id, 'nombre': self.grupo.name}]
+        if self.group:
+            return [{'id': self.group.id, 'nombre': self.group.name}]
         else:
             return []
 
     def obtenerListaDePermisos(self):
         permisos = []
 
-        if not self.grupo:
+        if not self.group:
             return permisos
 
-        for permiso in self.grupo.permissions.all():
+        for permiso in self.group.permissions.all():
 
             permisos.append({
                 'titulo': permiso.name,
                 'nombre': permiso.codename,
                 'modulo': permiso.content_type.model,
                 'identificador': permiso.content_type.model + "." + permiso.codename,
-                'aplicacion': permiso.content_type.app_label,
             })
-
 
         return permisos
 

@@ -38,6 +38,10 @@ router.register(r'validaciones', views.ValidacionViewSet)
 router.register(r'estados-de-validacion', views.EstadoDeValidacionViewSet)
 router.register(r'estados-de-paquete', views.EstadoDePaqueteViewSet)
 router.register(r'paquetes', views.PaqueteViewSet)
+router.register('permissions', views.PermissionViewSet)
+router.register('groups', views.GroupViewSet)
+
+
 
 router.register(r'mi-perfil', views.MiPerfilViewSet, 'Perfil')
 

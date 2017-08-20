@@ -10,7 +10,7 @@ class EscuelaAdmin(admin.ModelAdmin):
 
 class PerfilAdmin(admin.ModelAdmin):
     model = models.Perfil
-    list_display = ('user', 'nombre', 'apellido', 'grupo', 'dni', 'email')
+    list_display = ('user', 'nombre', 'apellido', 'group', 'dni', 'email')
     search_fields = ('user', 'nombre', 'apelido', 'dni')
 
 class EventoAdmin(admin.ModelAdmin):

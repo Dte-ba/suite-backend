@@ -1,11 +1,11 @@
 # coding: utf-8
 from django.shortcuts import render
-from django.contrib.auth.models import User
 from rest_framework import viewsets
 from django.db.models import Q
 from rest_framework.response import Response
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
+from django.contrib.auth.models import User, Group, Permission
 
 from rest_framework.filters import SearchFilter
 from rest_framework.filters import DjangoFilterBackend
@@ -176,7 +176,7 @@ class PerfilViewSet(viewsets.ModelViewSet):
     filter_fields = ['region__numero']
 
     def get_queryset(self):
-        queryset = models.Perfil.objects.all()
+        queryset = self.queryset
         query = self.request.query_params.get('query', None)
 
         if query:
@@ -415,3 +415,15 @@ class PaqueteViewSet(viewsets.ModelViewSet):
             "devueltos": models.Paquete.objects.filter(estado__nombre="Devuelto").count(),
         }
         return Response(estadisticas)
+
+
+class PermissionViewSet(viewsets.ModelViewSet):
+    page_size = 2000
+    resource_name = 'permission'
+    queryset = Permission.objects.all()
+    serializer_class = serializers.PermissionSerializer
+
+
+class GroupViewSet(viewsets.ModelViewSet):
+    queryset = Group.objects.all()
+    serializer_class = serializers.GroupSerializer
