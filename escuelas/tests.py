@@ -143,6 +143,10 @@ class Permisos(APITestCase):
         puede_listar = Permission(name='evento.listar', codename='evento.listar', content_type=tipo)
         puede_listar.save()
 
+        puede_administrar = Permission(name='evento.administrar', codename='evento.administrar', content_type=tipo)
+        puede_administrar.save()
+
+        # El grupo tiene un solo permiso
         grupo.permissions.add(puede_crear)
 
         # Se agrega al usuario a ese grupo coordinador
@@ -163,25 +167,37 @@ class Permisos(APITestCase):
         response = self.client.get('/api/mi-perfil', format='json')
 
         self.assertEqual(response.data['username'], "test");
-        self.assertEqual(len(response.data['permisosComoLista']), 1)
         self.assertEqual(len(response.data['grupos']), 1, "Tiene un solo grupo")
         self.assertEqual(response.data['grupos'][0]['nombre'], 'coordinador', "Tiene asignado el grupo coordinador")
 
-        response = self.client.get('/api/mi-perfil/1/detalle', format='json')
+        # Hay 3 permisos en el sistema en total
+        self.assertEqual(len(response.data['permisos']), 3)
 
+        # Pero esta es la asignación, el usuario de este grupo solo puede crear eventos:
         self.assertEqual(response.data['permisos']['evento.crear'], True);
         self.assertEqual(response.data['permisos']['evento.listar'], False);
+        self.assertEqual(response.data['permisos']['evento.administrar'], False);
+
+        response = self.client.get('/api/mi-perfil/1/detalle', format='json')
+
+        # En la vista detalle del grupo ocurre lo mismo, se ven 3 permisos pero este grupo
+        # solo puede crear eventos.
+        self.assertEqual(response.data['permisos']['evento.crear'], True);
+        self.assertEqual(response.data['permisos']['evento.listar'], False);
+        self.assertEqual(response.data['permisos']['evento.administrar'], False);
 
         self.assertEqual(len(response.data['permisosAgrupados']), 1);
         self.assertEqual(response.data['permisosAgrupados'][0]['modulo'], 'evento');
-        self.assertEqual(len(response.data['permisosAgrupados'][0]['permisos']), 2);
+        self.assertEqual(len(response.data['permisosAgrupados'][0]['permisos']), 3);
 
         self.assertEqual(response.data['permisosAgrupados'][0]['permisos'][0]['accion'], 'crear');
         self.assertEqual(response.data['permisosAgrupados'][0]['permisos'][0]['permiso'], True);
 
-        self.assertEqual(response.data['permisosAgrupados'][0]['permisos'][1]['accion'], 'listar');
+        self.assertEqual(response.data['permisosAgrupados'][0]['permisos'][1]['accion'], 'administrar');
         self.assertEqual(response.data['permisosAgrupados'][0]['permisos'][1]['permiso'], False);
 
+        self.assertEqual(response.data['permisosAgrupados'][0]['permisos'][2]['accion'], 'listar');
+        self.assertEqual(response.data['permisosAgrupados'][0]['permisos'][2]['permiso'], False);
 
 
     def test_puede_obtener_una_lista_de_todos_los_permisos(self):

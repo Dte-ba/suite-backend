@@ -1,7 +1,7 @@
 # coding: utf-8
 from django.db import models
 from django.contrib.auth.models import User
-from django.contrib.auth.models import Group
+from django.contrib.auth.models import Group, Permission
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 
@@ -76,27 +76,20 @@ class Perfil(models.Model):
         else:
             return []
 
-    def obtenerListaDePermisos(self):
-        permisos = []
+    def obtenerPermisos(self):
+        todos_los_permisos = Permission.objects.all()
 
-        if not self.group:
-            return permisos
+        if self.group:
+            permisos_del_grupo = self.group.permissions.all()
+        else:
+            permisos_del_grupo = []
 
-        for permiso in self.group.permissions.all():
+        permisos_que_no_tiene = set(todos_los_permisos) - set(permisos_del_grupo)
 
-            permisos.append({
-                'titulo': permiso.name,
-                'nombre': permiso.codename,
-                'modulo': permiso.content_type.model,
-                'identificador': permiso.content_type.model + "." + permiso.codename,
-            })
+        permisos_como_diccionario = {p.codename: (p in permisos_del_grupo)
+                                                for p in todos_los_permisos}
 
-        return permisos
-
-    def obtenerPermisosComoDiccionario(self):
-        listaDePermisos = self.obtenerListaDePermisos()
-
-        return dict([(k['identificador'], True) for k in listaDePermisos])
+        return permisos_como_diccionario
 
 
 @receiver(post_save, sender=User)

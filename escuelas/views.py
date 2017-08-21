@@ -212,8 +212,7 @@ class MiPerfilViewSet(viewsets.ViewSet):
             'username': request.user.username,
             'nombre': perfil.nombre,
             'apellido': perfil.apellido,
-            'permisosComoLista': perfil.obtenerListaDePermisos(),
-            'permisos': perfil.obtenerPermisosComoDiccionario(),
+            'permisos': perfil.obtenerPermisos(),
             'grupos': perfil.obtenerListaDeGrupos(),
             'idPerfil': perfil.id
         }
