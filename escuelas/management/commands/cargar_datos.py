@@ -1380,7 +1380,7 @@ class Command(BaseCommand):
         for p in bar(permisos):
             modelo, permiso = p.split('.')
 
-            tipo = ContentType.objects.get(app_label='escuelas', model=modelo)
+            tipo, _ = ContentType.objects.get_or_create(app_label='escuelas', model=modelo)
             Permission.objects.get_or_create(name=permiso, codename=p, content_type=tipo)
 
 
@@ -1398,8 +1398,7 @@ class Command(BaseCommand):
                 ESCUELA_LISTAR,
                 AGENDA_LISTAR,
             ],
-            'Administrador': [
-            ],
+            'Administrador': permisos, # LISTA con todos los permisos existentes
             'Facilitador': [
             ]
         }
