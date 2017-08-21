@@ -1375,6 +1375,10 @@ class Command(BaseCommand):
                 'escuela.listar'
             ],
             'Sin Definir': [
+            ],
+            'Administrador': [
+            ],
+            'Facilitador': [
             ]
         }
 
@@ -1385,6 +1389,21 @@ class Command(BaseCommand):
             for nombre_de_permiso in grupos[nombre_de_grupo]:
                 permiso = Permission.objects.get(codename=nombre_de_permiso)
                 grupo.permissions.add(permiso)
+
+
+        print("Realizando asignación de grupos")
+
+        asignaciones = [
+            # ( Email laboral  ,  Nombre del grupo )
+            ('ccane@abc.gob.ar', 'Administrador'),
+            ('lvigolo@abc.gob.ar', 'Administrador'),
+        ]
+
+        for emailLaboral, grupo in asignaciones:
+            perfil = models.Perfil.objects.get(emailLaboral=emailLaboral)
+            perfil.definir_grupo_usando_nombre(grupo)
+            perfil.save()
+
 
         print("Aplicando el grupo 'Sin definir' a todos los perfiles que no tengan grupo")
         bar = barra_de_progreso()

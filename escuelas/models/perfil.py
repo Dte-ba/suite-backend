@@ -91,6 +91,9 @@ class Perfil(models.Model):
 
         return permisos_como_diccionario
 
+    def definir_grupo_usando_nombre(self, nombre_del_grupo):
+        self.group = Group.objects.get(name=nombre_del_grupo)
+
 
 @receiver(post_save, sender=User)
 def create_user_profile(sender, instance, created, **kwargs):
