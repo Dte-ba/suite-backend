@@ -1352,10 +1352,26 @@ class Command(BaseCommand):
             print("No hay permisos estandar para borrar")
 
         # Genera los permisos personalizados
+
+        AGENDA_LISTAR = 'agenda.listar'
+        AGENDA_CREAR = 'agenda.listar'
+
+        ESCUELA_LISTAR = 'escuela.listar'
+        ESCUELA_EDITAR = 'escuela.editar'
+        ESCUELA_CONFORMAR = 'escuela.conformar'
+
+        TAREA_LISTAR = 'tarea.listar'
+        PAQUETES_LISTAR = 'paquetes.listar'
+        VALIDACIONES_LISTAR = 'validaciones.listar'
+        PERSONAS_LISTAR = 'personas.listar'
+
         permisos = [
-            'escuela.conformar',
-            'escuela.editar',
-            'escuela.listar',
+            AGENDA_LISTAR, AGENDA_CREAR,
+            ESCUELA_LISTAR, ESCUELA_EDITAR, ESCUELA_CONFORMAR,
+            TAREA_LISTAR,
+            PAQUETES_LISTAR,
+            VALIDACIONES_LISTAR,
+            PERSONAS_LISTAR,
         ]
 
         print("Actualizando el listado de permisos (creación o actualización)")
@@ -1367,14 +1383,20 @@ class Command(BaseCommand):
             tipo = ContentType.objects.get(app_label='escuelas', model=modelo)
             Permission.objects.get_or_create(name=permiso, codename=p, content_type=tipo)
 
+
+
         grupos = {
             'Coordinador': [
-                'escuela.conformar', 'escuela.editar', 'escuela.listar'
+                ESCUELA_LISTAR, ESCUELA_CONFORMAR, ESCUELA_EDITAR,
+                AGENDA_LISTAR, AGENDA_CREAR,
             ],
             'Invitado': [
-                'escuela.listar'
+                ESCUELA_LISTAR,
+                AGENDA_LISTAR,
             ],
             'Sin Definir': [
+                ESCUELA_LISTAR,
+                AGENDA_LISTAR,
             ],
             'Administrador': [
             ],
