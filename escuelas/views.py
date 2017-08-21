@@ -242,7 +242,11 @@ class MiPerfilViewSet(viewsets.ViewSet):
 
             permisos_agrupados[modulo].append({'accion': accion, 'permiso': permiso})
 
-        permisos_agrupados_en_lista = [{'modulo': k, 'permisos': v} for k, v in permisos_agrupados.iteritems()]
+        permisos_agrupados_en_lista = [{
+                            'modulo': k,
+                            'permisos': v,
+                            'cantidad': len(v)
+                        } for k, v in permisos_agrupados.iteritems()]
 
         return Response({
             'permisos': permisos_como_diccionario,
