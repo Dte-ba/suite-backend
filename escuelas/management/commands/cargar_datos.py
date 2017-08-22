@@ -572,7 +572,9 @@ class Command(BaseCommand):
             objeto_motivo = models.MotivoDeConformacion.objects.get(nombre=motivo)
             fecha_como_objeto = datetime.datetime.strptime(fecha, "%Y-%m-%d")
 
-            escuela_padre.conformar_con(objeto_escuela, objeto_motivo, fecha_como_objeto)
+            if objeto_escuela.padre != escuela_padre:
+                escuela_padre.conformar_con(objeto_escuela, objeto_motivo, fecha_como_objeto)
+                
             objeto_escuela.save()
 
     def importar_paquetes(self):
@@ -1354,7 +1356,7 @@ class Command(BaseCommand):
         # Genera los permisos personalizados
 
         AGENDA_LISTAR = 'agenda.listar'
-        AGENDA_CREAR = 'agenda.listar'
+        AGENDA_CREAR = 'agenda.crear'
 
         ESCUELA_LISTAR = 'escuela.listar'
         ESCUELA_EDITAR = 'escuela.editar'
