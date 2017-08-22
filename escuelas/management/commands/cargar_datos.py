@@ -1358,11 +1358,11 @@ class Command(BaseCommand):
         AGENDA_LISTAR = 'agenda.listar'
         AGENDA_CREAR = 'agenda.crear'
 
-        ESCUELA_LISTAR = 'escuela.listar'
-        ESCUELA_EDITAR = 'escuela.editar'
-        ESCUELA_CONFORMAR = 'escuela.conformar'
+        ESCUELAS_LISTAR = 'escuelas.listar'
+        ESCUELAS_EDITAR = 'escuelas.editar'
+        ESCUELAS_CONFORMAR = 'escuelas.conformar'
 
-        TAREA_LISTAR = 'tarea.listar'
+        TAREA_LISTAR = 'tareas.listar'
         PAQUETES_LISTAR = 'paquetes.listar'
         VALIDACIONES_LISTAR = 'validaciones.listar'
         PERSONAS_LISTAR = 'personas.listar'
@@ -1371,11 +1371,11 @@ class Command(BaseCommand):
 
         permisos = [
             AGENDA_LISTAR, AGENDA_CREAR,
-            ESCUELA_LISTAR, ESCUELA_EDITAR, ESCUELA_CONFORMAR,
+            ESCUELAS_LISTAR, ESCUELAS_EDITAR, ESCUELAS_CONFORMAR,
             TAREA_LISTAR,
             PAQUETES_LISTAR,
             VALIDACIONES_LISTAR,
-            PERSONAS_LISTAR,
+            PERSONAS_LISTAR, PERSONAS_CREAR, PERSONAS_EDITAR
         ]
 
         print("Actualizando el listado de permisos (creación o actualización)")
@@ -1387,19 +1387,17 @@ class Command(BaseCommand):
             tipo, _ = ContentType.objects.get_or_create(app_label='escuelas', model=modelo)
             Permission.objects.get_or_create(name=permiso, codename=p, content_type=tipo)
 
-
-
         grupos = {
             'Coordinador': [
-                ESCUELA_LISTAR, ESCUELA_CONFORMAR, ESCUELA_EDITAR,
+                ESCUELAS_LISTAR, ESCUELAS_CONFORMAR, ESCUELAS_EDITAR,
                 AGENDA_LISTAR, AGENDA_CREAR,
             ],
             'Invitado': [
-                ESCUELA_LISTAR,
+                ESCUELAS_LISTAR,
                 AGENDA_LISTAR,
             ],
             'Sin Definir': [
-                ESCUELA_LISTAR,
+                ESCUELAS_LISTAR,
                 AGENDA_LISTAR,
             ],
             'Administrador': permisos, # LISTA con todos los permisos existentes
