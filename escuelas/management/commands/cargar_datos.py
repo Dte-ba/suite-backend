@@ -1353,6 +1353,9 @@ class Command(BaseCommand):
         else:
             print("No hay permisos estandar para borrar")
 
+        print("Borrando el resto de los permisos para re-definir")
+        [x.delete() for x in Permission.objects.all()]
+
         # Genera los permisos personalizados
 
         AGENDA_LISTAR = 'agenda.listar'
