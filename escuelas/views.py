@@ -16,12 +16,14 @@ from rest_framework.decorators import detail_route
 import serializers
 import models
 
-"""
-class LargeResultsSetPagination(pagination.PageNumberPagination):
-    page_size = 1000
-    page_size_query_param = 'page_size'
-    max_page_size = 10000
-"""
+import datetime
+
+#
+# class LargeResultsSetPagination(pagination.PageNumberPagination):
+#     page_size = 1000
+#     page_size_query_param = 'page_size'
+#     max_page_size = 10000
+
 
 def home(request):
     return render(request, 'home.html')
@@ -105,8 +107,8 @@ class EventoViewSet(viewsets.ModelViewSet):
         queryset = models.Evento.objects.all()
         query = self.request.query_params.get('query', None)
         informe = self.request.query_params.get('informe', None)
-        # fecha_in = date("2017-01-06")
-        # fecha_out = date("2017-31-06")
+        start_date = self.request.query_params.get('inicio', None)
+        end_date = self.request.query_params.get('fin', None)
 
         if query:
             filtro_escuela = Q(escuela__nombre__icontains=query)
@@ -117,12 +119,14 @@ class EventoViewSet(viewsets.ModelViewSet):
             queryset = queryset.filter(filtro_escuela | filtro_escuela_cue | filtro_responsable_apellido | filtro_responsable_dni)
 
         if informe:
-            filtro_responsable = Q(responsable__dni=informe)
-            # filtro_fecha_in = Q(fecha=fecha_in)
-            # filtro_fecha_out = Q(fecha=fecha_out)
 
-            # queryset = queryset.filter(filtro_responsable, filtro_fecha_in, filtro_fecha_out)
-            queryset = queryset.filter(filtro_responsable)
+            # start_date = datetime.date(2017, 8, 1)
+            # end_date = datetime.date(2017, 8, 31)
+            filtro_responsable = Q(responsable__dni=informe)
+
+
+            queryset = queryset.filter(filtro_responsable, fecha__range=(start_date, end_date))
+            # queryset = queryset.filter(filtro_responsable)
 
         return queryset
 
