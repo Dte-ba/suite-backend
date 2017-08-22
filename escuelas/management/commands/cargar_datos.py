@@ -214,6 +214,8 @@ class Command(BaseCommand):
             objeto_evento.inicio = hora_inicio
             objeto_evento.fecha_fin = fecha_final
             objeto_evento.fin = hora_final
+            objeto_evento.objetivo = objetivo
+            objeto_evento.cantidadDeParticipantes = cantidad_de_participantes
             objeto_evento.responsable = objeto_responsable
             objeto_evento.escuela = objeto_escuela
             objeto_evento.save()

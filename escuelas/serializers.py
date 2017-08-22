@@ -46,10 +46,11 @@ class RegionSerializer(CustomSerializer):
 class PerfilSerializer(CustomSerializer):
 
     eventos_acompaniantes = EventoSerializer(many=True, read_only=True)
+    eventos = EventoSerializer(many=True, read_only=True)
 
     class Meta:
         model = models.Perfil
-        fields = ('user', 'group', 'image', 'nombre', 'apellido', 'fechadenacimiento', 'titulo', 'experiencia', 'dni', 'cuit', 'cbu', 'email', 'estado', 'direccionCalle', 'direccionAltura', 'direccionPiso', 'direccionDepto', 'direccionTorre', 'codigoPostal', 'localidad', 'telefonoCelular', 'telefonoAlternativo', 'region', 'cargo', 'contrato', 'expediente', 'fechaDeIngreso', 'fechaDeRenuncia', 'emailLaboral', 'eventos_acompaniantes')
+        fields = ('user', 'group', 'image', 'nombre', 'apellido', 'fechadenacimiento', 'titulo', 'experiencia', 'dni', 'cuit', 'cbu', 'email', 'estado', 'direccionCalle', 'direccionAltura', 'direccionPiso', 'direccionDepto', 'direccionTorre', 'codigoPostal', 'localidad', 'telefonoCelular', 'telefonoAlternativo', 'region', 'cargo', 'contrato', 'expediente', 'fechaDeIngreso', 'fechaDeRenuncia', 'emailLaboral', 'eventos', 'eventos_acompaniantes')
         read_only_fields = ('image',)
 
 class DistritoSerializer(CustomSerializer):
