@@ -574,7 +574,7 @@ class Command(BaseCommand):
 
             if objeto_escuela.padre != escuela_padre:
                 escuela_padre.conformar_con(objeto_escuela, objeto_motivo, fecha_como_objeto)
-                
+
             objeto_escuela.save()
 
     def importar_paquetes(self):
@@ -1366,6 +1366,8 @@ class Command(BaseCommand):
         PAQUETES_LISTAR = 'paquetes.listar'
         VALIDACIONES_LISTAR = 'validaciones.listar'
         PERSONAS_LISTAR = 'personas.listar'
+        PERSONAS_CREAR = 'personas.crear'
+        PERSONAS_EDITAR = 'personas.editar'
 
         permisos = [
             AGENDA_LISTAR, AGENDA_CREAR,
