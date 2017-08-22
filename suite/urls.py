@@ -4,6 +4,8 @@ from django.contrib import admin
 from django.conf.urls.static import static
 from rest_framework.authtoken.views import obtain_auth_token
 
+
+from easy_pdf.views import PDFTemplateView
 from escuelas import views
 from rest_framework import routers
 
@@ -47,6 +49,8 @@ router.register('mi-perfil', views.MiPerfilViewSet, 'Perfil')
 
 urlpatterns = [
     url(r'^$', views.home, name='home'),
+    url(r'^demo/$', views.DemoPDFView.as_view(), name="demo"),
+    url(r'^user/(?P<pk>\d+)/$', views.PDFUserDetailView.as_view()),
     url(r'^api/', include(router.urls)),
     url(r'^api/auth', obtain_auth_token),
     url(r'^admin/', admin.site.urls),

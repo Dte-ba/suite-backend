@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework.authtoken',
     'django_extensions',
+    'easy_pdf',
 ]
 
 MEDIA_ROOT = 'media'
