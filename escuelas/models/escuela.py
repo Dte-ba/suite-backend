@@ -39,7 +39,7 @@ class Escuela(models.Model):
     def conformar_con(self, escuela_que_se_absorbera, motivo, fecha=None):
         assert not escuela_que_se_absorbera.padre        # No permite re-absorber
         assert not escuela_que_se_absorbera == self      # Ni conformarse consigo misma
-        assert not self.padre                           # Ni conformar una escuela ya conformada por otra
+        #assert not self.padre                            # Ni conformar una escuela ya conformada por otra
 
         escuela_que_se_absorbera.padre = self
         escuela_que_se_absorbera.motivoDeConformacion = motivo
@@ -48,7 +48,7 @@ class Escuela(models.Model):
             escuela_que_se_absorbera.fechaConformacion = fecha
         else:
             escuela_que_se_absorbera.fechaConformacion = datetime.date.today()
-            
+
         escuela_que_se_absorbera.conformada = True
 
         escuela_que_se_absorbera.save()
