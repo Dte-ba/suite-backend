@@ -1363,24 +1363,43 @@ class Command(BaseCommand):
         AGENDA_LISTAR = 'agenda.listar'
         AGENDA_CREAR = 'agenda.crear'
 
+        TAREAS_LISTAR = 'tareas.listar'
+        TAREAS_CREAR = 'tareas.crear'
+        TAREAS_COMENTAR = 'tareas.comentar'
+        TAREAS_CERRAR = 'tareas.cerrar'
+
         ESCUELAS_LISTAR = 'escuelas.listar'
         ESCUELAS_EDITAR = 'escuelas.editar'
         ESCUELAS_CONFORMAR = 'escuelas.conformar'
+        ESCUELAS_CAMBIAR_ESTADO = 'escuelas.cambiarestado'
+        ESCUELAS_ELIMINAR = 'escuelas.eliminar'
+        ESCUELAS_CREAR = 'escuelas.crear'
+        ESCUELAS_VER_MAPA = 'escuelas.vermapa'
 
-        TAREA_LISTAR = 'tareas.listar'
-        PAQUETES_LISTAR = 'paquetes.listar'
         VALIDACIONES_LISTAR = 'validaciones.listar'
+        VALIDACIONES_CREAR = 'validaciones.crear'
+        VALIDACIONES_COMENTAR = 'validaciones.comentar'
+
+        ENTREGAS_LISTAR = 'entregas.listar'
+        ENTREGAS_ACTUALIZAR = 'entregas.actualizar'
+
+        PAQUETES_LISTAR = 'paquetes.listar'
+        PAQUETES_CREAR = 'paquetes.crear'
+
         PERSONAS_LISTAR = 'personas.listar'
         PERSONAS_CREAR = 'personas.crear'
         PERSONAS_EDITAR = 'personas.editar'
+        PERSONAS_ELIMIAR = 'personas.eliminar'
+        PERSONAS_CAMBIAR_ESTADO = 'personas.cambiarestado'
+        PERSONAS_VER_INFORME = 'personas.verinformes'
 
         permisos = [
             AGENDA_LISTAR, AGENDA_CREAR,
-            ESCUELAS_LISTAR, ESCUELAS_EDITAR, ESCUELAS_CONFORMAR,
-            TAREA_LISTAR,
-            PAQUETES_LISTAR,
-            VALIDACIONES_LISTAR,
-            PERSONAS_LISTAR, PERSONAS_CREAR, PERSONAS_EDITAR
+            TAREAS_LISTAR, TAREAS_CREAR, TAREAS_COMENTAR, TAREAS_CERRAR,
+            ESCUELAS_LISTAR, ESCUELAS_EDITAR, ESCUELAS_CONFORMAR, ESCUELAS_CAMBIAR_ESTADO, ESCUELAS_ELIMINAR, ESCUELAS_CREAR, ESCUELAS_VER_MAPA,
+            VALIDACIONES_LISTAR, VALIDACIONES_CREAR, VALIDACIONES_COMENTAR,
+            PAQUETES_LISTAR, PAQUETES_CREAR,
+            PERSONAS_LISTAR, PERSONAS_CREAR, PERSONAS_EDITAR, PERSONAS_ELIMIAR, PERSONAS_CAMBIAR_ESTADO, PERSONAS_VER_INFORME
         ]
 
         print("Actualizando el listado de permisos (creación o actualización)")
@@ -1407,6 +1426,15 @@ class Command(BaseCommand):
             ],
             'Administrador': permisos, # LISTA con todos los permisos existentes
             'Facilitador': [
+                ESCUELAS_LISTAR,
+                AGENDA_LISTAR,
+            ],
+            'Referente': [
+                ESCUELAS_LISTAR,
+                AGENDA_LISTAR,
+            ],
+            'Administracion': [
+                ESCUELAS_LISTAR,
             ]
         }
 
