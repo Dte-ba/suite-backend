@@ -125,11 +125,13 @@ class EventoViewSet(viewsets.ModelViewSet):
     queryset = models.Evento.objects.all()
     serializer_class = serializers.EventoSerializer
     filter_backends = [SearchFilter, DjangoFilterBackend]
-    search_fields = ['escuela__nombre', 'escuela__cue', 'responsable__apellido', 'responsable__dni']
+    search_fields = ['escuela__nombre', 'escuela__cue', 'responsable__apellido', 'responsable__dni', 'titulo']
     filter_fields = ['escuela__cue']
 
+    """
     def get_queryset(self):
-        queryset = models.Evento.objects.all()
+        queryset = self.queryset
+        #models.Evento.objects.all()
         query = self.request.query_params.get('query', None)
 
         if query:
@@ -141,6 +143,7 @@ class EventoViewSet(viewsets.ModelViewSet):
             queryset = queryset.filter(filtro_escuela | filtro_escuela_cue | filtro_responsable_apellido | filtro_responsable_dni)
 
         return queryset
+    """
 
     @list_route(methods=['get'])
     def informe(self, request):
