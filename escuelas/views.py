@@ -221,6 +221,9 @@ class PerfilViewSet(viewsets.ModelViewSet):
     search_fields = ['nombre', 'apellido', 'dni', 'cargo__nombre']
     filter_fields = ['region__numero']
 
+    def create(self, request):
+        return Response({})
+
     def get_queryset(self):
         queryset = self.queryset
         query = self.request.query_params.get('query', None)
