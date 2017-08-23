@@ -43,6 +43,27 @@ class GeneralesTestCase(APITestCase):
         response = self.client.get('/')
         self.assertEqual(response.status_code, 200)
 
+    def test_puede_pedir_agenda(self):
+        # Prepara el usuario para chequear contra la api
+        user = User.objects.create_user(username='test', password='123')
+        self.client.force_authenticate(user=user)
+
+        # Se genera un usuario demo
+        user_2 = User.objects.create_user(username='demo', password='123')
+
+        # Se generan 3 escuelas
+        escuela_1 = models.Escuela.objects.create(cue="1")
+
+        # Se crean dos eventos de prueba. Uno con fecha Enero y otro Marzo
+        evento_1 = models.Evento.objects.create(titulo="Evento de prueba", responsable=user_2.perfil, escuela=escuela_1, fecha="2017-01-15", fecha_fin="2017-01-15")
+        evento_2 = models.Evento.objects.create(titulo="Evento de prueba de Marzo", responsable=user_2.perfil, escuela=escuela_1, fecha="2017-03-15", fecha_fin="2017-03-15")
+
+        response = self.client.get('/api/eventos/agenda?inicio=2017-01-01&fin=2017-02-01&perfil=2', format='json')
+
+        self.assertEqual(response.data['cantidad'], 1)
+        self.assertEqual(len(response.data['eventos']), 1)
+
+
     def test_puede_conformar_escuelas(self):
         # Prepara el usuario para chequear contra la api
         user = User.objects.create_user(username='test', password='123')

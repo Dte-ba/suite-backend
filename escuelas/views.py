@@ -131,9 +131,6 @@ class EventoViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         queryset = models.Evento.objects.all()
         query = self.request.query_params.get('query', None)
-        informe = self.request.query_params.get('informe', None)
-        start_date = self.request.query_params.get('inicio', None)
-        end_date = self.request.query_params.get('fin', None)
 
         if query:
             filtro_escuela = Q(escuela__nombre__icontains=query)
@@ -143,17 +140,34 @@ class EventoViewSet(viewsets.ModelViewSet):
 
             queryset = queryset.filter(filtro_escuela | filtro_escuela_cue | filtro_responsable_apellido | filtro_responsable_dni)
 
-        if informe:
-
-            # start_date = datetime.date(2017, 8, 1)
-            # end_date = datetime.date(2017, 8, 31)
-            filtro_responsable = Q(responsable__dni=informe)
-
-
-            queryset = queryset.filter(filtro_responsable, fecha__range=(start_date, end_date))
-            # queryset = queryset.filter(filtro_responsable)
-
         return queryset
+
+    @list_route(methods=['get'])
+    def informe(self, request):
+        start_date = self.request.query_params.get('inicio', None)
+        dni = self.request.query_params.get('dni', None)
+        end_date = self.request.query_params.get('fin', None)
+        filtro_responsable = Q(responsable__dni=dni)
+
+        result = models.Evento.objects.filter(filtro_responsable, fecha__range=(start_date, end_date))
+        return Response({})
+
+    @list_route(methods=['get'])
+    def agenda(self, request):
+        inicio = self.request.query_params.get('inicio', None)
+        fin = self.request.query_params.get('fin', None)
+        perfil = self.request.query_params.get('perfil', None)
+
+        persona = models.Perfil.objects.get(id=perfil)
+
+        eventos = models.Evento.objects.filter( fecha__range=(inicio, fin))
+        return Response({
+                "inicio": inicio,
+                "fin": fin,
+                "perfil": perfil,
+                "cantidad": eventos.count(),
+                "eventos": serializers.EventoSerializer(eventos, many=True).data
+            })
 
     @list_route(methods=['get'])
     def estadistica(self, request):
