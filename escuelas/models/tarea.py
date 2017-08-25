@@ -20,6 +20,7 @@ class Tarea(models.Model):
     class Meta:
         db_table = 'tareas'
         verbose_name_plural = "tareas"
+        ordering = ('-fecha_de_alta',)
 
     class JSONAPIMeta:
         resource_name = 'tareas'
