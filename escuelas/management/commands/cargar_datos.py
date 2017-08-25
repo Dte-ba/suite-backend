@@ -59,6 +59,7 @@ class Command(BaseCommand):
             'crear_regiones',
             'crear_tipos_de_financiamiento',
             'crear_niveles',
+            'crear_modalidades',
             'crear_tipos_de_gestion',
             'crear_areas',
             'crear_programas',
@@ -1206,6 +1207,16 @@ class Command(BaseCommand):
 
         for nombre in bar(nombres):
             p, created = models.Nivel.objects.get_or_create(nombre=nombre)
+            log(p)
+
+    def crear_modalidades(self):
+        nombres = ["Técnica", "Especial", "Ninguna", "Artística"]
+
+        print("Creando Modalidades")
+        bar = barra_de_progreso()
+
+        for nombre in bar(nombres):
+            p, created = models.Modalidad.objects.get_or_create(nombre=nombre)
             log(p)
 
     def crear_tipos_de_gestion(self):

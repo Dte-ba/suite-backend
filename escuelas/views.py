@@ -336,6 +336,11 @@ class NivelViewSet(viewsets.ModelViewSet):
     queryset = models.Nivel.objects.all()
     serializer_class = serializers.NivelSerializer
 
+class ModalidadViewSet(viewsets.ModelViewSet):
+    resource_name = 'modalidad'
+    queryset = models.Modalidad.objects.all()
+    serializer_class = serializers.ModalidadSerializer
+
 class ExperienciaViewSet(viewsets.ModelViewSet):
     resource_name = 'experiencia'
     queryset = models.Experiencia.objects.all()

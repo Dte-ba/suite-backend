@@ -5,7 +5,7 @@ admin.site.register(models.Contacto)
 
 class EscuelaAdmin(admin.ModelAdmin):
     model = models.Escuela
-    list_display = ('cue', 'nombre', 'localidad')
+    list_display = ('cue', 'nombre', 'localidad', 'nivel', 'modalidad')
     search_fields = ('cue', 'nombre')
 
 class PerfilAdmin(admin.ModelAdmin):
@@ -26,6 +26,7 @@ admin.site.register(models.MotivoDeConformacion)
 
 admin.site.register(models.TipoDeFinanciamiento)
 admin.site.register(models.Nivel)
+admin.site.register(models.Modalidad)
 admin.site.register(models.TipoDeGestion)
 admin.site.register(models.Area)
 admin.site.register(models.Programa)

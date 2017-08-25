@@ -17,6 +17,9 @@ class Escuela(models.Model):
     area = models.ForeignKey('Area', related_name='escuelas', default=None, blank=True, null=True)
     programas = models.ManyToManyField('Programa', related_name='escuelas')
     piso = models.ForeignKey('Piso', related_name='escuelas', default=None, blank=True, null=True)
+    modalidad = models.ForeignKey('Modalidad', related_name='escuelas', default=None, blank=True, null=True)
+
+
 
     # Para conformaciones
     padre = models.ForeignKey('self', related_name='subescuelas', on_delete=models.CASCADE, default=None, blank=True, null=True) # ID de escuela principal
