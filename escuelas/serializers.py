@@ -197,16 +197,16 @@ class PrioridadDeTareaSerializer(CustomSerializer):
 class TareaSerializer(CustomSerializer):
     autor = ResourceRelatedField(queryset=models.Perfil.objects)
     responsable = ResourceRelatedField(queryset=models.Perfil.objects)
-    motivoDeTarea = ResourceRelatedField(queryset=models.MotivoDeTarea.objects)
-    estadoDeTarea = ResourceRelatedField(queryset=models.EstadoDeTarea.objects)
-    prioridadDeTarea = ResourceRelatedField(queryset=models.PrioridadDeTarea.objects)
+    motivo_de_tarea = ResourceRelatedField(queryset=models.MotivoDeTarea.objects)
+    estado_de_tarea = ResourceRelatedField(queryset=models.EstadoDeTarea.objects)
+    prioridad_de_tarea = ResourceRelatedField(queryset=models.PrioridadDeTarea.objects)
     escuela = ResourceRelatedField(queryset=models.Escuela.objects)
     # comentarios_tarea = ComentarioDeTareaSerializer(many=True, read_only=True)
-    comentariosDeTarea = ResourceRelatedField(queryset=models.ComentarioDeTarea.objects, many=True)
+    # comentarios_de_tarea = ResourceRelatedField(queryset=models.ComentarioDeTarea.objects, many=True)
 
     class Meta:
         model = models.Tarea
-        fields = ('titulo', 'fechaDeAlta', 'autor', 'responsable', 'descripcion', 'motivoDeTarea', 'estadoDeTarea', 'prioridadDeTarea', 'escuela', 'comentariosDeTarea')
+        fields = ('titulo', 'fecha_de_alta', 'autor', 'responsable', 'descripcion', 'motivo_de_tarea', 'estado_de_tarea', 'prioridad_de_tarea', 'escuela')
 
 class CategoriaDeEventoSerializer(CustomSerializer):
 

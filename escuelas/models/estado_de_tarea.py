@@ -10,3 +10,6 @@ class EstadoDeTarea(models.Model):
     class Meta:
         db_table = 'estadosDeTarea'
         verbose_name_plural = 'estadosDeTarea'
+
+    class JSONAPIMeta:
+        resource_name = 'estado-de-tareas'

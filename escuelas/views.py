@@ -362,22 +362,19 @@ class CargoEscolarViewSet(viewsets.ModelViewSet):
     serializer_class = serializers.CargoEscolarSerializer
 
 class ComentarioDeTareaViewSet(viewsets.ModelViewSet):
-    resource_name = 'comentarioDeTareas'
+    resource_name = 'comentario-de-tarea'
     queryset = models.ComentarioDeTarea.objects.all()
     serializer_class = serializers.ComentarioDeTareaSerializer
 
 class MotivoDeTareaViewSet(viewsets.ModelViewSet):
-    resource_name = 'motivoDeTareas'
     queryset = models.MotivoDeTarea.objects.all()
     serializer_class = serializers.MotivoDeTareaSerializer
 
 class EstadoDeTareaViewSet(viewsets.ModelViewSet):
-    resource_name = 'estadoDeTareas'
     queryset = models.EstadoDeTarea.objects.all()
     serializer_class = serializers.EstadoDeTareaSerializer
 
 class PrioridadDeTareaViewSet(viewsets.ModelViewSet):
-    resource_name = 'prioridadDeTareas'
     queryset = models.PrioridadDeTarea.objects.all()
     serializer_class = serializers.PrioridadDeTareaSerializer
 
@@ -385,7 +382,7 @@ class TareaViewSet(viewsets.ModelViewSet):
     queryset = models.Tarea.objects.all()
     serializer_class = serializers.TareaSerializer
     filter_backends = [SearchFilter, DjangoFilterBackend]
-    search_fields = ['titulo', 'fechaDeAlta']
+    search_fields = ['titulo', 'fecha_de_alta']
     filter_fields = ['autor__nombre']
 
     def get_queryset(self):
@@ -394,7 +391,7 @@ class TareaViewSet(viewsets.ModelViewSet):
 
         if query:
             filtro_titulo = Q(titulo__icontains=query)
-            filtro_fechaDeAlta = Q(fechaDeAlta__icontains=query)
+            filtro_fechaDeAlta = Q(fecha_de_alta__icontains=query)
 
             queryset = queryset.filter(filtro_titulo | filtro_fechaDeAlta)
 
@@ -404,9 +401,9 @@ class TareaViewSet(viewsets.ModelViewSet):
     def estadistica(self, request):
         estadisticas = {
             "total": models.Tarea.objects.all().count(),
-            "pendientes": models.Tarea.objects.filter(estadoDeTarea__nombre="Abierto").count(),
-            "enProgreso": models.Tarea.objects.filter(estadoDeTarea__nombre="En Progreso").count(),
-            "prioridadAlta": models.Tarea.objects.filter(prioridadDeTarea__nombre="Alta").exclude(estadoDeTarea__nombre="Cerrado").count(),
+            "pendientes": models.Tarea.objects.filter(estado_de_tarea__nombre="Abierto").count(),
+            "enProgreso": models.Tarea.objects.filter(estado_de_tarea__nombre="En Progreso").count(),
+            "prioridadAlta": models.Tarea.objects.filter(prioridad_de_tarea__nombre="Alta").exclude(estado_de_tarea__nombre="Cerrado").count(),
         }
         return Response(estadisticas)
 
