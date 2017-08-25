@@ -12,4 +12,4 @@ class TipoDeFinanciamiento(models.Model):
         verbose_name_plural = 'tiposDeFinanciamiento'
 
     class JSONAPIMeta:
-        resource_name = "tiposDeFinanciamiento"
+        resource_name = "tipos-de-financiamiento"

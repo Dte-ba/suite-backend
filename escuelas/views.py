@@ -113,7 +113,7 @@ class EscuelaViewSet(viewsets.ModelViewSet):
         motivo = models.MotivoDeConformacion.objects.get(id=id_motivo)
 
         escuela_padre.conformar_con(escuela, motivo)
-        return Response({'fechaConformacion': escuela.fechaConformacion})
+        return Response({'fechaConformacion': escuela.fecha_conformacion})
 
 class ContactoViewSet(viewsets.ModelViewSet):
     queryset = models.Contacto.objects.all()
@@ -418,7 +418,7 @@ class CategoriaDeEventoViewSet(viewsets.ModelViewSet):
     serializer_class = serializers.CategoriaDeEventoSerializer
 
 class MotivoDeConformacionViewSet(viewsets.ModelViewSet):
-    resource_name = 'motivosDeConformacion'
+    resource_name = 'motivos-de-conformacion'
     queryset = models.MotivoDeConformacion.objects.all()
     serializer_class = serializers.MotivoDeConformacionSerializer
 

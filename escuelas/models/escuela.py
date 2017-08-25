@@ -11,9 +11,9 @@ class Escuela(models.Model):
     latitud = models.CharField(max_length=64, default=None, blank=True, null=True)
     longitud = models.CharField(max_length=64, default=None, blank=True, null=True)
     localidad = models.ForeignKey('Localidad', related_name='escuelas', default=None, blank=True, null=True)
-    tipoDeFinanciamiento = models.ForeignKey('TipoDeFinanciamiento', related_name='escuelas', default=None, blank=True, null=True)
+    tipo_de_financiamiento = models.ForeignKey('TipoDeFinanciamiento', related_name='escuelas', default=None, blank=True, null=True)
     nivel = models.ForeignKey('Nivel', related_name='escuelas', default=None, blank=True, null=True)
-    tipoDeGestion = models.ForeignKey('TipoDeGestion', related_name='escuelas', default=None, blank=True, null=True)
+    tipo_de_gestion = models.ForeignKey('TipoDeGestion', related_name='escuelas', default=None, blank=True, null=True)
     area = models.ForeignKey('Area', related_name='escuelas', default=None, blank=True, null=True)
     programas = models.ManyToManyField('Programa', related_name='escuelas')
     piso = models.ForeignKey('Piso', related_name='escuelas', default=None, blank=True, null=True)
@@ -23,8 +23,8 @@ class Escuela(models.Model):
 
     # Para conformaciones
     padre = models.ForeignKey('self', related_name='subescuelas', on_delete=models.CASCADE, default=None, blank=True, null=True) # ID de escuela principal
-    fechaConformacion = models.DateField(default=None, blank=True, null=True)
-    motivoDeConformacion = models.ForeignKey('MotivoDeConformacion', related_name='escuelas', default=None, blank=True, null=True)
+    fecha_conformacion = models.DateField(default=None, blank=True, null=True)
+    motivo_de_conformacion = models.ForeignKey('MotivoDeConformacion', related_name='escuelas', default=None, blank=True, null=True)
     conformada = models.BooleanField(default=False)
 
     estado = models.BooleanField(default=True, blank=True) # True = Abierta, False= Cerrada
@@ -45,12 +45,12 @@ class Escuela(models.Model):
         #assert not self.padre                            # Ni conformar una escuela ya conformada por otra
 
         escuela_que_se_absorbera.padre = self
-        escuela_que_se_absorbera.motivoDeConformacion = motivo
+        escuela_que_se_absorbera.motivo_de_conformacion = motivo
 
         if fecha:
-            escuela_que_se_absorbera.fechaConformacion = fecha
+            escuela_que_se_absorbera.fecha_conformacion = fecha
         else:
-            escuela_que_se_absorbera.fechaConformacion = datetime.date.today()
+            escuela_que_se_absorbera.fecha_conformacion = datetime.date.today()
 
         escuela_que_se_absorbera.conformada = True
 

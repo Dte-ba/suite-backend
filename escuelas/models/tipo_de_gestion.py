@@ -12,4 +12,4 @@ class TipoDeGestion(models.Model):
         verbose_name_plural = 'tiposDeGestion'
 
     class JSONAPIMeta:
-        resource_name = "tiposDeGestion"
+        resource_name = "tipos-de-gestion"

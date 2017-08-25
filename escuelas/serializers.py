@@ -130,28 +130,23 @@ class SubEscuelaSerializer(CustomSerializer):
 
 class EscuelaSerializer(CustomSerializer):
 
-    # included_serializers = {
-    #     'localidad': LocalidadSerializer,
-    # }
     localidad = LocalidadSerializer()
-    tipoDeFinanciamiento = TipoDeFinanciamientoSerializer()
+    tipo_de_financiamiento = ResourceRelatedField(queryset=models.TipoDeFinanciamiento.objects)
     nivel = NivelSerializer()
     modalidad = ModalidadSerializer()
-    tipoDeGestion = TipoDeGestionSerializer()
+    tipo_de_gestion = ResourceRelatedField(queryset=models.TipoDeGestion.objects)
     area = AreaSerializer()
     programas = ProgramaSerializer(many=True, read_only=True)
-    piso = PisoSerializer()
+    piso = ResourceRelatedField(queryset=models.Piso.objects)
     contactos = ContactoSerializer(many=True, read_only=True)
     subescuelas = SubEscuelaSerializer(many=True, read_only=True)
     padre = ResourceRelatedField(queryset=models.Escuela.objects)
-    motivoDeConformacion = ResourceRelatedField(queryset=models.MotivoDeConformacion.objects)
+    motivo_de_conformacion = ResourceRelatedField(queryset=models.MotivoDeConformacion.objects)
 
     class Meta:
         model = models.Escuela
-        fields = ('cue', 'nombre', 'direccion', 'telefono', 'email', 'latitud', 'longitud', 'localidad', 'tipoDeFinanciamiento', 'nivel', 'modalidad', 'tipoDeGestion', 'area', 'programas', 'piso', 'contactos', 'padre', 'fechaConformacion', 'motivoDeConformacion', 'estado', 'conformada', 'padre', 'fechaConformacion', 'motivoDeConformacion', 'subescuelas')
+        fields = ('cue', 'nombre', 'direccion', 'telefono', 'email', 'latitud', 'longitud', 'localidad', 'tipo_de_financiamiento', 'nivel', 'modalidad', 'tipo_de_gestion', 'area', 'programas', 'piso', 'contactos', 'padre', 'fecha_conformacion', 'motivo_de_conformacion', 'estado', 'conformada', 'padre', 'subescuelas')
 
-    # class JSONAPIMeta:
-    #     included_resources = ['localidad']
 
 class ExperienciaSerializer(CustomSerializer):
 
