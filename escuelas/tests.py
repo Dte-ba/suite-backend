@@ -1,3 +1,4 @@
+
 # coding: utf-8
 from django.contrib.auth.models import User
 from django.contrib.auth.models import Group
@@ -51,7 +52,7 @@ class GeneralesTestCase(APITestCase):
         # Se genera un usuario demo
         user_2 = User.objects.create_user(username='demo', password='123')
 
-        # Se generan 3 escuelas
+        # Se genera 1 escuela
         escuela_1 = models.Escuela.objects.create(cue="1")
 
         # Se crean dos eventos de prueba. Uno con fecha Enero y otro Marzo
@@ -63,6 +64,50 @@ class GeneralesTestCase(APITestCase):
         self.assertEqual(response.data['cantidad'], 1)
         self.assertEqual(len(response.data['eventos']), 1)
 
+    def test_puede_pedir_agenda_region(self):
+        # Prepara el usuario para chequear contra la api
+        user = User.objects.create_user(username='test', password='123')
+        self.client.force_authenticate(user=user)
+
+        # Se crea una region
+        region_1 = models.Region.objects.create(numero=1)
+
+        # Se crea un distrito
+        distrito_1 = models.Distrito.objects.create(nombre="distrito1")
+        distrito_1.region = region_1
+        distrito_1.save()
+
+        # Se crea una localidad
+        localidad_1 = models.Localidad.objects.create(nombre="localidad1")
+        localidad_1.distrito = distrito_1
+        localidad_1.save()
+
+        # Se genera un usuario demo, se asigna una region al perfil
+        user_2 = User.objects.create_user(username='demo', password='123')
+        perfil_2 = user_2.perfil
+        perfil_2.region = region_1
+        perfil_2.apellido = "Demo"
+        perfil_2.save()
+
+        # Se generan 2 escuela y se les asigna localidad
+        escuela_1 = models.Escuela.objects.create(cue="1")
+        escuela_1.localidad = localidad_1
+        escuela_1.save()
+        escuela_2 = models.Escuela.objects.create(cue="2")
+        escuela_2.localidad = localidad_1
+        escuela_2.save()
+
+        # Se crean dos eventos de prueba. Uno con fecha Enero y otro Marzo
+        evento_1 = models.Evento.objects.create(titulo="Evento de prueba", responsable=user_2.perfil, escuela=escuela_1, fecha="2017-01-15", fecha_fin="2017-01-15")
+        evento_2 = models.Evento.objects.create(titulo="Otro evento de prueba de otra escuela", responsable=user_2.perfil, escuela=escuela_2, fecha="2017-01-25", fecha_fin="2017-01-25")
+        evento_3 = models.Evento.objects.create(titulo="Evento de otro pefil", responsable=user.perfil, escuela=escuela_1, fecha="2017-01-25", fecha_fin="2017-01-25")
+
+        response = self.client.get('/api/eventos/agenda_region?inicio=2017-01-01&fin=2017-02-01&perfil=2', format='json')
+
+        self.assertEqual(response.data['cantidad'], 2)
+        # self.assertEqual(len(response.data['eventos']), 1)
+        # self.assertEqual(response.data['region'],1)
+        pprint.pprint(response.data)
 
     def test_puede_conformar_escuelas(self):
         # Prepara el usuario para chequear contra la api
@@ -110,7 +155,7 @@ class GeneralesTestCase(APITestCase):
         """
         # Deshabilitado temporalmente, porque el importador no realiza las
         # conformaciones en orden.
-        
+
         with self.assertRaises(AssertionError):
             escuela_3.conformar_con(escuela_1, motivo)
         """
@@ -133,8 +178,8 @@ class GeneralesTestCase(APITestCase):
         escuela_4 = models.Escuela.objects.get(id=4)
 
         self.assertEqual(escuela_4.padre, escuela_1)
-        self.assertTrue(escuela_4.motivoDeConformacion, 'tiene que tener un motivo')
-        self.assertTrue(escuela_4.fechaConformacion, 'tiene que tener una fecha')
+        self.assertTrue(escuela_4.motivo_de_conformacion, 'tiene que tener un motivo')
+        self.assertTrue(escuela_4.fecha_conformacion, 'tiene que tener una fecha')
 
         # La escuela 4 se conformó, la api tiene que informarlo
         response = self.client.get('/api/escuelas/4', format='json')

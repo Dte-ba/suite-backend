@@ -194,7 +194,6 @@ class Command(BaseCommand):
             if MODO_VERBOSE:
                 print "Se intenta buscar evento asociado a cue: " + str(cue)
 
-            objeto_evento, created = models.Evento.objects.get_or_create(legacy_id=legacy_id)
 
             try:
                 objeto_responsable = models.Perfil.objects.get(dni=dni_usuario)
@@ -209,6 +208,8 @@ class Command(BaseCommand):
                 log("Error, no existe la escuela buscada con cue %s. No se registrará el evento." %(cue))
                 # cantidad_de_comentarios_de_tareas_omitidos += 1
                 continue
+
+            objeto_evento, created = models.Evento.objects.get_or_create(legacy_id=legacy_id)
 
             objeto_evento.titulo = titulo
             objeto_evento.fecha = fecha_inicio

@@ -173,6 +173,27 @@ class EventoViewSet(viewsets.ModelViewSet):
             })
 
     @list_route(methods=['get'])
+    def agenda_region(self, request):
+        inicio = self.request.query_params.get('inicio', None)
+        fin = self.request.query_params.get('fin', None)
+        perfil = self.request.query_params.get('perfil', None)
+
+        persona = models.Perfil.objects.get(id=perfil)
+        region = persona.region.numero
+
+        eventos = models.Evento.objects.filter( fecha__range=(inicio, fin), escuela__localidad__distrito__region__numero=region, responsable=persona)
+        return Response({
+                "inicio": inicio,
+                "fin": fin,
+                "perfil": perfil,
+                "persona": persona.apellido,
+                "region_del_perfil": persona.region.numero,
+                "cantidad": eventos.count(),
+                "eventos": serializers.EventoSerializer(eventos, many=True).data,
+                "region": region
+            })
+
+    @list_route(methods=['get'])
     def estadistica(self, request):
         estadisticas = {
             "total": models.Evento.objects.all().count(),
