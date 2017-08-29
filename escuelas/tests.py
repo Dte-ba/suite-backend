@@ -230,6 +230,10 @@ class Permisos(APITestCase):
         # Se agrega al usuario a ese grupo coordinador
         user.perfil.group = grupo
 
+        # Se asigna una region al perfil de usuario
+        region_1 = models.Region.objects.create(numero=1)
+        user.perfil.region = region_1
+
         grupo.save()
         user.save()
         user.perfil.save()
