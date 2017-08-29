@@ -192,7 +192,22 @@ class Command(BaseCommand):
             titulo = categoria + " " + subcategoria
 
             if MODO_VERBOSE:
-                print "Se intenta buscar evento asociado a cue: " + str(cue)
+                print "========================================================================================================================"
+                print "   Se intenta crear el evento con legacy_id: " + str(legacy_id) + ", asociado a cue: " + str(cue)
+                print "========================================================================================================================"
+                print "legacy_id:               " + str(legacy_id)
+                print "Titulo:                  " + titulo
+                print "Inicio:                  " + fecha_inicio + " " + hora_inicio
+                print "Fin:                     " + fecha_final + " " + hora_final
+                print "Categoria:               " + categoria
+                print "Subcategoria:            " + subcategoria
+                print "Objetivo:                " + objetivo
+                print "Acta:                    " + acta
+                print "Responsable:             " + "dni " + dni_usuario
+                print "Fecha de creacion:       " + fecha_carga
+                print "Cant. de Participantes:  " + str(cantidad_de_participantes)
+                print "Escuela:                 " + str(cue)
+                print "=============================="
 
 
             try:
