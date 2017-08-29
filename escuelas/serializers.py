@@ -3,6 +3,7 @@ from rest_framework import serializers
 import models
 from rest_framework_json_api.relations import ResourceRelatedField
 from django.contrib.auth.models import Permission, Group
+import json
 
 class CustomSerializer(serializers.HyperlinkedModelSerializer):
 
@@ -30,12 +31,13 @@ class EventoSerializer(CustomSerializer):
 
     responsable = ResourceRelatedField(queryset=models.Perfil.objects)
     escuela = ResourceRelatedField(queryset=models.Escuela.objects)
-    # acompaniantes = ResourceRelatedField(queryset=models.Perfil.objects)
+    categoria = ResourceRelatedField(queryset=models.CategoriaDeEvento.objects)
     acompaniantes = ResourceRelatedField(queryset=models.Perfil.objects, many=True)
 
     class Meta:
         model = models.Evento
-        fields = ('id', 'titulo', 'fecha', 'fecha_fin', 'inicio', 'fin', 'todoElDia', 'objetivo', 'responsable', 'escuela', 'acompaniantes', 'cantidadDeParticipantes', 'requiereTraslado')
+        fields = ('id', 'titulo', 'fecha', 'fecha_fin', 'inicio', 'fin', 'todoElDia', 'objetivo', 'responsable', 'escuela', 'acompaniantes', 'cantidadDeParticipantes', 'requiereTraslado', 'categoria', 'resumenParaCalendario')
+
 
 class RegionSerializer(CustomSerializer):
 

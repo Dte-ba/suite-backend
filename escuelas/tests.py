@@ -53,13 +53,19 @@ class GeneralesTestCase(APITestCase):
         user_2 = User.objects.create_user(username='demo', password='123')
 
         # Se genera 1 escuela
-        escuela_1 = models.Escuela.objects.create(cue="1")
+        region_1 = models.Region.objects.create(numero=1)
+        distrito_1 = models.Distrito.objects.create(nombre="distrito1", region=region_1)
+        localidad_1 = models.Localidad.objects.create(nombre="localidad1", distrito=distrito_1)
+        escuela_1 = models.Escuela.objects.create(cue="1", nombre="Escuela 1", localidad=localidad_1)
+
+        # Se crea una categoria
+        categoria_1 = models.CategoriaDeEvento.objects.create(nombre="Categoria 1")
 
         # Se crean dos eventos de prueba. Uno con fecha Enero y otro Marzo
-        evento_1 = models.Evento.objects.create(titulo="Evento de prueba", responsable=user_2.perfil, escuela=escuela_1, fecha="2017-01-15", fecha_fin="2017-01-15")
-        evento_2 = models.Evento.objects.create(titulo="Evento de prueba de Marzo", responsable=user_2.perfil, escuela=escuela_1, fecha="2017-03-15", fecha_fin="2017-03-15")
+        evento_1 = models.Evento.objects.create(titulo="Evento de prueba", categoria=categoria_1, responsable=user_2.perfil, escuela=escuela_1, fecha="2017-01-15", fecha_fin="2017-01-15")
+        evento_2 = models.Evento.objects.create(titulo="Evento de prueba de Marzo", categoria=categoria_1, responsable=user_2.perfil, escuela=escuela_1, fecha="2017-03-15", fecha_fin="2017-03-15")
 
-        response = self.client.get('/api/eventos/agenda?inicio=2017-01-01&fin=2017-02-01&perfil=2', format='json')
+        response = self.client.get('/api/eventos/agenda?inicio=2017-01-01&fin=2017-02-01&perfil=2&region=1', format='json')
 
         self.assertEqual(response.data['cantidad'], 1)
         self.assertEqual(len(response.data['eventos']), 1)
@@ -88,24 +94,31 @@ class GeneralesTestCase(APITestCase):
         perfil_2.save()
 
         # Se generan 2 escuela y se les asigna distinta localidad
-        escuela_1 = models.Escuela.objects.create(cue="1", localidad=localidad_1)
-        escuela_2 = models.Escuela.objects.create(cue="2", localidad = localidad_2)
+        escuela_1 = models.Escuela.objects.create(cue="1", nombre="escuela 1", localidad=localidad_1)
+        escuela_2 = models.Escuela.objects.create(cue="2", nombre="escuela 2", localidad = localidad_2)
+
+
+        # Se crea una categoria
+        categoria_1 = models.CategoriaDeEvento.objects.create(nombre="Categoria 1")
 
         # Se crean eventos de prueba con fecha de Enero.
         evento_1 = models.Evento.objects.create(
             titulo="Evento de prueba de region 1",
+            categoria=categoria_1,
             responsable=user_2.perfil,
             escuela=escuela_1,
             fecha="2017-01-15",
             fecha_fin="2017-01-15")
         evento_2 = models.Evento.objects.create(
             titulo="Otro evento de prueba de otra escuela, de otra region",
+            categoria=categoria_1,
             responsable=user_2.perfil,
             escuela=escuela_2,
             fecha="2017-01-25",
             fecha_fin="2017-01-25")
         evento_3 = models.Evento.objects.create(
             titulo="Evento de otro pefil, pero de region 1",
+            categoria=categoria_1,
             responsable=user.perfil,
             escuela=escuela_1,
             fecha="2017-01-25",

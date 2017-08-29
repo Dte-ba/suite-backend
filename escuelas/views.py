@@ -18,6 +18,8 @@ import models
 
 import datetime
 
+import json
+
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.utils.timezone import now
@@ -172,6 +174,7 @@ class EventoViewSet(viewsets.ModelViewSet):
                 "region": region,
                 "cantidad": eventos.count(),
                 "eventos": serializers.EventoSerializer(eventos, many=True).data
+            
             })
 
     @list_route(methods=['get'])
@@ -437,7 +440,6 @@ class TareaViewSet(viewsets.ModelViewSet):
         return Response(estadisticas)
 
 class CategoriaDeEventoViewSet(viewsets.ModelViewSet):
-    resource_name = 'categoriasDeEventos'
     queryset = models.CategoriaDeEvento.objects.all()
     serializer_class = serializers.CategoriaDeEventoSerializer
 
