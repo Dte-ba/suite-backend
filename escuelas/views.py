@@ -160,14 +160,16 @@ class EventoViewSet(viewsets.ModelViewSet):
         inicio = self.request.query_params.get('inicio', None)
         fin = self.request.query_params.get('fin', None)
         perfil = self.request.query_params.get('perfil', None)
+        region = self.request.query_params.get('region', None)
 
-        persona = models.Perfil.objects.get(id=perfil)
+        responsable = models.Perfil.objects.get(id=perfil)
 
-        eventos = models.Evento.objects.filter( fecha__range=(inicio, fin))
+        eventos = models.Evento.objects.filter( fecha__range=(inicio, fin), escuela__localidad__distrito__region__numero=region)
         return Response({
                 "inicio": inicio,
                 "fin": fin,
                 "perfil": perfil,
+                "region": region,
                 "cantidad": eventos.count(),
                 "eventos": serializers.EventoSerializer(eventos, many=True).data
             })
@@ -284,7 +286,8 @@ class MiPerfilViewSet(viewsets.ViewSet):
             'apellido': perfil.apellido,
             'permisos': perfil.obtenerPermisos(),
             'grupos': perfil.obtenerListaDeGrupos(),
-            'idPerfil': perfil.id
+            'idPerfil': perfil.id,
+            'region': perfil.region.numero
         }
         return Response(data)
 

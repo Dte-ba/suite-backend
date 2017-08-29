@@ -69,45 +69,51 @@ class GeneralesTestCase(APITestCase):
         user = User.objects.create_user(username='test', password='123')
         self.client.force_authenticate(user=user)
 
-        # Se crea una region
+        # Se crean dos regiones
         region_1 = models.Region.objects.create(numero=1)
+        region_23 = models.Region.objects.create(numero=23)
 
-        # Se crea un distrito
-        distrito_1 = models.Distrito.objects.create(nombre="distrito1")
-        distrito_1.region = region_1
-        distrito_1.save()
+        # Se crea dos distritos
+        distrito_1 = models.Distrito.objects.create(nombre="distrito1", region=region_1)
+        distrito_2 = models.Distrito.objects.create(nombre="distrito2", region=region_23)
 
         # Se crea una localidad
-        localidad_1 = models.Localidad.objects.create(nombre="localidad1")
-        localidad_1.distrito = distrito_1
-        localidad_1.save()
+        localidad_1 = models.Localidad.objects.create(nombre="localidad1", distrito=distrito_1)
+        localidad_2 = models.Localidad.objects.create(nombre="localidad2", distrito=distrito_2)
 
         # Se genera un usuario demo, se asigna una region al perfil
         user_2 = User.objects.create_user(username='demo', password='123')
         perfil_2 = user_2.perfil
         perfil_2.region = region_1
-        perfil_2.apellido = "Demo"
         perfil_2.save()
 
-        # Se generan 2 escuela y se les asigna localidad
-        escuela_1 = models.Escuela.objects.create(cue="1")
-        escuela_1.localidad = localidad_1
-        escuela_1.save()
-        escuela_2 = models.Escuela.objects.create(cue="2")
-        escuela_2.localidad = localidad_1
-        escuela_2.save()
+        # Se generan 2 escuela y se les asigna distinta localidad
+        escuela_1 = models.Escuela.objects.create(cue="1", localidad=localidad_1)
+        escuela_2 = models.Escuela.objects.create(cue="2", localidad = localidad_2)
 
-        # Se crean dos eventos de prueba. Uno con fecha Enero y otro Marzo
-        evento_1 = models.Evento.objects.create(titulo="Evento de prueba", responsable=user_2.perfil, escuela=escuela_1, fecha="2017-01-15", fecha_fin="2017-01-15")
-        evento_2 = models.Evento.objects.create(titulo="Otro evento de prueba de otra escuela", responsable=user_2.perfil, escuela=escuela_2, fecha="2017-01-25", fecha_fin="2017-01-25")
-        evento_3 = models.Evento.objects.create(titulo="Evento de otro pefil", responsable=user.perfil, escuela=escuela_1, fecha="2017-01-25", fecha_fin="2017-01-25")
+        # Se crean eventos de prueba con fecha de Enero.
+        evento_1 = models.Evento.objects.create(
+            titulo="Evento de prueba de region 1",
+            responsable=user_2.perfil,
+            escuela=escuela_1,
+            fecha="2017-01-15",
+            fecha_fin="2017-01-15")
+        evento_2 = models.Evento.objects.create(
+            titulo="Otro evento de prueba de otra escuela, de otra region",
+            responsable=user_2.perfil,
+            escuela=escuela_2,
+            fecha="2017-01-25",
+            fecha_fin="2017-01-25")
+        evento_3 = models.Evento.objects.create(
+            titulo="Evento de otro pefil, pero de region 1",
+            responsable=user.perfil,
+            escuela=escuela_1,
+            fecha="2017-01-25",
+            fecha_fin="2017-01-25")
 
-        response = self.client.get('/api/eventos/agenda_region?inicio=2017-01-01&fin=2017-02-01&perfil=2', format='json')
+        response = self.client.get('/api/eventos/agenda?inicio=2017-01-01&fin=2017-02-01&perfil=2&region=1', format='json')
 
         self.assertEqual(response.data['cantidad'], 2)
-        # self.assertEqual(len(response.data['eventos']), 1)
-        # self.assertEqual(response.data['region'],1)
-        pprint.pprint(response.data)
 
     def test_puede_conformar_escuelas(self):
         # Prepara el usuario para chequear contra la api

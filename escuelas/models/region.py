@@ -5,7 +5,7 @@ class Region(models.Model):
     numero = models.IntegerField()
 
     def __unicode__(self):
-        return u"Región %s" %(self.numero)
+        return str(self.numero)
 
     class Meta:
         db_table = 'regiones'
