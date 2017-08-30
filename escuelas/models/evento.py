@@ -45,23 +45,11 @@ class Evento(models.Model):
 def create_event_summary(sender, instance, created, **kwargs):
     if created:
         titulo = instance.titulo
-        if instance.categoria:
-            categoria = instance.categoria
-        else:
-            categoria = ""
-            categoria.nombre = "Sin Categoria"
+        categoria = instance.categoria
 
-        if instance.escuela:
-            region = instance.escuela.localidad.distrito.region
-            escuela = instance.escuela.nombre
-        else:
-            region = "Sin Region"
-            escuela = "Sin Escuela"
-
-        if instance.responsable:
-            responsable = instance.responsable.nombre + " " + instance.responsable.apellido
-        else:
-            responsable = "Sin responsable"
+        region = instance.escuela.localidad.distrito.region
+        escuela = instance.escuela.nombre
+        responsable = instance.responsable.nombre + " " + instance.responsable.apellido
 
         resumen = json.dumps(
                 {

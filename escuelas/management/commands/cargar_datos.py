@@ -169,9 +169,16 @@ class Command(BaseCommand):
 
     def importar_eventos(self):
         eventos = self.obtener_datos_desde_api('eventos')['eventos']
+        cantidad_de_eventos_creados = 0
+        cantidad_de_eventos_omitidos = 0
+        cantidad_de_eventos_omitidos_por_perfil = 0
+        cantidad_de_eventos_omitidos_por_escuela = 0
+        cantidad_de_eventos_omitidos_por_categoria = 0
 
         print("Creando Eventos")
         bar = barra_de_progreso(simple=False)
+
+
 
         for evento in bar(eventos):
             legacy_id = evento['legacy_id']
@@ -187,9 +194,18 @@ class Command(BaseCommand):
             cantidad_de_participantes = evento['cantidad_de_participantes']
             #minuta = evento['minuta']
             acta = evento['acta']
-            categoria = evento['categoria']
-            subcategoria = evento['subcategoria']
+            categoria = evento['categoria'].capitalize()
+            subcategoria = evento['subcategoria'].capitalize()
+
+            if categoria == "Asistencia a escuela":
+                categoria = "Asistencia"
+
+            if subcategoria == "Servicio técnico de netbook":
+                subcategoria = "Servicio técnico a netbook"
+
             titulo = categoria + " " + subcategoria
+
+            categoria_2 = categoria + "/" + subcategoria
 
             if MODO_VERBOSE:
                 print "========================================================================================================================"
@@ -201,6 +217,7 @@ class Command(BaseCommand):
                 print "Fin:                     " + fecha_final + " " + hora_final
                 print "Categoria:               " + categoria
                 print "Subcategoria:            " + subcategoria
+                print "Categoria 2:             " + categoria_2
                 print "Objetivo:                " + objetivo
                 print "Acta:                    " + acta
                 print "Responsable:             " + "dni " + dni_usuario
@@ -214,28 +231,43 @@ class Command(BaseCommand):
                 objeto_responsable = models.Perfil.objects.get(dni=dni_usuario)
             except models.Perfil.DoesNotExist:
                 log("Error, no existe registro de usuario buscado %s. No se registrará el evento." %(dni_usuario))
-                # cantidad_de_tareas_omitidas += 1
+                cantidad_de_eventos_omitidos += 1
+                cantidad_de_eventos_omitidos_por_perfil += 1
                 continue
 
             try:
                 objeto_escuela = models.Escuela.objects.get(cue=cue)
             except models.Escuela.DoesNotExist:
                 log("Error, no existe la escuela buscada con cue %s. No se registrará el evento." %(cue))
-                # cantidad_de_comentarios_de_tareas_omitidos += 1
+                cantidad_de_eventos_omitidos += 1
+                cantidad_de_eventos_omitidos_por_escuela += 1
                 continue
 
-            objeto_evento, created = models.Evento.objects.get_or_create(legacy_id=legacy_id)
+            try:
+                objeto_categoria = models.CategoriaDeEvento.objects.get(nombre=categoria_2)
+            except models.CategoriaDeEvento.DoesNotExist:
+                log("Error, no existe la categoria %s. No se registrará el evento" %(categoria_2))
+                cantidad_de_eventos_omitidos += 1
+                cantidad_de_eventos_omitidos_por_categoria += 1
+                continue
 
-            objeto_evento.titulo = titulo
-            objeto_evento.fecha = fecha_inicio
-            objeto_evento.inicio = hora_inicio
-            objeto_evento.fecha_fin = fecha_final
-            objeto_evento.fin = hora_final
-            objeto_evento.objetivo = objetivo
-            objeto_evento.cantidadDeParticipantes = cantidad_de_participantes
-            objeto_evento.responsable = objeto_responsable
-            objeto_evento.escuela = objeto_escuela
+            objeto_evento, created = models.Evento.objects.get_or_create(
+                legacy_id=legacy_id,
+                titulo = titulo,
+                fecha = fecha_inicio,
+                inicio = hora_inicio,
+                fecha_fin = fecha_final,
+                fin = hora_final,
+                objetivo = objetivo,
+                cantidadDeParticipantes = cantidad_de_participantes,
+                responsable = objeto_responsable,
+                escuela = objeto_escuela,
+                categoria = objeto_categoria
+
+                )
+
             objeto_evento.save()
+            cantidad_de_eventos_creados += 1
 
 
             if MODO_VERBOSE:
@@ -246,8 +278,7 @@ class Command(BaseCommand):
                 print "Titulo:                  " + titulo
                 print "Inicio:                  " + fecha_inicio + " " + hora_inicio
                 print "Fin:                     " + fecha_final + " " + hora_final
-                print "Categoria:               " + categoria
-                print "Subcategoria:            " + subcategoria
+                print "Categoria:               " + categoria_2
                 print "Objetivo:                " + objetivo
                 print "Acta:                    " + acta
                 print "Responsable:             " + objeto_responsable.apellido + ", " + objeto_responsable.nombre + " (dni " + dni_usuario + ")"
@@ -255,6 +286,13 @@ class Command(BaseCommand):
                 print "Cant. de Participantes:  " + str(cantidad_de_participantes)
                 print "Escuela:                 " + objeto_escuela.nombre + " " + str(cue)
                 print "=============================="
+
+        print("   Se crearon %d eventos correctamente." %(cantidad_de_eventos_creados))
+        print "Total de eventos omitidos: %d" %(cantidad_de_eventos_omitidos)
+        print "Eventos omitidos por no encontrar escuela: %d" %(cantidad_de_eventos_omitidos_por_escuela)
+        print "Eventos omitidos por no encontrar perfil: %d" %(cantidad_de_eventos_omitidos_por_perfil)
+        print "Eventos omitidos por no encontrar categoria: %d" %(cantidad_de_eventos_omitidos_por_categoria)
+
 
     def importar_escuelas(self):
         resultado = self.obtener_datos_desde_api('escuelas')
@@ -1348,6 +1386,7 @@ class Command(BaseCommand):
             "Acciones especiales/Desembarcos",
             "Acciones especiales/Encuentros masivos",
             "Acciones especiales/Prácticas profesionales",
+            "Acciones especiales/Otros",
             "Asistencia/Administrativa",
             "Asistencia/Pedagógica",
             "Asistencia/Técnica",
@@ -1356,12 +1395,32 @@ class Command(BaseCommand):
             "Capacitaciones/Sensibilización",
             "Capacitaciones/Docentes",
             "Capacitaciones/Alumnos",
+            "Capacitaciones/Capacitación",
             "Reunión/Online",
             "Reunión/Inspectores",
             "Reunión/Referente de área",
             "Reunión/Equipo",
             "Reunión/Planificación",
             "Reunión/Región Central",
+            "Visita pedagógica/Comunicación",
+            "Visita pedagógica/Docentes",
+            "Visita pedagógica/Educación especial",
+            "Visita pedagógica/Equipos directivos",
+            "Visita pedagógica/Equipos jurisdiccionales",
+            "Visita pedagógica/Equipos de gestión tic",
+            "Visita pedagógica/Evaluación y seguimiento",
+            "Visita pedagógica/Jóvenes",
+            "Visita pedagógica/Otras",
+            "Visita pedagógica/Primera entrega",
+            "Visita pedagógica/Rte",
+            "Visita pedagógica/Supervisores y directores de nivel y modalidad",
+            "Visita técnica/Carga de matrícula",
+            "Visita técnica/Configuración y registro de netbook",
+            "Visita técnica/Desbloqueo de netbook",
+            "Visita técnica/Mantenimiento de piso tecnológico",
+            "Visita técnica/Otras",
+            "Visita técnica/Primera entrega",
+            "Visita técnica/Servicio técnico a netbook"
             ]
 
         print("Creando Categorías de eventos")
