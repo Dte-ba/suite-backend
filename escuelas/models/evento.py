@@ -46,12 +46,12 @@ class Evento(models.Model):
 @receiver(post_save, sender=Evento)
 def create_event_summary(sender, instance, created, **kwargs):
     if created:
-        titulo = instance.titulo
-        categoria = instance.categoria
 
-        region = instance.escuela.localidad.distrito.region
-        escuela = instance.escuela.nombre
         responsable = instance.responsable.nombre + " " + instance.responsable.apellido
+        escuela = instance.escuela.nombre
+        categoria = instance.categoria
+        titulo = instance.titulo
+        region = instance.escuela.localidad.distrito.region
 
         resumen = json.dumps(
                 {

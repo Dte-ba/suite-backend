@@ -16,7 +16,7 @@ class PerfilAdmin(admin.ModelAdmin):
 class EventoAdmin(admin.ModelAdmin):
     model = models.Evento
     list_display = ('id', 'titulo', 'fecha', 'inicio', 'fecha_fin', 'fin', 'todoElDia', 'responsable')
-    search_fields = ('id', 'titulo', 'fecha', 'responsable')
+    search_fields = ('id', 'titulo', 'legacy_id')
 
 admin.site.register(models.Escuela, EscuelaAdmin)
 admin.site.register(models.Evento, EventoAdmin)

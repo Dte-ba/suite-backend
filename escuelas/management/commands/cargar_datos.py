@@ -253,18 +253,18 @@ class Command(BaseCommand):
 
             objeto_evento, created = models.Evento.objects.get_or_create(
                 legacy_id=legacy_id,
-                titulo = titulo,
-                fecha = fecha_inicio,
-                inicio = hora_inicio,
-                fecha_fin = fecha_final,
-                fin = hora_final,
-                objetivo = objetivo,
-                cantidadDeParticipantes = cantidad_de_participantes,
-                responsable = objeto_responsable,
-                escuela = objeto_escuela,
-                categoria = objeto_categoria
+            )
 
-                )
+            objeto_evento.responsable = objeto_responsable
+            objeto_evento.escuela = objeto_escuela
+            objeto_evento.categoria = objeto_categoria
+            objeto_evento.titulo = titulo
+            objeto_evento.fecha = fecha_inicio
+            objeto_evento.inicio = hora_inicio
+            objeto_evento.fecha_fin = fecha_final
+            objeto_evento.fin = hora_final
+            objeto_evento.objetivo = objetivo
+            objeto_evento.cantidadDeParticipantes = cantidad_de_participantes
 
             objeto_evento.save()
             cantidad_de_eventos_creados += 1
