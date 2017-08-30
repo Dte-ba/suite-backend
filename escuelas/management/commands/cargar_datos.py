@@ -266,6 +266,8 @@ class Command(BaseCommand):
             objeto_evento.fin = hora_final
             objeto_evento.objetivo = objetivo
             objeto_evento.cantidadDeParticipantes = cantidad_de_participantes
+            objeto_evento.minuta = minuta
+            objeto_evento.acta_legacy = acta
 
             objeto_evento.save()
             cantidad_de_eventos_creados += 1

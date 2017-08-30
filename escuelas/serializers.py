@@ -36,7 +36,7 @@ class EventoSerializer(CustomSerializer):
 
     class Meta:
         model = models.Evento
-        fields = ('id', 'titulo', 'fecha', 'fecha_fin', 'inicio', 'fin', 'todoElDia', 'objetivo', 'responsable', 'escuela', 'acompaniantes', 'cantidadDeParticipantes', 'requiereTraslado', 'categoria', 'resumenParaCalendario')
+        fields = ('id', 'titulo', 'fecha', 'fecha_fin', 'inicio', 'fin', 'todoElDia', 'objetivo', 'responsable', 'escuela', 'acompaniantes', 'cantidadDeParticipantes', 'requiereTraslado', 'categoria', 'resumenParaCalendario', 'minuta', 'acta_legacy')
 
 
 class RegionSerializer(CustomSerializer):
