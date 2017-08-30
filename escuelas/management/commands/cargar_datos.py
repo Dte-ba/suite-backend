@@ -192,7 +192,7 @@ class Command(BaseCommand):
             dni_usuario = evento['dni_usuario']
             objetivo = evento['objetivo']
             cantidad_de_participantes = evento['cantidad_de_participantes']
-            #minuta = evento['minuta']
+            minuta = evento['minuta']
             acta = evento['acta']
             categoria = evento['categoria'].capitalize()
             subcategoria = evento['subcategoria'].capitalize()
@@ -250,6 +250,7 @@ class Command(BaseCommand):
                 cantidad_de_eventos_omitidos += 1
                 cantidad_de_eventos_omitidos_por_categoria += 1
                 continue
+
 
             objeto_evento, created = models.Evento.objects.get_or_create(
                 legacy_id=legacy_id,

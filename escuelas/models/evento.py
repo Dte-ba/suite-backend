@@ -27,6 +27,9 @@ class Evento(models.Model):
 
     resumen = models.TextField(max_length=1024, default=None, blank=True, null=True)
 
+    minuta = models.TextField(max_length=4096, default=None, blank=True, null=True)
+    acta_legacy = models.CharField(max_length=512, default=None, blank=True, null=True)
+
     def __unicode__(self):
         return self.titulo
 
@@ -45,7 +48,9 @@ class Evento(models.Model):
 
 @receiver(post_save, sender=Evento)
 def create_event_summary(sender, instance, created, **kwargs):
-    if created:
+    post_save.disconnect(create_event_summary, sender=sender)
+
+    if not created:
 
         responsable = instance.responsable.nombre + " " + instance.responsable.apellido
         escuela = instance.escuela.nombre
@@ -64,3 +69,5 @@ def create_event_summary(sender, instance, created, **kwargs):
 
         instance.resumen = resumen
         instance.save()
+
+    post_save.connect(create_event_summary, sender=sender)
