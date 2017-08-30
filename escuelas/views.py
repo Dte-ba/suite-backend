@@ -167,6 +167,7 @@ class EventoViewSet(viewsets.ModelViewSet):
         responsable = models.Perfil.objects.get(id=perfil)
 
         eventos = models.Evento.objects.filter( fecha__range=(inicio, fin), escuela__localidad__distrito__region__numero=region)
+        # eventos = models.Evento.objects.filter( fecha__range=(inicio, fin), escuela__localidad__distrito__region__numero=region, responsable=responsable)
         return Response({
                 "inicio": inicio,
                 "fin": fin,
@@ -174,7 +175,7 @@ class EventoViewSet(viewsets.ModelViewSet):
                 "region": region,
                 "cantidad": eventos.count(),
                 "eventos": serializers.EventoSerializer(eventos, many=True).data
-            
+
             })
 
     @list_route(methods=['get'])

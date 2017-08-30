@@ -36,6 +36,8 @@ class Evento(models.Model):
 
     def resumenParaCalendario(self):
         if self.resumen:
+            print(self.id)
+            print(self.resumen)
             return json.loads(self.resumen)
         else:
             return "Sin resumen"
