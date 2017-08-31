@@ -1547,6 +1547,14 @@ class Command(BaseCommand):
             'Facilitador': [
                 ESCUELAS_LISTAR,
                 AGENDA_LISTAR,
+                AGENDA_CREAR,
+                TAREAS_LISTAR,
+                TAREAS_CREAR,
+                TAREAS_COMENTAR,
+                TAREAS_CERRAR,
+                PAQUETES_LISTAR,
+                PAQUETES_CREAR,
+                PAQUETES_LISTAR
             ],
             'Referente': [
                 ESCUELAS_LISTAR,

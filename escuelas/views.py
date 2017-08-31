@@ -427,17 +427,51 @@ class TareaViewSet(viewsets.ModelViewSet):
     search_fields = ['titulo', 'fecha_de_alta']
     filter_fields = ['autor__nombre']
 
-    def get_queryset(self):
-        queryset = models.Tarea.objects.all()
-        query = self.request.query_params.get('query', None)
+    #
+    # def get_queryset(self):
+    #
+    #     perfil = self.request.query_params.get('perfil', None)
+    #     region = self.request.query_params.get('region', None)
+    #
+    #     usuario = models.Perfil.objects.get(id=perfil) # El usuario logeado
+    #     grupo = usuario.group.name
+    #
+    #     queryset = models.Tarea.objects.all()
+    #     query = self.request.query_params.get('query', None)
+    #
+    #     if query:
+    #         filtro_titulo = Q(titulo__icontains=query)
+    #         filtro_fechaDeAlta = Q(fecha_de_alta__icontains=query)
+    #
+    #         queryset = queryset.filter(filtro_titulo | filtro_fechaDeAlta)
+    #
+    #     return queryset
 
-        if query:
-            filtro_titulo = Q(titulo__icontains=query)
-            filtro_fechaDeAlta = Q(fecha_de_alta__icontains=query)
+    @list_route(methods=['get'])
+    def lista(self, request):
 
-            queryset = queryset.filter(filtro_titulo | filtro_fechaDeAlta)
+        perfil = self.request.query_params.get('perfil', None)
+        region = self.request.query_params.get('region', None)
 
-        return queryset
+        usuario = models.Perfil.objects.get(id=perfil) # El usuario logeado
+        grupo = usuario.group.name
+
+        if ((grupo == "Administrador") or (grupo == "Administracion") or (grupo == "Referente")): # Ve todas las tareas de todas las regiones y perfiles
+            tareas = models.Tarea.objects.all()
+        elif ((grupo == "Coordinador") or (grupo == "Facilitador")): # Ve todas las tareas de todos los perfiles de su región
+            tareas = models.Tarea.objects.filter(  escuela__localidad__distrito__region__numero=region)
+        else:
+            tareas = models.Tarea.objects.filter( escuela__localidad__distrito__region__numero=0, autor=0)
+
+        return Response({
+                "perfil": perfil,
+                "grupo": grupo,
+                "region": region,
+                "cantidad": tareas.count(),
+                "tareas": serializers.TareaSerializer(tareas, many=True).data
+
+            })
+
 
     @list_route(methods=['get'])
     def estadistica(self, request):
