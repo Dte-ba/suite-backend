@@ -345,7 +345,8 @@ class Command(BaseCommand):
             log("===========")
 
     def importar_usuarios(self):
-        ARCHIVO = './/archivos_para_importacion/dte_perfiles_2017.xlsx'
+        # ARCHIVO = './/archivos_para_importacion/dte_perfiles_2017.xlsx'
+        ARCHIVO = './/archivos_para_importacion/dte_perfiles_08-2017.xlsx'
         LIMITE_DE_FILAS = 300
 
         print("Comenzando la importación de usuarios")
@@ -390,6 +391,7 @@ class Command(BaseCommand):
                 "telefono_celular":     fila[20].value,
                 "telefono_particular":  fila[21].value,
                 "telefono_alternativo": fila[22].value,
+                "rol": fila[23].value,
             }
 
         bar = barra_de_progreso(simple=False)
@@ -421,7 +423,11 @@ class Command(BaseCommand):
                 if region=="ESP/NC" or region=="NC" or region=="Nc" or region=="NC Esp" or region=="NC Prov." or region=="NC Sup" or region=="NC. Prov":
                     region="27"
 
-                cargo=valores['cargo']
+                if valores['cargo']:
+                    cargo=valores['cargo']
+                else:
+                    log("No tiene cargo")
+
                 contrato=valores['contrato']
                 carga_horaria=valores['carga_horaria']
                 consultor=valores['consultor'].split(',')
@@ -429,9 +435,9 @@ class Command(BaseCommand):
                 nombre=consultor[1].title()
 
                 if valores['expediente']:
-                    log("No tiene expediente")
                     expediente=valores['expediente']
                 else:
+                    log("No tiene expediente")
                     expediente="Sin Datos"
 
                 if valores['titulo']:
@@ -498,10 +504,16 @@ class Command(BaseCommand):
                     telefono_celular="Sin Datos"
 
                 if valores['telefono_particular']:
-                    log("No tiene telefono Particular")
                     telefono_particular=valores['telefono_particular']
                 else:
+                    log("No tiene telefono Particular")
                     telefono_particular="Sin Datos"
+
+                if valores['rol']:
+                    grupo=valores['rol']
+                else:
+                    log("No tiene ROL asignado")
+                    grupo="Sin Definir"
 
                 username=email_laboral
                 default_pass="dte_"+dni
@@ -517,6 +529,13 @@ class Command(BaseCommand):
 
                 perfil = models.Perfil.objects.get(user=user)
 
+                try:
+                    objeto_grupo = Group.objects.get(name=grupo)
+                except Group.DoesNotExist:
+                    log("No existe el grupo")
+                    continue
+
+                perfil.group = objeto_grupo
                 perfil.nombre = nombre
                 perfil.apellido = apellido
                 perfil.fechadenacimiento = fechaDeNacimiento
@@ -537,7 +556,18 @@ class Command(BaseCommand):
                 perfil.region = models.Region.objects.get(numero=int(region))
                 # perfil.experiencia = models.Experiencia.objects.get(nombre=experiencia)
                 # perfil.localidad = models.Localidad.objects.get(nombre=localidad)
-                perfil.cargo = models.Cargo.objects.get(nombre=cargo)
+
+                try:
+                    objeto_cargo = models.Cargo.objects.get(nombre=cargo)
+                except models.CargoDoesNotExist:
+                    log("No existe el cargo con ese nombre: %s") %(cargo)
+                    continue
+
+                perfil.cargo = objeto_cargo
+
+                if contrato == "PLANTA":
+                    contrato = "Planta"
+
                 perfil.contrato = models.Contrato.objects.get(nombre=contrato)
 
                 perfil.save()
