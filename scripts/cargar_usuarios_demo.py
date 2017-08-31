@@ -38,3 +38,6 @@ def crear_usuario_de_prueba(email, nombre, grupo, region=1):
 crear_usuario_de_prueba('admin', 'Admin', 'Administrador')
 crear_usuario_de_prueba('coordinador', 'Coordinador', 'Coordinador', region=1)
 crear_usuario_de_prueba('facilitador', 'Facilitador', 'Facilitador', region=1)
+crear_usuario_de_prueba('referente', 'Referente', 'Referente', region=1)
+crear_usuario_de_prueba('administracion', 'Administración', 'Administracion', region=1)
+crear_usuario_de_prueba('invitado', 'Invitado', 'Invitado', region=1)

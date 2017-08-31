@@ -44,13 +44,18 @@ class GeneralesTestCase(APITestCase):
         response = self.client.get('/')
         self.assertEqual(response.status_code, 200)
 
-    def test_puede_pedir_agenda(self):
+    def test_puede_pedir_agenda_administrador(self):
         # Prepara el usuario para chequear contra la api
         user = User.objects.create_user(username='test', password='123')
         self.client.force_authenticate(user=user)
 
+        # Se genera un grupo
+        grupo = Group.objects.create(name="Administrador")
+
         # Se genera un usuario demo
         user_2 = User.objects.create_user(username='demo', password='123')
+        user_2.perfil.group = grupo
+        user_2.perfil.save()
 
         # Se genera 1 escuela
         region_1 = models.Region.objects.create(numero=1)
@@ -70,10 +75,13 @@ class GeneralesTestCase(APITestCase):
         self.assertEqual(response.data['cantidad'], 1)
         self.assertEqual(len(response.data['eventos']), 1)
 
-    def test_puede_pedir_agenda_region(self):
+    def test_puede_pedir_agenda_coordinador(self):
         # Prepara el usuario para chequear contra la api
         user = User.objects.create_user(username='test', password='123')
         self.client.force_authenticate(user=user)
+
+        # Se genera un grupo
+        grupo = Group.objects.create(name="Coordinador")
 
         # Se crean dos regiones
         region_1 = models.Region.objects.create(numero=1)
@@ -91,6 +99,7 @@ class GeneralesTestCase(APITestCase):
         user_2 = User.objects.create_user(username='demo', password='123')
         perfil_2 = user_2.perfil
         perfil_2.region = region_1
+        perfil_2.group = grupo
         perfil_2.save()
 
         # Se generan 2 escuela y se les asigna distinta localidad
