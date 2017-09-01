@@ -112,30 +112,46 @@ class GeneralesTestCase(APITestCase):
 
         # Se crean eventos de prueba con fecha de Enero.
         evento_1 = models.Evento.objects.create(
-            titulo="Evento de prueba de region 1",
+            titulo="Evento de prueba de region 1 y Responsable perfil 2",
             categoria=categoria_1,
             responsable=user_2.perfil,
             escuela=escuela_1,
             fecha="2017-01-15",
             fecha_fin="2017-01-15")
         evento_2 = models.Evento.objects.create(
-            titulo="Otro evento de prueba de otra escuela, de otra region",
+            titulo="Otro evento de prueba de otra escuela, de otra region, de perfil 2",
             categoria=categoria_1,
             responsable=user_2.perfil,
             escuela=escuela_2,
             fecha="2017-01-25",
             fecha_fin="2017-01-25")
         evento_3 = models.Evento.objects.create(
-            titulo="Evento de otro pefil, pero de region 1",
+            titulo="Evento de otro perfil, pero de region 1",
             categoria=categoria_1,
             responsable=user.perfil,
             escuela=escuela_1,
             fecha="2017-01-25",
             fecha_fin="2017-01-25")
 
-        response = self.client.get('/api/eventos/agenda?inicio=2017-01-01&fin=2017-02-01&perfil=2&region=1', format='json')
+        # Pide todos (Caso Administrador, Administración y Referente)
+        response = self.client.get('/api/eventos/agenda?inicio=2017-01-01&fin=2017-02-01', format='json')
+
+        self.assertEqual(response.data['cantidad'], 3)
+
+        # Pide solo los de región 1 (Caso Coordinador)
+        response = self.client.get('/api/eventos/agenda?inicio=2017-01-01&fin=2017-02-01&region=1', format='json')
 
         self.assertEqual(response.data['cantidad'], 2)
+
+        # Pide solo región 23 (Caso Coordinador)
+        response = self.client.get('/api/eventos/agenda?inicio=2017-01-01&fin=2017-02-01&region=23', format='json')
+
+        self.assertEqual(response.data['cantidad'], 1)
+
+        # Pide solo perfil 2 (Caso Facilitador ) y Región 1
+        response = self.client.get('/api/eventos/agenda?inicio=2017-01-01&fin=2017-02-01&perfil=2&region=1', format='json')
+
+        self.assertEqual(response.data['cantidad'], 1)
 
     def test_puede_conformar_escuelas(self):
         # Prepara el usuario para chequear contra la api

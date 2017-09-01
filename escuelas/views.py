@@ -164,24 +164,20 @@ class EventoViewSet(viewsets.ModelViewSet):
         perfil = self.request.query_params.get('perfil', None)
         region = self.request.query_params.get('region', None)
 
-        usuario = models.Perfil.objects.get(id=perfil) # El usuario logeado
-        grupo = usuario.group.name
+        # import ipdb; ipdb.set_trace()
 
-        if ((grupo == "Administrador") or (grupo == "Administracion") or (grupo == "Referente")): # Ve todos los eventos, de todas las regiones, de todos los perfiles
-            eventos = models.Evento.objects.filter( fecha__range=(inicio, fin))
-        elif grupo == "Coordinador": # Ve todos los eventos de todos los perfiles de su región
-            eventos = models.Evento.objects.filter( fecha__range=(inicio, fin), escuela__localidad__distrito__region__numero=region)
-        elif grupo == "Facilitador": # Ve solo los eventos de su region en los cuales participa
-            eventos = models.Evento.objects.filter( fecha__range=(inicio, fin), escuela__localidad__distrito__region__numero=region, responsable=usuario)
-        else:
-            eventos = models.Evento.objects.filter( fecha__range=(inicio, fin), escuela__localidad__distrito__region__numero=0, responsable=0)
+        eventos = models.Evento.objects.filter(fecha__range=(inicio, fin))
+
+        if region:
+            eventos = eventos.filter(escuela__localidad__distrito__region__numero=region)
+
+        if perfil:
+            usuario = models.Perfil.objects.get(id=perfil) # El usuario logeado
+            eventos = eventos.filter(Q(responsable=usuario) | Q(acompaniantes=usuario))
 
         return Response({
                 "inicio": inicio,
                 "fin": fin,
-                "perfil": perfil,
-                "grupo": grupo,
-                "region": region,
                 "cantidad": eventos.count(),
                 "eventos": serializers.EventoSerializer(eventos, many=True).data
 
