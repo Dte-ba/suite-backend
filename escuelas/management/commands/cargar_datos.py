@@ -1558,7 +1558,8 @@ class Command(BaseCommand):
                 TAREAS_CERRAR,
                 PAQUETES_LISTAR,
                 PAQUETES_CREAR,
-                PAQUETES_LISTAR
+                PAQUETES_LISTAR,
+                PERSONAS_LISTAR,
             ],
             'Referente': [
                 PERFIL_GLOBAL,
