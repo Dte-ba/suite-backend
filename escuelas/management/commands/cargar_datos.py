@@ -1479,6 +1479,9 @@ class Command(BaseCommand):
 
         # Genera los permisos personalizados
 
+        # Acceso a todas las regiones.
+        PERFIL_GLOBAL = 'perfil.global'
+
         AGENDA_LISTAR = 'agenda.listar'
         AGENDA_CREAR = 'agenda.crear'
 
@@ -1513,6 +1516,7 @@ class Command(BaseCommand):
         PERSONAS_VER_INFORME = 'personas.verinformes'
 
         permisos = [
+            PERFIL_GLOBAL,
             AGENDA_LISTAR, AGENDA_CREAR,
             TAREAS_LISTAR, TAREAS_CREAR, TAREAS_COMENTAR, TAREAS_CERRAR,
             ESCUELAS_LISTAR, ESCUELAS_EDITAR, ESCUELAS_CONFORMAR, ESCUELAS_CAMBIAR_ESTADO, ESCUELAS_ELIMINAR, ESCUELAS_CREAR, ESCUELAS_VER_MAPA,
@@ -1543,7 +1547,7 @@ class Command(BaseCommand):
                 ESCUELAS_LISTAR,
                 AGENDA_LISTAR,
             ],
-            'Administrador': permisos, # LISTA con todos los permisos existentes
+            'Administrador': permisos,
             'Facilitador': [
                 ESCUELAS_LISTAR,
                 AGENDA_LISTAR,
@@ -1562,6 +1566,7 @@ class Command(BaseCommand):
             ],
             'Administracion': [
                 ESCUELAS_LISTAR,
+                PERFIL_GLOBAL,
             ]
         }
 
