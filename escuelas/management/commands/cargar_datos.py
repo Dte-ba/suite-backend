@@ -1561,6 +1561,7 @@ class Command(BaseCommand):
                 PAQUETES_LISTAR
             ],
             'Referente': [
+                PERFIL_GLOBAL,
                 ESCUELAS_LISTAR,
                 AGENDA_LISTAR,
             ],
