@@ -1,4 +1,6 @@
+# coding: utf-8
 import os
+import sys
 import dj_database_url
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
@@ -130,6 +132,9 @@ DATABASES = {
 db_url = os.environ.get('DOKKU_POSTGRES_WHITE_URL', 'sqlite://./database.sqlite')
 DATABASES['default'] = dj_database_url.config(conn_max_age=600, default=db_url)
 
+# Forzando sqlite si se están ejecutando los tests.
+if 'test' in sys.argv or 'test_coverage' in sys.argv:
+    DATABASES['default']['ENGINE'] = 'django.db.backends.sqlite3'
 
 # Password validation
 # https://docs.djangoproject.com/en/1.10/ref/settings/#auth-password-validators
