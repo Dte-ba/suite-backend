@@ -28,34 +28,3 @@ from comentario_de_validacion import ComentarioDeValidacion
 from estado_de_paquete import EstadoDePaquete
 from paquete import Paquete
 from modalidad import Modalidad
-
-Contacto;
-Escuela;
-Evento;
-Region;
-Perfil;
-TipoDeFinanciamiento;
-Nivel;
-TipoDeGestion;
-Area;
-Programa;
-Localidad;
-Distrito;
-Experiencia;
-Cargo;
-Contrato;
-Piso;
-CargoEscolar;
-Tarea;
-PrioridadDeTarea;
-MotivoDeTarea;
-EstadoDeTarea;
-ComentarioDeTarea;
-CategoriaDeEvento;
-EstadoDeValidacion;
-Validacion;
-MotivoDeConformacion;
-ComentarioDeValidacion;
-EstadoDePaquete;
-Paquete;
-Modalidad;
