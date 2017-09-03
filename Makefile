@@ -63,7 +63,7 @@ test_continuos: test_live
 test_live: dependencias
 	@make test; watchmedo shell-command --patterns="*.py" --recursive --command='make test' .
 
-ejecutar: serve
+ejecutar: migrar serve
 
 serve: dependencias
 	${BIN_MANAGE} runserver

@@ -77,6 +77,7 @@ class Command(BaseCommand):
             'importar_distritos_y_localidades',
             'importar_escuelas',
 
+            'limpiar_e_importar_permisos_con_grupos',
             'importar_usuarios',
 
             'importar_contactos',
@@ -90,7 +91,7 @@ class Command(BaseCommand):
             'importar_validaciones',
             'importar_comentarios_de_validaciones',
             'importar_paquetes',
-            'limpiar_e_importar_permisos_con_grupos',
+            'aplicar_permiso_sin_definir_a_los_perfiles_faltantes',
         ]
 
 
@@ -124,7 +125,8 @@ class Command(BaseCommand):
         self.listar_comandos(comandos)
         esperar(2)
 
-        for x in comandos:
+        for i, x in enumerate(comandos):
+            print("[01;32m[%d/%d] Ejecutando tarea: %s [0m" %(i+1, len(comandos)-i, x))
             metodo = getattr(self, x)
             metodo()
 
@@ -1566,7 +1568,7 @@ class Command(BaseCommand):
                 ESCUELAS_LISTAR,
                 AGENDA_LISTAR,
             ],
-            'Administracion': [
+            'Administración': [
                 ESCUELAS_LISTAR,
                 PERFIL_GLOBAL,
             ]
@@ -1581,6 +1583,7 @@ class Command(BaseCommand):
                 grupo.permissions.add(permiso)
 
 
+        """
         print("Realizando asignación de grupos")
 
         asignaciones = [
@@ -1590,10 +1593,15 @@ class Command(BaseCommand):
         ]
 
         for emailLaboral, grupo in asignaciones:
-            perfil = models.Perfil.objects.get(emailLaboral=emailLaboral)
+            try:
+                perfil = models.Perfil.objects.get(emailLaboral=emailLaboral)
+            except models.Perfil.DoesNotExist:
+                raise TypeError("Hay un usuario duplicado " + emailLaboral)
             perfil.definir_grupo_usando_nombre(grupo)
             perfil.save()
+        """
 
+    def aplicar_permiso_sin_definir_a_los_perfiles_faltantes(self):
 
         print("Aplicando el grupo 'Sin definir' a todos los perfiles que no tengan grupo")
         bar = barra_de_progreso()
