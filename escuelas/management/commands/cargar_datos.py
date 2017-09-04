@@ -1486,6 +1486,7 @@ class Command(BaseCommand):
 
         AGENDA_LISTAR = 'agenda.listar'
         AGENDA_CREAR = 'agenda.crear'
+        AGENDA_COMENTAR = 'agenda.comentar'
 
         TAREAS_LISTAR = 'tareas.listar'
         TAREAS_CREAR = 'tareas.crear'
@@ -1503,12 +1504,14 @@ class Command(BaseCommand):
         VALIDACIONES_LISTAR = 'validaciones.listar'
         VALIDACIONES_CREAR = 'validaciones.crear'
         VALIDACIONES_COMENTAR = 'validaciones.comentar'
+        VALIDACIONES_EDITAR = 'validaciones.editar'
 
         ENTREGAS_LISTAR = 'entregas.listar'
         ENTREGAS_ACTUALIZAR = 'entregas.actualizar'
 
         PAQUETES_LISTAR = 'paquetes.listar'
         PAQUETES_CREAR = 'paquetes.crear'
+        PAQUETES_EDITAR = 'paquetes.editar'
 
         PERSONAS_LISTAR = 'personas.listar'
         PERSONAS_CREAR = 'personas.crear'
@@ -1519,11 +1522,12 @@ class Command(BaseCommand):
 
         permisos = [
             PERFIL_GLOBAL,
-            AGENDA_LISTAR, AGENDA_CREAR,
+            AGENDA_LISTAR, AGENDA_CREAR, AGENDA_COMENTAR,
             TAREAS_LISTAR, TAREAS_CREAR, TAREAS_COMENTAR, TAREAS_CERRAR,
             ESCUELAS_LISTAR, ESCUELAS_EDITAR, ESCUELAS_CONFORMAR, ESCUELAS_CAMBIAR_ESTADO, ESCUELAS_ELIMINAR, ESCUELAS_CREAR, ESCUELAS_VER_MAPA,
-            VALIDACIONES_LISTAR, VALIDACIONES_CREAR, VALIDACIONES_COMENTAR,
-            PAQUETES_LISTAR, PAQUETES_CREAR,
+            VALIDACIONES_LISTAR, VALIDACIONES_CREAR, VALIDACIONES_COMENTAR, VALIDACIONES_EDITAR,
+            ENTREGAS_LISTAR, ENTREGAS_ACTUALIZAR,
+            PAQUETES_LISTAR, PAQUETES_CREAR, PAQUETES_EDITAR,
             PERSONAS_LISTAR, PERSONAS_CREAR, PERSONAS_EDITAR, PERSONAS_ELIMIAR, PERSONAS_CAMBIAR_ESTADO, PERSONAS_VER_INFORME
         ]
 
@@ -1539,7 +1543,12 @@ class Command(BaseCommand):
         grupos = {
             'Coordinador': [
                 ESCUELAS_LISTAR, ESCUELAS_CONFORMAR, ESCUELAS_EDITAR,
-                AGENDA_LISTAR, AGENDA_CREAR,
+                AGENDA_LISTAR, AGENDA_CREAR, AGENDA_COMENTAR,
+                TAREAS_LISTAR, TAREAS_CREAR, TAREAS_COMENTAR, TAREAS_CERRAR,
+                VALIDACIONES_CREAR, VALIDACIONES_LISTAR, VALIDACIONES_COMENTAR, VALIDACIONES_EDITAR,
+                ENTREGAS_ACTUALIZAR,
+                PAQUETES_LISTAR, PAQUETES_CREAR, PAQUETES_EDITAR,
+                PERSONAS_LISTAR,
             ],
             'Invitado': [
                 ESCUELAS_LISTAR,
@@ -1547,29 +1556,28 @@ class Command(BaseCommand):
             ],
             'Sin Definir': [
                 ESCUELAS_LISTAR,
-                AGENDA_LISTAR,
             ],
             'Administrador': permisos,
             'Facilitador': [
-                ESCUELAS_LISTAR,
-                AGENDA_LISTAR,
-                AGENDA_CREAR,
-                TAREAS_LISTAR,
-                TAREAS_CREAR,
-                TAREAS_COMENTAR,
-                TAREAS_CERRAR,
-                PAQUETES_LISTAR,
-                PAQUETES_CREAR,
-                PAQUETES_LISTAR,
+                ESCUELAS_LISTAR, ESCUELAS_EDITAR,
+                AGENDA_LISTAR, AGENDA_CREAR, AGENDA_COMENTAR,
+                TAREAS_LISTAR, TAREAS_CREAR, TAREAS_COMENTAR, TAREAS_CERRAR,
+                PAQUETES_LISTAR, PAQUETES_CREAR,
                 PERSONAS_LISTAR,
             ],
             'Referente': [
                 PERFIL_GLOBAL,
                 ESCUELAS_LISTAR,
-                AGENDA_LISTAR,
+                AGENDA_LISTAR, AGENDA_CREAR, AGENDA_COMENTAR,
+                TAREAS_LISTAR, TAREAS_CREAR, TAREAS_COMENTAR, TAREAS_CERRAR,
+                ESCUELAS_LISTAR,
+                PERSONAS_LISTAR,
             ],
             'Administración': [
+                AGENDA_LISTAR,
+                TAREAS_LISTAR, TAREAS_CREAR, TAREAS_COMENTAR, TAREAS_CERRAR,
                 ESCUELAS_LISTAR,
+                PERSONAS_LISTAR, PERSONAS_CREAR, PERSONAS_EDITAR, PERSONAS_ELIMIAR, PERSONAS_CAMBIAR_ESTADO, PERSONAS_VER_INFORME,
                 PERFIL_GLOBAL,
             ]
         }
