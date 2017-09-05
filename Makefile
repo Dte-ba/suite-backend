@@ -50,7 +50,7 @@ dependencias: #_esta_dentro_de_un_entorno_virtual
 iniciar: dependencias
 
 migrar: dependencias
-	${BIN_MANAGE} migrate
+	${BIN_MANAGE} migrate --noinput
 
 test: dependencias
 	@clear;
