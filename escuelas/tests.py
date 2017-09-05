@@ -153,6 +153,68 @@ class GeneralesTestCase(APITestCase):
 
         self.assertEqual(response.data['cantidad'], 1)
 
+    def test_puede_crear_escuela(self):
+        # Prepara el usuario para chequear contra la api
+        user = User.objects.create_user(username='test', password='123')
+        self.client.force_authenticate(user=user)
+
+        # Se crean 1 localidad, 1 distrito y 1 región
+        region_1 = models.Region.objects.create(numero=1)
+        distrito_1 = models.Distrito.objects.create(nombre="distrito1", region=region_1)
+        localidad_1 = models.Localidad.objects.create(nombre="localidad1", distrito=distrito_1)
+
+        # Se crea un area Urbana
+        area = models.Area.objects.create(nombre="Urbana")
+
+        # Se crea una modalidad
+        modalidad = models.Modalidad.objects.create(nombre="Especial")
+
+        # Se crea un nivel
+        nivel = models.Nivel.objects.create(nombre="Primaria")
+
+        # Se crea un piso
+        piso = models.Piso.objects.create(servidor="Servidor EXO")
+
+        # Se crea un tipo de financiamiento
+        tipo_de_financiamiento = models.TipoDeFinanciamiento(nombre="Provincial")
+
+        #Se crea un tipo de gestión
+        tipo_de_gestion = models.TipoDeGestion(nombre="Privada")
+
+        # Se crea una escuela por fuera de la API
+
+        # models.Escuela.objects.create(cue="88008800", nombre="Escuela que no fue creada desde API", area=area, localidad=localidad_1, modalidad=modalidad, nivel=nivel, motivo_de_conformacion=None, padre=None, piso=piso, tipo_de_financiamiento=tipo_de_financiamiento, tipo_de_gestion=tipo_de_gestion)
+
+        data = {
+            "cue": "88008800",
+            "nombre": "Escuela de Prueba desde el test",
+            "area": area,
+            "localidad": localidad_1,
+            "modalidad": modalidad,
+            "nivel": nivel,
+            "motivo_de_conformacion": None,
+            "padre": None,
+            "piso": piso,
+            "tipo_de_financiamiento": tipo_de_financiamiento,
+            "tipo_de_gestion": tipo_de_gestion
+            # "direccion": "",
+            # "telefono": "",
+            # "email": "",
+            # "latitud": "",
+            # "longitud": "",
+            # "fecha-conformacion": null,
+            # "estado": false,
+            # "conformada": false
+        }
+
+        print(data)
+        post = self.client.post('/api/escuelas', data)
+        pprint.pprint(post.data)
+
+
+        response = self.client.get('/api/escuelas/1')
+        pprint.pprint(response.data)
+
     def test_puede_conformar_escuelas(self):
         # Prepara el usuario para chequear contra la api
         user = User.objects.create_user(username='test', password='123')

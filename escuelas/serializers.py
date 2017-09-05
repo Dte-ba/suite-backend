@@ -138,12 +138,12 @@ class SubEscuelaSerializer(CustomSerializer):
 
 class EscuelaSerializer(CustomSerializer):
 
-    localidad = LocalidadSerializer()
+    localidad = ResourceRelatedField(queryset=models.Localidad.objects)
     tipo_de_financiamiento = ResourceRelatedField(queryset=models.TipoDeFinanciamiento.objects)
-    nivel = NivelSerializer()
-    modalidad = ModalidadSerializer()
+    nivel = ResourceRelatedField(queryset=models.Nivel.objects)
+    modalidad = ResourceRelatedField(queryset=models.Modalidad.objects)
     tipo_de_gestion = ResourceRelatedField(queryset=models.TipoDeGestion.objects)
-    area = AreaSerializer()
+    area = ResourceRelatedField(queryset=models.Area.objects)
     programas = ProgramaSerializer(many=True, read_only=True)
     piso = ResourceRelatedField(queryset=models.Piso.objects)
     contactos = ContactoSerializer(many=True, read_only=True)
