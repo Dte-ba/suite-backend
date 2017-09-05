@@ -145,7 +145,7 @@ class EscuelaSerializer(CustomSerializer):
     tipo_de_gestion = ResourceRelatedField(queryset=models.TipoDeGestion.objects)
     area = ResourceRelatedField(queryset=models.Area.objects)
     programas = ProgramaSerializer(many=True, read_only=True)
-    piso = ResourceRelatedField(queryset=models.Piso.objects)
+    piso = ResourceRelatedField(read_only=True)
     contactos = ContactoSerializer(many=True, read_only=True)
     subescuelas = SubEscuelaSerializer(many=True, read_only=True)
     padre = ResourceRelatedField(read_only=True)
