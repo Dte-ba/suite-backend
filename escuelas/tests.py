@@ -7,7 +7,9 @@ from django.contrib.contenttypes.models import ContentType
 
 from rest_framework.test import APITestCase
 import models
+import json
 import pprint
+import serializers
 
 class APIUsuariosTests(APITestCase):
 
@@ -176,44 +178,88 @@ class GeneralesTestCase(APITestCase):
         piso = models.Piso.objects.create(servidor="Servidor EXO")
 
         # Se crea un tipo de financiamiento
-        tipo_de_financiamiento = models.TipoDeFinanciamiento(nombre="Provincial")
+        tipo_de_financiamiento = models.TipoDeFinanciamiento.objects.create(nombre="Provincial")
 
         #Se crea un tipo de gestión
-        tipo_de_gestion = models.TipoDeGestion(nombre="Privada")
-
-        # Se crea una escuela por fuera de la API
-
-        # models.Escuela.objects.create(cue="88008800", nombre="Escuela que no fue creada desde API", area=area, localidad=localidad_1, modalidad=modalidad, nivel=nivel, motivo_de_conformacion=None, padre=None, piso=piso, tipo_de_financiamiento=tipo_de_financiamiento, tipo_de_gestion=tipo_de_gestion)
+        tipo_de_gestion = models.TipoDeGestion.objects.create(nombre="Privada")
 
         data = {
-            "cue": "88008800",
-            "nombre": "Escuela de Prueba desde el test",
-            "area": area,
-            "localidad": localidad_1,
-            "modalidad": modalidad,
-            "nivel": nivel,
-            "motivo_de_conformacion": None,
-            "padre": None,
-            "piso": piso,
-            "tipo_de_financiamiento": tipo_de_financiamiento,
-            "tipo_de_gestion": tipo_de_gestion
-            # "direccion": "",
-            # "telefono": "",
-            # "email": "",
-            # "latitud": "",
-            # "longitud": "",
-            # "fecha-conformacion": null,
-            # "estado": false,
-            # "conformada": false
+            "data": {
+                "type": "escuelas",
+                "attributes": {
+                    "cue": "88008800",
+                    "nombre": "Escuela de Prueba desde el test",
+                },
+                'relationships': {
+                    "area": {
+                        "data": {
+                            "type": "areas",
+                            "id": area.id,
+                        },
+                    },
+                    "localidad": {
+                        "data": {
+                            "type": "localidades",
+                            "id": localidad_1.id
+                        }
+                    },
+                    "modalidad": {
+                        "data": {
+                            "type": "modalidades",
+                            "id": modalidad.id
+                        }
+                    },
+                    "nivel": {
+                        "data": {
+                            "type": "niveles",
+                            "id": nivel.id
+                        }
+                    },
+                    #"motivo_de_conformacion": None,
+                    #"padre": None,
+                    "piso": {
+                        "data": {
+                            "type": "pisos",
+                            "id": piso.id
+                        }
+                    },
+                    "tipo_de_financiamiento": {
+                        "data": {
+                            "type": "tipos-de-financiamiento",
+                            "id": tipo_de_financiamiento.id,
+                        }
+                    },
+                    "tipo_de_gestion": {
+                        "data": {
+                            "type": "tipos-de-gestion",
+                            "id": tipo_de_gestion.id
+                        }
+                    }
+                }
+                # "direccion": "",
+                # "telefono": "",
+                # "email": "",
+                # "latitud": "",
+                # "longitud": "",
+                # "fecha-conformacion": null,
+                # "estado": false,
+                # "conformada": false
+            }
         }
 
-        print(data)
-        post = self.client.post('/api/escuelas', data)
-        pprint.pprint(post.data)
+        # Inicialmente no hay ninguna escuela
+        self.assertEqual(models.Escuela.objects.all().count(), 0)
 
+        # Luego de hacer el post ...
+        post = self.client.post('/api/escuelas', json.dumps(data), content_type='application/vnd.api+json')
 
+        # Luego tiene que haber una escuela
+        self.assertEqual(models.Escuela.objects.all().count(), 1)
+
+        # Y la api tiene que retornarla
         response = self.client.get('/api/escuelas/1')
-        pprint.pprint(response.data)
+        self.assertEqual(response.data['cue'], '88008800')
+        self.assertEqual(response.data['nombre'], 'Escuela de Prueba desde el test')
 
     def test_puede_conformar_escuelas(self):
         # Prepara el usuario para chequear contra la api

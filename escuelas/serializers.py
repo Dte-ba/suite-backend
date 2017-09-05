@@ -148,8 +148,8 @@ class EscuelaSerializer(CustomSerializer):
     piso = ResourceRelatedField(queryset=models.Piso.objects)
     contactos = ContactoSerializer(many=True, read_only=True)
     subescuelas = SubEscuelaSerializer(many=True, read_only=True)
-    padre = ResourceRelatedField(queryset=models.Escuela.objects)
-    motivo_de_conformacion = ResourceRelatedField(queryset=models.MotivoDeConformacion.objects)
+    padre = ResourceRelatedField(read_only=True)
+    motivo_de_conformacion = ResourceRelatedField(read_only=True)
 
     class Meta:
         model = models.Escuela
