@@ -45,14 +45,20 @@ class RegionSerializer(CustomSerializer):
         model = models.Region
         fields = "__all__"
 
+
+class CargoSerializer(CustomSerializer):
+
+    class Meta:
+        model = models.Cargo
+        fields = '__all__'
+
 class PerfilSerializer(CustomSerializer):
 
-    eventos_acompaniantes = EventoSerializer(many=True, read_only=True)
-    eventos = EventoSerializer(many=True, read_only=True)
+    cargo = CargoSerializer()
 
     class Meta:
         model = models.Perfil
-        fields = ('user', 'group', 'image', 'nombre', 'apellido', 'fechadenacimiento', 'titulo', 'experiencia', 'dni', 'cuit', 'cbu', 'email', 'estado', 'direccionCalle', 'direccionAltura', 'direccionPiso', 'direccionDepto', 'direccionTorre', 'codigoPostal', 'localidad', 'telefonoCelular', 'telefonoAlternativo', 'region', 'cargo', 'contrato', 'expediente', 'fechaDeIngreso', 'fechaDeRenuncia', 'emailLaboral', 'eventos', 'eventos_acompaniantes')
+        fields = ('user', 'group', 'image', 'nombre', 'apellido', 'fechadenacimiento', 'titulo', 'experiencia', 'dni', 'cuit', 'cbu', 'email', 'estado', 'direccionCalle', 'direccionAltura', 'direccionPiso', 'direccionDepto', 'direccionTorre', 'codigoPostal', 'localidad', 'telefonoCelular', 'telefonoAlternativo', 'region', 'cargo', 'contrato', 'expediente', 'fechaDeIngreso', 'fechaDeRenuncia', 'emailLaboral')
         read_only_fields = ('image',)
 
 class DistritoSerializer(CustomSerializer):
@@ -156,11 +162,6 @@ class ExperienciaSerializer(CustomSerializer):
         model = models.Experiencia
         fields = '__all__'
 
-class CargoSerializer(CustomSerializer):
-
-    class Meta:
-        model = models.Cargo
-        fields = '__all__'
 
 class ContratoSerializer(CustomSerializer):
 
