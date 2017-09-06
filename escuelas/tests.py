@@ -155,6 +155,87 @@ class GeneralesTestCase(APITestCase):
 
         self.assertEqual(response.data['cantidad'], 1)
 
+    def test_puede_crear_evento(self):
+        # Prepara el usuario para chequear contra la api
+        user = User.objects.create_user(username='test', password='123')
+        self.client.force_authenticate(user=user)
+
+        # Se crean 1 localidad, 1 distrito y 1 región
+        region_1 = models.Region.objects.create(numero=1)
+        distrito_1 = models.Distrito.objects.create(nombre="distrito1", region=region_1)
+        localidad_1 = models.Localidad.objects.create(nombre="localidad1", distrito=distrito_1)
+
+        # Perfil
+        perfil = user.perfil
+
+        # Se crea una escuela
+        escuela_1 = models.Escuela.objects.create(cue="1", localidad=localidad_1)
+
+        # Se crea una categoria de evento
+        categoria_1 = models.CategoriaDeEvento.objects.create(nombre="Categoria de Prueba")
+
+        data = {
+            "data": {
+                "type": "eventos",
+                "id": "28639",
+                "attributes": {
+                    "titulo": "Evento de prueba desde API",
+                    "fecha": "2017-09-06",
+                    "fecha-fin": "2017-09-06",
+                    "inicio": "09:00:00",
+                    "fin": "17:00:00",
+                    "objetivo": "Probar que ande el post a la API",
+                    "cantidad-de-participantes": 23,
+                    "requiere-traslado": True,
+                    "resumen-para-calendario": "Sin resumen"
+                    # "minuta": null,
+                    # "acta-legacy": null,
+                    # "legacy-id": null
+                },
+                "relationships": {
+                    "responsable": {
+                        "data": {
+                            "type": "perfiles",
+                            "id": 1
+                        }
+                    },
+                    "escuela": {
+                        "data": {
+                            "type": "escuelas",
+                            "id": 1
+                        }
+                    },
+                    "acompaniantes": {
+                        "meta": {
+                            "count": 0
+                        },
+                        "data": []
+                    },
+                    "categoria": {
+                        "data": {
+                            "type": "categorias-de-eventos",
+                            "id": 1
+                        }
+                    }
+                }
+            }
+        }
+
+        # Inicialmente no hay ningun evento
+        self.assertEqual(models.Evento.objects.all().count(), 0)
+
+        # Luego de hacer el post ...
+        post = self.client.post('/api/eventos', json.dumps(data), content_type='application/vnd.api+json')
+
+        # Luego tiene que haber un evento
+        self.assertEqual(models.Evento.objects.all().count(), 1)
+
+        # Y la api tiene que retornarla
+        response = self.client.get('/api/eventos/1')
+        self.assertEqual(response.data['fecha'], '2017-09-06')
+        self.assertEqual(response.data['cantidad_de_participantes'], '23')
+        self.assertEqual(response.data['requiere_traslado'], True)
+
     def test_puede_crear_escuela(self):
         # Prepara el usuario para chequear contra la api
         user = User.objects.create_user(username='test', password='123')

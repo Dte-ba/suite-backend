@@ -61,7 +61,7 @@ class Perfil(models.Model):
     # Depende de que esté creado el módulo de stock.
 
     def __unicode__(self):
-        return u"Perfil: ("+ str(self.id) +") " + self.apellido + ", " + self.nombre + " - DNI: " + self.dni + " - Reg: " + str(self.region.numero)
+        return u"Perfil: ("+ str(self.id) +") " + self.apellido + ", " + self.nombre + " - DNI: " + self.dni
 
     class Meta:
         db_table = 'perfiles'

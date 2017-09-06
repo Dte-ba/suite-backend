@@ -13,7 +13,6 @@ class Evento(models.Model):
     fecha_fin = models.DateField(default='2017-01-10')
     inicio = models.TimeField(default='00:00:00')
     fin = models.TimeField(default='00:00:00')
-    todoElDia = models.BooleanField(default=False)
 
     categoria = models.ForeignKey('CategoriaDeEvento', on_delete=models.CASCADE, related_name='eventos', default=None, blank=True, null=True)
     objetivo = models.TextField(max_length=4096, default=None, blank=True, null=True)
@@ -22,8 +21,8 @@ class Evento(models.Model):
     escuela = models.ForeignKey('Escuela', on_delete=models.CASCADE, related_name='eventos', default=None, blank=True, null=True)
     acompaniantes = models.ManyToManyField('Perfil', related_name='eventos_acompaniantes', default=None, blank=True)
 
-    cantidadDeParticipantes = models.CharField(max_length=256,default=None, blank=True, null=True)
-    requiereTraslado = models.BooleanField(default=False)
+    cantidad_de_participantes = models.CharField(max_length=256,default=None, blank=True, null=True)
+    requiere_traslado = models.BooleanField(default=False)
 
     resumen = models.TextField(max_length=1024, default=None, blank=True, null=True)
 
