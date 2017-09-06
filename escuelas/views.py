@@ -173,7 +173,7 @@ class EventoViewSet(viewsets.ModelViewSet):
 
         if perfil:
             usuario = models.Perfil.objects.get(id=perfil) # El usuario logeado
-            eventos = eventos.filter(Q(responsable=usuario) | Q(acompaniantes=usuario))
+            eventos = eventos.filter(Q(responsable=usuario) | Q(acompaniantes=usuario)).distinct()
 
         return Response({
                 "inicio": inicio,
