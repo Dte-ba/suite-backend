@@ -158,6 +158,69 @@ class GeneralesTestCase(APITestCase):
 
         self.assertEqual(response.data['cantidad'], 1)
 
+    def test_puede_crear_persona(self):
+        # Prepara el usuario para chequear contra la api
+        user = User.objects.create_user(username='test', password='123')
+        self.client.force_authenticate(user=user)
+
+        # Se crean 1 localidad, 1 distrito y 1 región
+        region_1 = models.Region.objects.create(numero=1)
+        distrito_1 = models.Distrito.objects.create(nombre="distrito1", region=region_1)
+        localidad_1 = models.Localidad.objects.create(nombre="localidad1", distrito=distrito_1)
+
+        data = {
+            "data": {
+                "type": "perfiles",
+                "id": 2,
+                "attributes": {
+                    "nombre": "Richard",
+                    "apellido": "Stallman",
+                    "fechadenacimiento": "1953-16-3",
+                    "titulo": "",
+                    "dni": "11001100",
+                    "cuit": "11110011000",
+                    "cbu": "09309093090930909309",
+                    "email": "stallman@fsf.net",
+                    "estado": True,
+                    "direccion-calle": "Av. Siempre Libre",
+                    "direccion-altura": "10",
+                    "direccion-piso": "1",
+                    "direccion-depto": "1",
+                    "direccion-torre": "B",
+                    "codigo-postal": "1010",
+                    "telefono-celular": "9090-0011",
+                    "telefono-alternativo": "1100-9090",
+                    "expediente": "EXP-01100011110",
+                    "fecha-de-ingreso": "1985-01-01",
+                    "fecha-de-renuncia": "",
+                    "email-laboral": "elrichard@abc.gob.ar"
+                }
+            }
+        }
+        # print("Data:")
+        # pprint.pprint(data)
+        #
+        # # Inicialmente solo hay un perfil (el usuario logeado)
+        # self.assertEqual(models.Perfil.objects.all().count(), 1)
+        #
+        # # Luego de hacer el post ...
+        # post = self.client.post('/api/perfiles', json.dumps(data), content_type='application/vnd.api+json')
+        #
+        # print("..........")
+        # print("Post: ")
+        # pprint.pprint(post)
+        #
+        # # Luego tiene que haber dos perfiles
+        # self.assertEqual(models.Perfil.objects.all().count(), 2)
+        #
+        # # Y la api tiene que retornarla
+        # response = self.client.get('/api/perfiles/2')
+        # self.assertEqual(response.data['dni'], '11001100')
+        # self.assertEqual(response.data['nombre'], 'Richard')
+        # self.assertEqual(response.data['apellido'], 'Stallman')
+        #
+        # pprint.pprint(response)
+
     def test_puede_crear_evento(self):
         # Prepara el usuario para chequear contra la api
         user = User.objects.create_user(username='test', password='123')
