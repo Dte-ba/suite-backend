@@ -72,6 +72,9 @@ class GeneralesTestCase(APITestCase):
         evento_1 = models.Evento.objects.create(titulo="Evento de prueba", categoria=categoria_1, responsable=user_2.perfil, escuela=escuela_1, fecha="2017-01-15", fecha_fin="2017-01-15")
         evento_2 = models.Evento.objects.create(titulo="Evento de prueba de Marzo", categoria=categoria_1, responsable=user_2.perfil, escuela=escuela_1, fecha="2017-03-15", fecha_fin="2017-03-15")
 
+        # A estos eventos se les tiene que autogenerar el resumen
+        self.assertEqual(evento_1.resumen, '{"categoria": "Categoria 1", "titulo": "Evento de prueba", "region": 1, "responsable": " ", "escuela": "Escuela 1"}')
+
         response = self.client.get('/api/eventos/agenda?inicio=2017-01-01&fin=2017-02-01&perfil=2&region=1', format='json')
 
         self.assertEqual(response.data['cantidad'], 1)
@@ -169,7 +172,7 @@ class GeneralesTestCase(APITestCase):
         perfil = user.perfil
 
         # Se crea una escuela
-        escuela_1 = models.Escuela.objects.create(cue="1", localidad=localidad_1)
+        escuela_1 = models.Escuela.objects.create(cue="1", localidad=localidad_1, nombre="Nombre demo escuela")
 
         # Se crea una categoria de evento
         categoria_1 = models.CategoriaDeEvento.objects.create(nombre="Categoria de Prueba")
@@ -227,6 +230,7 @@ class GeneralesTestCase(APITestCase):
         # Luego de hacer el post ...
         post = self.client.post('/api/eventos', json.dumps(data), content_type='application/vnd.api+json')
 
+
         # Luego tiene que haber un evento
         self.assertEqual(models.Evento.objects.all().count(), 1)
 
@@ -235,6 +239,14 @@ class GeneralesTestCase(APITestCase):
         self.assertEqual(response.data['fecha'], '2017-09-06')
         self.assertEqual(response.data['cantidad_de_participantes'], '23')
         self.assertEqual(response.data['requiere_traslado'], True)
+
+        response = self.client.get('/api/eventos/agenda?inicio=2017-08-28&fin=2017-10-07')
+
+        self.assertEqual(response.data['eventos'][0]['resumenParaCalendario']['categoria'], 'Categoria de Prueba')
+        self.assertEqual(response.data['eventos'][0]['resumenParaCalendario']['region'], 1)
+        self.assertEqual(response.data['eventos'][0]['resumenParaCalendario']['titulo'], 'Evento de prueba desde API')
+        self.assertEqual(response.data['eventos'][0]['resumenParaCalendario']['escuela'], 'Nombre demo escuela')
+
 
     def test_puede_crear_escuela(self):
         # Prepara el usuario para chequear contra la api
