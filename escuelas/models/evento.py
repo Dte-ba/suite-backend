@@ -47,24 +47,22 @@ class Evento(models.Model):
 def create_event_summary(sender, instance, created, **kwargs):
     post_save.disconnect(create_event_summary, sender=sender)
 
-    if not created:
+    responsable = instance.responsable.nombre + " " + instance.responsable.apellido
+    escuela = instance.escuela.nombre
+    categoria = instance.categoria
+    titulo = instance.titulo
+    region = instance.escuela.localidad.distrito.region
 
-        responsable = instance.responsable.nombre + " " + instance.responsable.apellido
-        escuela = instance.escuela.nombre
-        categoria = instance.categoria
-        titulo = instance.titulo
-        region = instance.escuela.localidad.distrito.region
+    resumen = json.dumps(
+            {
+                "titulo": titulo,
+                "categoria": categoria.nombre,
+                "region": region.numero,
+                "escuela": escuela,
+                "responsable": responsable
+            },ensure_ascii=False)
 
-        resumen = json.dumps(
-                {
-                    "titulo": titulo,
-                    "categoria": categoria.nombre,
-                    "region": region.numero,
-                    "escuela": escuela,
-                    "responsable": responsable
-                },ensure_ascii=False)
-
-        instance.resumen = resumen
-        instance.save()
+    instance.resumen = resumen
+    instance.save()
 
     post_save.connect(create_event_summary, sender=sender)

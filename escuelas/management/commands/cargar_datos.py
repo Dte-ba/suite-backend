@@ -253,10 +253,10 @@ class Command(BaseCommand):
                 cantidad_de_eventos_omitidos_por_categoria += 1
                 continue
 
-
-            objeto_evento, created = models.Evento.objects.get_or_create(
-                legacy_id=legacy_id,
-            )
+            try:
+                objeto_evento = models.Evento.objects.get(legacy_id=legacy_id)
+            except models.Evento.DoesNotExist:
+                objeto_evento = models.Evento(legacy_id=legacy_id)
 
             objeto_evento.responsable = objeto_responsable
             objeto_evento.escuela = objeto_escuela
