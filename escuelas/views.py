@@ -206,8 +206,14 @@ class EventoViewSet(viewsets.ModelViewSet):
 
     @list_route(methods=['get'])
     def estadistica(self, request):
+        total = models.Evento.objects.all().count()
+        sinActa = models.Evento.objects.exclude(acta_legacy=u'').count()
+        conActa = total - sinActa
+
         estadisticas = {
-            "total": models.Evento.objects.all().count(),
+            "total": total,
+            "conActa": conActa,
+            "sinActa": sinActa,
             "totalOK": models.Evento.objects.all().exclude(escuela__localidad__distrito__region__numero=None).count(),
             "region01": models.Evento.objects.filter(escuela__localidad__distrito__region__numero=1).count(),
             "region02": models.Evento.objects.filter(escuela__localidad__distrito__region__numero=2).count(),
@@ -422,8 +428,9 @@ class TareaViewSet(viewsets.ModelViewSet):
     queryset = models.Tarea.objects.all()
     serializer_class = serializers.TareaSerializer
     filter_backends = [SearchFilter, DjangoFilterBackend]
-    search_fields = ['titulo', 'fecha_de_alta']
+    search_fields = ['fecha_de_alta', 'titulo', 'autor__nombre', 'autor__apellido']
     filter_fields = ['autor__nombre']
+
 
     #
     # def get_queryset(self):
