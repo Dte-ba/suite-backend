@@ -203,9 +203,25 @@ class EventoViewSet(viewsets.ModelViewSet):
 
     @list_route(methods=['get'])
     def estadistica(self, request):
-        total = models.Evento.objects.all().count()
-        sinActa = models.Evento.objects.exclude(acta_legacy=u'').count()
-        conActa = total - sinActa
+        inicio = self.request.query_params.get('inicio', None)
+        fin = self.request.query_params.get('fin', None)
+        perfil = self.request.query_params.get('perfil', None)
+        region = self.request.query_params.get('region', None)
+
+        # import ipdb; ipdb.set_trace()
+
+        eventos = models.Evento.objects.filter(fecha__range=(inicio, fin))
+
+        if region:
+            eventos = eventos.filter(escuela__localidad__distrito__region__numero=region)
+
+        if perfil:
+            usuario = models.Perfil.objects.get(id=perfil) # El usuario logeado
+            eventos = eventos.filter(Q(responsable=usuario) | Q(acompaniantes=usuario)).distinct()
+
+        total = eventos.count()
+        conActa = eventos.filter(acta_legacy__gt='').count()
+        sinActa = total - conActa
 
         estadisticas = {
             "total": total,
