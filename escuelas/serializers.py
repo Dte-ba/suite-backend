@@ -260,16 +260,16 @@ class PaqueteSerializer(CustomSerializer):
         model = models.Paquete
         fields = (
             'escuela',
-            'fechaPedido',
+            'fecha_pedido',
             'ne',
-            'idHardware',
-            'marcaDeArranque',
+            'id_hardware',
+            'marca_de_arranque',
             'comentario',
-            'carpetaPaquete',
-            'fechaEnvio',
-            'zipPaquete',
+            'carpeta_paquete',
+            'fecha_envio',
+            'zip_paquete',
             'estado',
-            'fechaDevolucion',
+            'fecha_devolucion',
             'leido'
         )
 
