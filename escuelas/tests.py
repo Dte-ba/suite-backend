@@ -149,8 +149,6 @@ class GeneralesTestCase(APITestCase):
         # Luego de hacer el post ...
         post = self.client.post('/api/paquetes', json.dumps(data), content_type='application/vnd.api+json')
 
-        pprint.pprint(post.data)
-
         # Luego tiene que haber un evento
         self.assertEqual(models.Paquete.objects.all().count(), 1)
 
@@ -158,6 +156,59 @@ class GeneralesTestCase(APITestCase):
         response = self.client.get('/api/paquetes/1')
         self.assertEqual(response.data['fecha_pedido'], '2017-11-09')
         self.assertEqual(response.data['id_hardware'], '240a64647f8c')
+
+    def test_puede_solicitar_muchos_maquetes_de_forma_masiva_a_la_api(self):
+        # Inicialmente no hay paquetes cargados.
+        self.assertEqual(models.Paquete.objects.all().count(), 0)
+
+        estado = models.EstadoDePaquete.objects.create(nombre="Pendiente")
+
+        # Se genera una escuela destino de los paquetes
+        region_1 = models.Region.objects.create(numero=1)
+        distrito_1 = models.Distrito.objects.create(nombre="distrito1", region=region_1)
+        localidad_1 = models.Localidad.objects.create(nombre="localidad1", distrito=distrito_1)
+        escuela_1 = models.Escuela.objects.create(cue="61480600", nombre="Escuela 1", localidad=localidad_1)
+
+        data = """{
+            "fecha":"2017-11-09",
+            "escuela": {
+                "cue":61480600,
+                "nombre":"Eem Nº 14",
+                "direccion":"SARCIONE E/ MANCO Y PAZ S/N",
+                "telefono":"4268-3084",
+                "email":null,
+                "latitud":-34.82445078,
+                "longitud":-58.34397019,
+                "fechaConformacion":null,
+                "estado":true,
+                "conformada":false,
+                "localidad":"122",
+                "tipoDeFinanciamiento":null,
+                "tipoDeGestion":null,
+                "nivel":"3",
+                "modalidad":null,
+                "area":"1",
+                "programas":["1"],
+                "piso":"1553",
+                "padre":null,
+                "motivoDeConformacion":null
+            },
+            "paquetes":[
+                ["123", "456", "789"],
+                ["", "", ""],
+                ["", "", ""],
+                ["", "", ""],
+                ["", "", ""],
+                ["", "", ""],
+                ["","",""]
+            ]
+        }
+        """
+        response = self.client.post('/api/paquetes/importacionMasiva', data, content_type='application/x-www-form-urlencoded; charset=UTF-8')
+        self.assertEquals(response.data, {'paquetes': 1})
+
+        self.assertEqual(models.Paquete.objects.all().count(), 1)
+
 
     def test_puede_pedir_agenda_administrador(self):
         # Prepara el usuario para chequear contra la api

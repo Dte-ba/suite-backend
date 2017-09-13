@@ -588,6 +588,46 @@ class PaqueteViewSet(viewsets.ModelViewSet):
         }
         return Response(estadisticas)
 
+    @list_route(methods=['post'])
+    def importacionMasiva(self, request, **kwargs):
+        # TODO: evitar esta conversión, debería llegar el dicionario de datos
+        # directamente. Ver si el problema está en la forma de declarar el
+        # post el frontend.
+        data = json.loads(request.data.keys()[0])
+
+        # Captura los datos del requests, fecha, escuela y lista de paquetes
+        # desde la grilla de handsontable.js
+        escuela = data['escuela']
+        paquetes = data['paquetes']
+        fecha = data['fecha']
+
+        # Se obtienen los modelos a relacionar con cada paquete solicitado.
+        escuela = models.Escuela.objects.get(cue=escuela['cue'])
+        estadoPendiente = models.EstadoDePaquete.objects.get(nombre="Pendiente")
+
+        cantidad_de_paquetes_creados = 0
+
+        for p in paquetes:
+            ne = p[0]
+            id_hardware = p[1]
+            marca_de_arranque = p[2]
+
+            # si la linea de handsontable define las tres columnas, se intenta
+            # generar un paquete con esos datos
+            if ne and id_hardware and marca_de_arranque:
+                models.Paquete.objects.create(
+                    escuela=escuela,
+                    fecha_pedido=fecha,
+                    ne=ne,
+                    id_hardware=id_hardware,
+                    marca_de_arranque=marca_de_arranque,
+                    estado=estadoPendiente
+                )
+                cantidad_de_paquetes_creados += 1
+
+        return Response({
+            "paquetes": cantidad_de_paquetes_creados
+        })
 
 class PermissionViewSet(viewsets.ModelViewSet):
     page_size = 2000
