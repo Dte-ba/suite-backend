@@ -5,6 +5,7 @@ from django.contrib.auth.models import Group
 from django.contrib.auth.models import Permission
 from django.contrib.contenttypes.models import ContentType
 
+import os
 from rest_framework.test import APITestCase
 import models
 import json
@@ -411,6 +412,10 @@ class GeneralesTestCase(APITestCase):
 
         response = self.client.get('/api/eventos')
         self.assertTrue(response.data['results'][0]['acta'].startswith('http://testserver/media/'))
+
+        # se borra el archivo generado temporalmente
+        archivo_temporal = response.data['results'][0]['acta'].replace('http://testserver/', '')
+        os.remove(archivo_temporal)
 
 
     def test_puede_crear_persona(self):
