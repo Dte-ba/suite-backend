@@ -29,6 +29,8 @@ class Evento(models.Model):
     minuta = models.TextField(max_length=4096, default=None, blank=True, null=True)
     acta_legacy = models.CharField(max_length=512, default=None, blank=True, null=True)
 
+    acta = models.FileField(default=None, blank=True, null=True)
+
     def __unicode__(self):
         return self.titulo
 

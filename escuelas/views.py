@@ -15,9 +15,11 @@ from rest_framework.decorators import detail_route
 
 import serializers
 import models
-
+import base64
+import uuid
+import os
 import datetime
-
+import subprocess
 import json
 
 from django.conf import settings
@@ -144,6 +146,72 @@ class EventoViewSet(viewsets.ModelViewSet):
 
         return queryset
 
+    def perform_update(self, serializer):
+        return self.guardar_modelo_teniendo_en_cuenta_el_acta(serializer)
+
+    def perform_create(self, serializer):
+        return self.guardar_modelo_teniendo_en_cuenta_el_acta(serializer)
+
+    def guardar_modelo_teniendo_en_cuenta_el_acta(self, serializer):
+        instancia = serializer.save()
+        acta = self.request.data.get('acta', None)
+
+        # El acta llega desde el front-end como una lista de diccionarios,
+        # donde cada diccionario representa un archivo, con nombre y contenido
+        # en base 64.
+        if acta and isinstance(acta, list):
+            lista_de_archivos_temporales = []
+
+            # Todos los archivos presentes en el front se convierten en archivos
+            # físicos reales en /tmp.
+            #
+            # Este bucle que se encarga de generar todos esos archivos, y guardar
+            # en lista_de_archivos_temporales todos los nombres de archivos
+            # generados.
+            for a in acta:
+                nombre = a['name']
+                contenido = a['contenido']
+
+                archivo_temporal = self.guardar_archivo_temporal(nombre, contenido)
+                lista_de_archivos_temporales.append(archivo_temporal)
+
+            # Con la lista de archivos generados, se invoca a convert para generar
+            # el archivo pdf con todas las imágenes.
+            prefijo_aleatorio = str(uuid.uuid4())[:12]
+            nombre_del_archivo_pdf = '/tmp/%s_archivo.pdf' %(prefijo_aleatorio)
+            
+            comando_a_ejecutar = ["convert"] + lista_de_archivos_temporales + ['-compress', 'jpeg', '-quality', '50', '-resize', '1024x1024', nombre_del_archivo_pdf]
+            fallo = subprocess.call(comando_a_ejecutar)
+
+            # Con el archivo pdf generado, se intenta cargar el campo 'acta' del
+            # modelo django.
+            if not fallo:
+                from django.core.files import File
+                reopen = open(nombre_del_archivo_pdf, "rb")
+                django_file = File(reopen)
+
+                instancia.acta.save('acta.pdf', django_file, save=False)
+            else:
+                raise Exception(u"Falló la generación del archivo pdf")
+
+        instancia.save()
+        return instancia
+
+    def guardar_archivo_temporal(self, nombre, data):
+        if 'data:' in data and ';base64,' in data:
+            header, data = data.split(';base64,')
+
+        decoded_file = base64.b64decode(data)
+        complete_file_name = str(uuid.uuid4())[:12]+ "_" + nombre
+        ruta_completa = os.path.join('/tmp', complete_file_name)
+
+        filehandler = open(ruta_completa, "wb")
+        filehandler.write(decoded_file)
+        filehandler.close()
+
+        return ruta_completa
+
+
     @list_route(methods=['get'])
     def informe(self, request):
         start_date = self.request.query_params.get('inicio', None)
@@ -220,7 +288,9 @@ class EventoViewSet(viewsets.ModelViewSet):
             eventos = eventos.filter(Q(responsable=usuario) | Q(acompaniantes=usuario)).distinct()
 
         total = eventos.count()
-        conActa = eventos.filter(acta_legacy__gt='').count()
+        conActaLegacy = eventos.filter(acta_legacy__gt='').count()
+        conActaNueva = eventos.filter(acta__gt='').count()
+        conActa = conActaLegacy + conActaNueva
         sinActa = total - conActa
 
         estadisticas = {

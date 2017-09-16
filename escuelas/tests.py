@@ -11,6 +11,8 @@ import json
 import pprint
 import serializers
 
+import fixture
+
 class APIUsuariosTests(APITestCase):
 
     def setUp(self):
@@ -321,6 +323,95 @@ class GeneralesTestCase(APITestCase):
         response = self.client.get('/api/eventos/agenda?inicio=2017-01-01&fin=2017-02-01&perfil=2&region=1', format='json')
 
         self.assertEqual(response.data['cantidad'], 1)
+
+    def test_puede_crear_un_evento_con_acta_desde_la_api(self):
+        # Prepara el usuario para chequear contra la api
+        user = User.objects.create_user(username='test', password='123')
+        self.client.force_authenticate(user=user)
+
+        # Se genera un grupo
+        grupo = Group.objects.create(name="Coordinador")
+
+        region_1 = models.Region.objects.create(numero=1)
+        distrito_1 = models.Distrito.objects.create(nombre="distrito1", region=region_1)
+        localidad_1 = models.Localidad.objects.create(nombre="localidad1", distrito=distrito_1)
+
+        # Se genera un usuario demo, se asigna una region al perfil
+        user_2 = User.objects.create_user(username='demo', password='123')
+        perfil_2 = user_2.perfil
+        perfil_2.region = region_1
+        perfil_2.group = grupo
+        perfil_2.save()
+
+        escuela_1 = models.Escuela.objects.create(cue="1", nombre="escuela 1", localidad=localidad_1)
+        categoria_1 = models.CategoriaDeEvento.objects.create(nombre="Categoria 1")
+
+        # Intenta agregar un evento con acta
+
+        data = {
+            "data":{
+                "attributes":{
+                    "legacy-id": None,
+                    "titulo": "Demo con acta",
+                    "fecha": "2017-09-15",
+                    "fecha-fin": "2017-09-15",
+                    "inicio": "00:00:00",
+                    "fin": "02:00:00",
+                    "objetivo": "Demo",
+                    "minuta": None,
+                    "acta-legacy": None,
+                    "cantidad-de-participantes": "0",
+                    "requiere-traslado": False,
+                    "acta": [
+                        {
+                            "name":"logo3d_en_jpeg.jpg",
+                            "contenido": fixture.IMAGEN_1,
+                        },
+                        {
+                            "name":"enjambrebit_logotipo_125x19.png",
+                            "contenido": fixture.IMAGEN_2,
+                        },
+                        {
+                            "name":"enjambrebit_isologo_512x379.png",
+                            "contenido": fixture.IMAGEN_3,
+                        }
+                    ],
+                    "resumen-para-calendario": None
+                },
+                "relationships":{
+                    "categoria":{
+                        "data":{
+                            "type": "categorias-de-eventos",
+                            "id": "1"
+                        }
+                    },
+                    "responsable":{
+                        "data":{
+                            "type": "perfiles",
+                            "id": "1"
+                        }
+                    },
+                    "escuela":{
+                        "data":{
+                            "type":"escuelas",
+                            "id":"1"
+                        }
+                    },
+                    "acompaniantes":{
+                        "data":[
+
+                        ]
+                    }
+                },
+                "type":"eventos"
+            }
+        }
+
+        response = self.client.post('/api/eventos', json.dumps(data), content_type='application/vnd.api+json')
+
+        response = self.client.get('/api/eventos')
+        self.assertTrue(response.data['results'][0]['acta'].startswith('http://testserver/media/'))
+
 
     def test_puede_crear_persona(self):
         # Prepara el usuario para chequear contra la api
