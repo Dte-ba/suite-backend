@@ -10,3 +10,6 @@ class EstadoDePaquete(models.Model):
     class Meta:
         db_table = 'estadosDePaquete'
         verbose_name_plural = 'estadosDePaquete'
+
+    class JSONAPIMeta:
+        resource_name = 'estados-de-paquete'

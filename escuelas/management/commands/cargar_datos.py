@@ -754,16 +754,16 @@ class Command(BaseCommand):
 
             objeto_paquete, created = models.Paquete.objects.get_or_create(legacy_id=legacy_id)
             objeto_paquete.escuela = objeto_escuela
-            objeto_paquete.fechaPedido = fecha_pedido
+            objeto_paquete.fecha_pedido = fecha_pedido
             objeto_paquete.ne = ne
-            objeto_paquete.idHardware = idhardware
-            objeto_paquete.marcaDeArranque = marca_de_arranque
+            objeto_paquete.id_hardware = idhardware
+            objeto_paquete.marca_de_arranque = marca_de_arranque
             objeto_paquete.comentario = comentario
-            objeto_paquete.carpetaPaquete = carpeta_paquete
-            objeto_paquete.fechaEnvio = fecha_envio_anses
-            objeto_paquete.zipPaquete = zipanses
+            objeto_paquete.carpeta_paquete = carpeta_paquete
+            objeto_paquete.fecha_envio = fecha_envio_anses
+            objeto_paquete.zip_paquete = zipanses
             objeto_paquete.estado = objeto_estado
-            objeto_paquete.fechaDevolucion = fecha_devolucion
+            objeto_paquete.fecha_devolucion = fecha_devolucion
             objeto_paquete.leido = leido
 
             objeto_paquete.save()

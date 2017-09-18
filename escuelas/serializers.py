@@ -36,7 +36,8 @@ class EventoSerializer(CustomSerializer):
 
     class Meta:
         model = models.Evento
-        fields = ('id', 'titulo', 'fecha', 'fecha_fin', 'inicio', 'fin', 'objetivo', 'responsable', 'escuela', 'acompaniantes', 'cantidad_de_participantes', 'requiere_traslado', 'categoria', 'resumenParaCalendario', 'minuta', 'acta_legacy', 'legacy_id')
+        fields = ('id', 'titulo', 'fecha', 'fecha_fin', 'inicio', 'fin', 'objetivo', 'responsable', 'escuela', 'acompaniantes', 'cantidad_de_participantes', 'requiere_traslado', 'categoria', 'resumenParaCalendario', 'minuta', 'acta_legacy', 'legacy_id', 'acta')
+        read_only_fields = ['acta']
 
 
 class RegionSerializer(CustomSerializer):
@@ -260,16 +261,16 @@ class PaqueteSerializer(CustomSerializer):
         model = models.Paquete
         fields = (
             'escuela',
-            'fechaPedido',
+            'fecha_pedido',
             'ne',
-            'idHardware',
-            'marcaDeArranque',
+            'id_hardware',
+            'marca_de_arranque',
             'comentario',
-            'carpetaPaquete',
-            'fechaEnvio',
-            'zipPaquete',
+            'carpeta_paquete',
+            'fecha_envio',
+            'zip_paquete',
             'estado',
-            'fechaDevolucion',
+            'fecha_devolucion',
             'leido'
         )
 
