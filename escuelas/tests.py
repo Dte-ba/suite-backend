@@ -686,4 +686,4 @@ class Emails(APITestCase):
             </html>
         """
 
-        user.perfil.enviar_correo("hola", html)
+        #user.perfil.enviar_correo("hola", html)
