@@ -4,8 +4,8 @@ from django.contrib.auth.models import User
 from django.contrib.auth.models import Group, Permission
 from django.db.models.signals import post_save
 from django.dispatch import receiver
-import sendgrid
-from sendgrid.helpers.mail import *
+from escuelas import utils
+
 
 def upload_to(instance, filename):
     return 'user_profile_image/{}/{}'.format(instance.user_id, filename)
@@ -99,20 +99,8 @@ class Perfil(models.Model):
         self.group = Group.objects.get(name=nombre_del_grupo)
 
     def enviar_correo(self, asunto, mensaje):
-        api = "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"
-
-        sg = sendgrid.SendGridAPIClient(apikey=api)
-        from_email = Email("hugoruscitti@gmail.com")
-        to_email = Email("hugoruscitti@gmail.com")
-        subject = asunto
-        content = Content("text/html", mensaje)
-
-        mail = Mail(from_email, subject, to_email, content)
-        response = sg.client.mail.send.post(request_body=mail.get())
-        print(response.status_code)
-        print(response.body)
-        print(response.headers)
-
+        utils.enviar_correo(desde="hugoruscitti@gmail.com", hasta="hugoruscitti@gmail.com", asunto=asunto, mensaje=mensaje)
+        
 
 @receiver(post_save, sender=User)
 def create_user_profile(sender, instance, created, **kwargs):
