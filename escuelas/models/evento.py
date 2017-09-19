@@ -37,6 +37,7 @@ class Evento(models.Model):
     class Meta:
         db_table = 'eventos'
         verbose_name_plural = "eventos"
+        ordering = ('-fecha',)
 
     def resumenParaCalendario(self):
         if self.resumen:

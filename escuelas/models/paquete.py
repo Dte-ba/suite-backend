@@ -22,6 +22,7 @@ class Paquete(models.Model):
     class Meta:
         db_table = 'paquetes'
         verbose_name_plural = "paquetes"
+        ordering = ('-fecha_pedido',)
 
     class JSONAPIMeta:
         resource_name = 'paquetes'
