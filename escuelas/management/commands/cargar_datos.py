@@ -1520,6 +1520,8 @@ class Command(BaseCommand):
         PERSONAS_CAMBIAR_ESTADO = 'personas.cambiarestado'
         PERSONAS_VER_INFORME = 'personas.verinformes'
 
+        MATRIX_LISTAR = 'matrix.listar'
+
         permisos = [
             PERFIL_GLOBAL,
             AGENDA_LISTAR, AGENDA_CREAR, AGENDA_COMENTAR,
@@ -1528,7 +1530,8 @@ class Command(BaseCommand):
             VALIDACIONES_LISTAR, VALIDACIONES_CREAR, VALIDACIONES_COMENTAR, VALIDACIONES_EDITAR,
             ENTREGAS_LISTAR, ENTREGAS_ACTUALIZAR,
             PAQUETES_LISTAR, PAQUETES_CREAR, PAQUETES_EDITAR,
-            PERSONAS_LISTAR, PERSONAS_CREAR, PERSONAS_EDITAR, PERSONAS_ELIMIAR, PERSONAS_CAMBIAR_ESTADO, PERSONAS_VER_INFORME
+            PERSONAS_LISTAR, PERSONAS_CREAR, PERSONAS_EDITAR, PERSONAS_ELIMIAR, PERSONAS_CAMBIAR_ESTADO, PERSONAS_VER_INFORME,
+            MATRIX_LISTAR
         ]
 
         print("Actualizando el listado de permisos (creación o actualización)")
