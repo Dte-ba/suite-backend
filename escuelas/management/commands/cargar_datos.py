@@ -848,7 +848,7 @@ class Command(BaseCommand):
 
 
             objeto_validacion, created = models.Validacion.objects.get_or_create(legacy_id=legacy_id)
-            objeto_validacion.fechaDeAlta = fecha
+            objeto_validacion.fecha_de_alta = fecha
             objeto_validacion.autor = objeto_usuario
             objeto_validacion.estado = objeto_estado
             objeto_validacion.escuela = objeto_escuela

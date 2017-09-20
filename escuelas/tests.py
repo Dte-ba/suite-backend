@@ -87,6 +87,79 @@ class GeneralesTestCase(APITestCase):
         # Tiene que existir un paquete
         self.assertEqual(models.Paquete.objects.all().count(), 1)
 
+    def test_puede_crear_validacion_desde_api(self):
+        # Prepara el usuario para chequear contra la api
+        user = User.objects.create_user(username='test', password='123')
+        self.client.force_authenticate(user=user)
+
+        # Se genera un grupo
+        grupo = Group.objects.create(name="Administrador")
+
+        # Se genera un usuario demo
+        user_2 = User.objects.create_user(username='demo', password='123')
+        user_2.perfil.group = grupo
+        user_2.perfil.save()
+
+        # Se genera 1 escuela
+        region_1 = models.Region.objects.create(numero=1)
+        distrito_1 = models.Distrito.objects.create(nombre="distrito1", region=region_1)
+        localidad_1 = models.Localidad.objects.create(nombre="localidad1", distrito=distrito_1)
+        escuela_1 = models.Escuela.objects.create(cue="1", nombre="Escuela 1", localidad=localidad_1)
+
+        # Se crea un estado de paquete
+        estado = models.EstadoDeValidacion.objects.create(nombre="Pendiente")
+
+
+
+        data = {
+            "data": {
+                "type": "validaciones",
+                "id": 1,
+                "attributes": {
+                    "fecha-de-alta": "2017-11-09",
+                    "cantidad-pedidas": "16",
+                    "cantidad-validadas": "",
+                    "observaciones": "Probando..."
+                },
+                "relationships": {
+                    "escuela": {
+                        "data": {
+                            "type": "escuelas",
+                            "id": 1
+                        }
+                    },
+                    "autor": {
+                        "data": {
+                            "type": "perfiles",
+                            "id": 2
+                        }
+                    },
+                    "estado": {
+                        "data": {
+                            "type": "estados-de-validacion",
+                            "id": 1
+                        }
+                    }
+                }
+            }
+        }
+
+
+
+        # Inicialmente no hay ningun paquete
+        self.assertEqual(models.Validacion.objects.all().count(), 0)
+
+        # Luego de hacer el post ...
+        post = self.client.post('/api/validaciones', json.dumps(data), content_type='application/vnd.api+json')
+
+        # Luego tiene que haber un evento
+        self.assertEqual(models.Validacion.objects.all().count(), 1)
+
+        # Y la api tiene que retornarla
+        response = self.client.get('/api/validaciones/1')
+        self.assertEqual(response.data['fecha_de_alta'], '2017-11-09')
+        self.assertEqual(response.data['cantidad_pedidas'], '16')
+
     def test_puede_crear_paquete_de_provision_desde_api(self):
         # Prepara el usuario para chequear contra la api
         user = User.objects.create_user(username='test', password='123')

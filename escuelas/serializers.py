@@ -239,11 +239,11 @@ class ValidacionSerializer(CustomSerializer):
     autor = ResourceRelatedField(queryset=models.Perfil.objects)
     escuela = ResourceRelatedField(queryset=models.Escuela.objects)
     estado = ResourceRelatedField(queryset=models.EstadoDeValidacion.objects)
-    comentariosDeValidacion = ResourceRelatedField(queryset=models.ComentarioDeValidacion.objects, many=True)
+    # comentariosDeValidacion = ResourceRelatedField(queryset=models.ComentarioDeValidacion.objects, many=True)
 
     class Meta:
         model = models.Validacion
-        fields = ('autor', 'fechaDeAlta', 'escuela', 'estado', 'comentariosDeValidacion')
+        fields = ('autor', 'fecha_de_alta', 'escuela', 'estado', 'cantidad_pedidas', 'cantidad_validadas', 'observaciones')
 
 
 class EstadoDePaqueteSerializer(CustomSerializer):
