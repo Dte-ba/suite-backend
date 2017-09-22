@@ -16,7 +16,7 @@ class Escuela(models.Model):
     tipo_de_gestion = models.ForeignKey('TipoDeGestion', related_name='escuelas', default=None, blank=True, null=True)
     area = models.ForeignKey('Area', related_name='escuelas', default=None, blank=True, null=True)
     programas = models.ManyToManyField('Programa', related_name='escuelas')
-    piso = models.ForeignKey('Piso', related_name='escuelas', default=None, blank=True, null=True)
+    piso = models.OneToOneField('Piso', related_name='escuela', default=None, blank=True, null=True)
     modalidad = models.ForeignKey('Modalidad', related_name='escuelas', default=None, blank=True, null=True)
 
 

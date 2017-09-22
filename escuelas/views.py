@@ -6,6 +6,7 @@ from rest_framework.response import Response
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
 from django.contrib.auth.models import User, Group, Permission
+from django.core.files import File
 
 from rest_framework.filters import SearchFilter
 from rest_framework.filters import DjangoFilterBackend
@@ -179,7 +180,7 @@ class EventoViewSet(viewsets.ModelViewSet):
             # el archivo pdf con todas las imágenes.
             prefijo_aleatorio = str(uuid.uuid4())[:12]
             nombre_del_archivo_pdf = '/tmp/%s_archivo.pdf' %(prefijo_aleatorio)
-            
+
             comando_a_ejecutar = ["convert"] + lista_de_archivos_temporales + ['-compress', 'jpeg', '-quality', '50', '-resize', '1024x1024', nombre_del_archivo_pdf]
             fallo = subprocess.call(comando_a_ejecutar)
 
@@ -484,6 +485,45 @@ class ContratoViewSet(viewsets.ModelViewSet):
 class PisoViewSet(viewsets.ModelViewSet):
     queryset = models.Piso.objects.all()
     serializer_class = serializers.PisoSerializer
+
+    def perform_update(self, serializer):
+        return self.guardar_modelo_teniendo_en_cuenta_la_llave(serializer)
+
+    def perform_create(self, serializer):
+        return self.guardar_modelo_teniendo_en_cuenta_la_llave(serializer)
+
+    def guardar_modelo_teniendo_en_cuenta_la_llave(self, serializer):
+        instancia = serializer.save()
+        llave = self.request.data.get('llave', None)
+
+        if llave and isinstance(llave, dict):
+            nombre = llave['name']
+            contenido = llave['contenido']
+
+            archivo_temporal = self.guardar_archivo_temporal(nombre, contenido)
+
+            reopen = open(archivo_temporal, "rb")
+            django_file = File(reopen)
+
+            instancia.llave.save('llave.zip', django_file, save=False)
+
+        instancia.save()
+        return instancia
+
+    def guardar_archivo_temporal(self, nombre, data):
+        if 'data:' in data and ';base64,' in data:
+            header, data = data.split(';base64,')
+
+        decoded_file = base64.b64decode(data)
+        complete_file_name = str(uuid.uuid4())[:12]+ "_" + nombre
+        ruta_completa = os.path.join('/tmp', complete_file_name)
+
+        filehandler = open(ruta_completa, "wb")
+        filehandler.write(decoded_file)
+        filehandler.close()
+
+        return ruta_completa
+
 
 class CargoEscolarViewSet(viewsets.ModelViewSet):
     resource_name = 'cargoEscolar'

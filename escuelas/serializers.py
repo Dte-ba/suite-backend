@@ -118,10 +118,12 @@ class ModalidadSerializer(CustomSerializer):
         fields = "__all__"
 
 class PisoSerializer(CustomSerializer):
+    escuela = ResourceRelatedField(queryset=models.Escuela.objects)
 
     class Meta:
         model = models.Piso
-        fields = "__all__"
+        fields = '__all__'
+        read_only_fields = ['llave']
 
 class MotivoDeConformacionSerializer(CustomSerializer):
 
@@ -146,7 +148,7 @@ class EscuelaSerializer(CustomSerializer):
     tipo_de_gestion = ResourceRelatedField(queryset=models.TipoDeGestion.objects)
     area = ResourceRelatedField(queryset=models.Area.objects)
     programas = ProgramaSerializer(many=True, read_only=True)
-    piso = ResourceRelatedField(read_only=True)
+    piso = ResourceRelatedField(queryset=models.Piso.objects)
     contactos = ContactoSerializer(many=True, read_only=True)
     subescuelas = SubEscuelaSerializer(many=True, read_only=True)
     padre = ResourceRelatedField(read_only=True)
