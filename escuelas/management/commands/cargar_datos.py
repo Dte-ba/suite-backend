@@ -1051,14 +1051,14 @@ class Command(BaseCommand):
 
             fecha_alta = tarea['fecha_alta']
             #
-            objeto_tarea.fechaDeAlta = fecha_alta
+            objeto_tarea.fecha_de_alta = fecha_alta
             objeto_tarea.titulo = "Tarea #: " + str(tarea['id_ticket_original'])
             objeto_tarea.descripcion = tarea['descripcion']
             objeto_tarea.autor = objeto_autor
             objeto_tarea.escuela = objeto_escuela
-            objeto_tarea.motivoDeTarea = objeto_motivo
-            objeto_tarea.estadoDeTarea = objeto_estado
-            objeto_tarea.prioridadDeTarea = objeto_prioridad
+            objeto_tarea.motivo_de_tarea = objeto_motivo
+            objeto_tarea.estado_de_tarea = objeto_estado
+            objeto_tarea.prioridad_de_tarea = objeto_prioridad
 
             objeto_tarea.save()
 
