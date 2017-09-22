@@ -348,7 +348,7 @@ class Command(BaseCommand):
 
     def importar_usuarios(self):
         # ARCHIVO = './/archivos_para_importacion/dte_perfiles_2017.xlsx'
-        ARCHIVO = './/archivos_para_importacion/dte_perfiles_08-2017.xlsx'
+        ARCHIVO = './/archivos_para_importacion/dte_perfiles_09-2017.xlsx'
         LIMITE_DE_FILAS = 300
 
         print("Comenzando la importación de usuarios")
