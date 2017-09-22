@@ -490,3 +490,4 @@ de la configuración del entorno:
 	dokku run python manage.py migrate --settings=suite.desarrollo_settings
 	dokku run python manage.py createsuperuser --settings=suite.desarrollo_settings
 
+
