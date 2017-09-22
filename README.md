@@ -6,7 +6,7 @@
 
 ## ¿Cómo iniciar la aplicación?
 
-El primer paso es crear un entorno virtual y activarlo:
+El primer paso es crear un entorno virtual y activarlo :
 
 ```
 virtualenv venv --no-site-packages
