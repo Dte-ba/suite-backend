@@ -52,10 +52,12 @@ INSTALLED_APPS = [
     'easy_pdf',
 ]
 
-MEDIA_ROOT = 'media'
+
 STATIC_ROOT = 'staticfiles'
-MEDIA_URL = '/media/'
 STATIC_URL = '/static/'
+
+MEDIA_ROOT = os.environ.get('SUITE_MEDIA_ROOT', 'media_archivos_locales')
+MEDIA_URL = '/media/'
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
