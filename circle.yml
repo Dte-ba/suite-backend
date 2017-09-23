@@ -8,3 +8,8 @@ deployment:
     commands:
       - git remote add dokku dokku@enjambrelab.com.ar:suite-backend
       - git push dokku master:master
+  production_dtelab:
+    branch: master
+    commands:
+      - git remote add dokku2 dokku@dtelab.com.ar:suite2-backend
+      - git push dokku2 master:master
