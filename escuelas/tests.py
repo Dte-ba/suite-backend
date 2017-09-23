@@ -487,8 +487,8 @@ class GeneralesTestCase(APITestCase):
         self.assertTrue(response.data['results'][0]['acta'].startswith('http://testserver/media/'))
 
         # se borra el archivo generado temporalmente
-        archivo_temporal = response.data['results'][0]['acta'].replace('http://testserver/', '')
-        os.remove(archivo_temporal)
+        #archivo_temporal = response.data['results'][0]['acta'].replace('http://testserver/', '')
+        #os.remove(archivo_temporal)
 
 
     def test_puede_crear_persona(self):
