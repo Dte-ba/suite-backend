@@ -2,6 +2,7 @@
 from __future__ import unicode_literals
 import time
 import datetime
+import random, string
 
 import progressbar
 import requests
@@ -362,6 +363,8 @@ class Command(BaseCommand):
         filas_omitidas_o_con_errores = 0
         filas_omitidas_lista = ""
 
+        listado = ""
+
         def formatear_fecha(fecha):
             if fecha:
                 return fecha.strftime('%Y-%m-%d')
@@ -519,6 +522,9 @@ class Command(BaseCommand):
 
                 username=email_laboral
                 default_pass="dte_"+dni
+                rand_str = lambda n: ''.join([random.choice(string.lowercase) for i in xrange(n)])
+                # Now to generate a random string of length 10
+                random_password = rand_str(10)
 
 
                 try:
@@ -583,33 +589,9 @@ class Command(BaseCommand):
                 continue
 
             log("Fila %d - Cargando datos de perfil para consultor: '%s'" %(indice + 1, valores["consultor"]))
-            log("")
-            log("Apellido: " + apellido)
-            log("Nombres: " + nombre)
-            log("Region: " + region)
-            log("Cargo: " + cargo)
-            log("Contrato: " + contrato)
-            log("Carga horaria: " + carga_horaria)
-            log("Expediente: " + expediente)
-            #log("Fecha de Ingreso: " + fechaDeIngreso)
-            # log("Fecha de Renuncia: " + fechaDeRenuncia)
-            log("Titulo: " + titulo)
-            log("Perfil: " + experiencia)
-            log("DNI: " + dni)
-            log("CUIL: " + cuil)
-            log("CBU: " + cbu)
-            log("Email: " + email)
-            log("Email Laboral: " + email_laboral)
-            log("Direccion: " + direccion)
-            log("Localidad: " + localidad)
-            log("Codigo Postal: " + codigo_postal)
-            #log("Fecha de nacimiento: " + fechaDeNacimiento)
-            log("Telefono Celular: " + telefono_celular)
-            log("Telefono Particular: " + telefono_particular)
-            log("Username: " + username)
-            log("Password: " + default_pass)
-            log("-----")
-            log("")
+
+            listado += apellido + nombre + "," + region + "," + email_laboral + "," + random_password + "\n"
+
 
             filas_procesadas += 1
 
@@ -627,11 +609,15 @@ class Command(BaseCommand):
         log(" - cantidad de filas que fallaron:                " + str(indice - 1 - filas_procesadas))
 
         log(" - filas que fallaron:                            " + str(filas_omitidas_lista))
-        # log(" - filas con error u omitidas:                    " + str(filas_omitidas_o_con_errores))
-        # log(" - cantidad de socios sin grupo familiar:         " + str(cantidad_de_socios_sin_grupo_familiar))
-        # log(" - cantidad de perfiles que renunciaron: " + str(cantidad_de_perfiles_con_renuncia))
+
         log("")
         log("")
+        print("Listado: ")
+        print("")
+        print listado
+        f = open('listado_de_usuarios.csv', 'w')
+        f.write(listado.encode('utf-8'))
+        f.close()
 
 
     def importar_conformaciones(self):
