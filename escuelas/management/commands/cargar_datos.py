@@ -632,10 +632,10 @@ class Command(BaseCommand):
                 continue
 
             if u.perfil.region:
-                random_password = hashlib.md5(u.perfil.dni).hexdigest()[:6]
+                random_password = hashlib.md5(u.perfil.dni).hexdigest()[:8]
                 u.set_password(random_password)
                 u.save()
-                #print(u"%s, %s;%d;%s;%s" %(u.perfil.apellido, u.perfil.nombre, u.perfil.region.numero, u.username, random_password))
+                print(u"%s, %s;%d;%s;%s" %(u.perfil.apellido, u.perfil.nombre, u.perfil.region.numero, u.username, random_password))
 
 
     def importar_conformaciones(self):
