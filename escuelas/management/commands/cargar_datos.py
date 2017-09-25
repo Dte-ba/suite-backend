@@ -635,7 +635,7 @@ class Command(BaseCommand):
                 random_password = hashlib.md5(u.perfil.dni).hexdigest()[:6]
                 u.set_password(random_password)
                 u.save()
-                print("%s, %s;%d;%s;%s" %(u.perfil.apellido, u.perfil.nombre, u.perfil.region.numero, u.username, random_password))
+                print(u"%s, %s;%d;%s;%s" %(u.perfil.apellido, u.perfil.nombre, u.perfil.region.numero, u.username, random_password))
 
 
     def importar_conformaciones(self):
