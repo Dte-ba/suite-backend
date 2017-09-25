@@ -134,7 +134,7 @@ class Command(BaseCommand):
             metodo()
 
     def listar_comandos(self, comandos):
-        print("Se ejecutarán los comandos en este orden:")
+        print("Se ejecutaran los comandos en este orden:")
         for i, x in enumerate(comandos):
             print ("  %d %s" %(i+1, x))
 
