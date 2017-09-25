@@ -3,6 +3,7 @@ from __future__ import unicode_literals
 import time
 import datetime
 import random, string
+import hashlib
 
 import progressbar
 import requests
@@ -93,6 +94,7 @@ class Command(BaseCommand):
             'importar_comentarios_de_validaciones',
             'importar_paquetes',
             'aplicar_permiso_sin_definir_a_los_perfiles_faltantes',
+            'aplicar_password_inicial_para_usuarios',
         ]
 
 
@@ -618,6 +620,22 @@ class Command(BaseCommand):
         f = open('listado_de_usuarios.csv', 'w')
         f.write(listado.encode('utf-8'))
         f.close()
+
+    def aplicar_password_inicial_para_usuarios(self):
+        usuarios = User.objects.order_by('username') # TODO: solo pedir los que no renunciaron.
+
+        print("Nombre completo;region;usuario;password")
+
+        for u in usuarios:
+
+            if u.perfil.fechaDeRenuncia:
+                continue
+
+            if u.perfil.region:
+                random_password = hashlib.md5(u.perfil.dni).hexdigest()[:6]
+                u.set_password(random_password)
+                u.save()
+                print("%s, %s;%d;%s;%s" %(u.perfil.apellido, u.perfil.nombre, u.perfil.region.numero, u.username, random_password))
 
 
     def importar_conformaciones(self):
