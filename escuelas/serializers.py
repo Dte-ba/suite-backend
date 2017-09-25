@@ -80,12 +80,12 @@ class LocalidadSerializer(CustomSerializer):
 
 class ProgramaSerializer(CustomSerializer):
 
-    #escuelas = EscuelaSerializer(many=True, read_only=True)
+    escuelas = ResourceRelatedField(queryset=models.Perfil.objects, many=True)
 
     class Meta:
         model = models.Programa
-        fields = "__all__"
-        extra_fields = ['cantidadDeEscuelas']
+        fields = ('id', 'nombre', 'escuelas')
+        # extra_fields = ['cantidadDeEscuelas']
 
 class TipoDeFinanciamientoSerializer(CustomSerializer):
 

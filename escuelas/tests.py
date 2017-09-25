@@ -672,6 +672,9 @@ class GeneralesTestCase(APITestCase):
         #Se crea un tipo de gestión
         tipo_de_gestion = models.TipoDeGestion.objects.create(nombre="Privada")
 
+        #Se crea un programa
+        programa = models.Programa.objects.create(nombre="PAD")
+
         data = {
             "data": {
                 "type": "escuelas",
@@ -723,6 +726,12 @@ class GeneralesTestCase(APITestCase):
                             "type": "tipos-de-gestion",
                             "id": tipo_de_gestion.id
                         }
+                    },
+                    "programas": {
+                        "data": [{
+                            "type": "programas",
+                            "id": 1
+                        }]
                     }
                 }
                 # "direccion": "",

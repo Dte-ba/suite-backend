@@ -440,7 +440,6 @@ class LocalidadViewSet(viewsets.ModelViewSet):
     filter_fields = ['nombre']
 
 class ProgramaViewSet(viewsets.ModelViewSet):
-    resource_name = 'programa'
     queryset = models.Programa.objects.all()
     serializer_class = serializers.ProgramaSerializer
 
