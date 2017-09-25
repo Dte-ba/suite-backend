@@ -102,10 +102,10 @@ class Command(BaseCommand):
         esperar(1)
 
         if depuracion != '0':
-            print("Modo depuración activado.")
+            print(u"Modo depuración activado.")
             MODO_VERBOSE = True
         else:
-            print("Modo depuración desactivado.")
+            print(u"Modo depuración desactivado.")
             MODO_VERBOSE = False
 
         if filtro:
