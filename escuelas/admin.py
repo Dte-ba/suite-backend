@@ -11,7 +11,7 @@ class EscuelaAdmin(admin.ModelAdmin):
 class PerfilAdmin(admin.ModelAdmin):
     model = models.Perfil
     list_display = ('user', 'nombre', 'apellido', 'group', 'dni', 'email')
-    search_fields = ('user', 'nombre', 'apelido', 'dni')
+    search_fields = ('nombre', 'apellido', 'dni')
 
 class EventoAdmin(admin.ModelAdmin):
     model = models.Evento
