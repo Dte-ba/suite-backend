@@ -24,7 +24,10 @@ def log(*k):
     global MODO_VERBOSE
 
     if MODO_VERBOSE:
-        print(k)
+        if isinstance(k, tuple):
+            print " ".join(k)
+        else:
+            print k
 
 BASE_URL = 'http://suite-api.dtelab.com.ar/api/'
 
@@ -146,7 +149,7 @@ class Command(BaseCommand):
 
         for n in bar(numeros):
             p, created = models.Region.objects.get_or_create(numero=n)
-            log(p)
+            log(str(p))
 
         p, created = models.Region.objects.get_or_create(numero=27)
 
@@ -352,7 +355,7 @@ class Command(BaseCommand):
     def importar_usuarios(self):
         # ARCHIVO = './/archivos_para_importacion/dte_perfiles_2017.xlsx'
         ARCHIVO = './/archivos_para_importacion/dte_perfiles_09-2017.xlsx'
-        LIMITE_DE_FILAS = 300
+        LIMITE_DE_FILAS = 800
 
         print("Comenzando la importación de usuarios")
         log("Iniciando la importación del archivo: " + ARCHIVO)
@@ -404,6 +407,9 @@ class Command(BaseCommand):
         bar = barra_de_progreso(simple=False)
         #for conformacion in bar(conformaciones):
 
+        cantidad_de_filas_con_datos = 0
+        cantidad_de_filas_procesadas_sin_errores = 0
+
         for indice, fila in bar(enumerate(wb.active.rows)):
 
             if indice is 0:
@@ -413,27 +419,28 @@ class Command(BaseCommand):
                 log("Terminando en la fila %d porque no parece haber mas registros." %(indice + 1))
                 break
 
+            cantidad_de_filas_con_datos += 1
             log("Procesando fila '%d'" %(indice +1))
 
             try:
                 valores = obtener_valores_desde_fila(fila)
 
                 if valores['fechaDeRenuncia']:
-                    log("Renunció")
+                    log("  Perfil no activo (Renunció)")
                     fechaDeRenuncia=formatear_fecha(valores['fechaDeRenuncia'])
                 else:
-                    log("Perfil activo")
+                    log("  Perfil activo")
                     fechaDeRenuncia=None
 
                 region=str(valores['region'])
 
-                if region=="ESP/NC" or region=="NC" or region=="Nc" or region=="NC Esp" or region=="NC Prov." or region=="NC Sup" or region=="NC. Prov":
+                if region.startswith('NC') or region.startswith('Nc') or region.startswith("ESP/NC"):
                     region="27"
 
                 if valores['cargo']:
                     cargo=valores['cargo']
                 else:
-                    log("No tiene cargo")
+                    log("  No tiene cargo")
 
                 contrato=valores['contrato']
                 carga_horaria=valores['carga_horaria']
@@ -444,13 +451,13 @@ class Command(BaseCommand):
                 if valores['expediente']:
                     expediente=valores['expediente']
                 else:
-                    log("No tiene expediente")
+                    log("  No tiene expediente")
                     expediente="Sin Datos"
 
                 if valores['titulo']:
                     titulo=valores['titulo']
                 else:
-                    log("No tiene título")
+                    log("  No tiene título")
                     titulo="Sin Datos"
 
                 fechaDeIngreso=formatear_fecha(valores['fechaDeIngreso'])
@@ -458,7 +465,7 @@ class Command(BaseCommand):
                 if valores['perfil']:
                     experiencia=valores['perfil']
                 else:
-                    log("No tiene perfil")
+                    log("  No tiene perfil")
                     experiencia="Sin Datos"
 
                 dni = str(valores['dni'])
@@ -466,25 +473,25 @@ class Command(BaseCommand):
                 if valores['cuil']:
                     cuil=str(valores['cuil'])
                 else:
-                    log("No tiene CUIL")
+                    log("  No tiene CUIL")
                     cuil="Sin Datos"
 
                 if valores['cbu']:
                     cbu=valores['cbu']
                 else:
-                    log("No tiene cbu")
+                    log("  No tiene cbu")
                     cbu="Sin Datos"
 
                 if valores['email']:
                     email=valores['email']
                 else:
-                    log("No tiene email")
+                    log("  No tiene email")
                     email="Sin Datos"
 
                 if valores['email_laboral']:
                     email_laboral=valores['email_laboral']
                 else:
-                    log("No tiene email laboral")
+                    log("  No tiene email laboral")
                     email_laboral=apellido+"@abc.gob.ar"
 
                 email_laboral = email_laboral.lower()
@@ -492,7 +499,7 @@ class Command(BaseCommand):
                 if valores['direccion']:
                     direccion=valores['direccion']
                 else:
-                    log("No tiene direccion")
+                    log("  No tiene direccion")
                     direccion="Sin Datos"
 
                 localidad=valores['localidad'].title()
@@ -501,33 +508,29 @@ class Command(BaseCommand):
                 if valores['fechaDeNacimiento']:
                     fechaDeNacimiento=formatear_fecha(valores['fechaDeNacimiento'])
                 else:
-                    log("No tiene fecha de nacimiento")
+                    log("  No tiene fecha de nacimiento")
                     fechaDeNacimiento=None
 
                 if valores['telefono_celular']:
                     telefono_celular=valores['telefono_celular']
                 else:
-                    log("No tiene telefono celular")
+                    log("  No tiene telefono celular")
                     telefono_celular="Sin Datos"
 
                 if valores['telefono_particular']:
                     telefono_particular=valores['telefono_particular']
                 else:
-                    log("No tiene telefono Particular")
+                    log("  No tiene telefono Particular")
                     telefono_particular="Sin Datos"
 
                 if valores['rol']:
                     grupo=valores['rol']
                 else:
-                    log("No tiene ROL asignado")
+                    log("  No tiene ROL asignado")
                     grupo="Sin Definir"
 
                 username=email_laboral
                 default_pass="dte_"+dni
-                rand_str = lambda n: ''.join([random.choice(string.lowercase) for i in xrange(n)])
-                # Now to generate a random string of length 10
-                random_password = rand_str(10)
-
 
                 try:
                     user = User.objects.get(username=email_laboral)
@@ -542,7 +545,7 @@ class Command(BaseCommand):
                 try:
                     objeto_grupo = Group.objects.get(name=grupo)
                 except Group.DoesNotExist:
-                    log("No existe el grupo")
+                    log("  No existe el grupo", grupo)
                     continue
 
                 perfil.group = objeto_grupo
@@ -563,36 +566,48 @@ class Command(BaseCommand):
                 perfil.fechaDeRenuncia = fechaDeRenuncia
                 perfil.emailLaboral = email_laboral
 
-                perfil.region = models.Region.objects.get(numero=int(region))
+                try:
+                    perfil.region = models.Region.objects.get(numero=int(region))
+                except models.Region.DoesNotExist:
+                    log("  No existe la region consultada: %s" %(cargo))
+                except ValueError:
+                    log("  No existe la region consultada: %s" %(cargo))
+                    continue
+
                 # perfil.experiencia = models.Experiencia.objects.get(nombre=experiencia)
                 # perfil.localidad = models.Localidad.objects.get(nombre=localidad)
 
                 try:
                     objeto_cargo = models.Cargo.objects.get(nombre=cargo)
-                except models.CargoDoesNotExist:
-                    log("No existe el cargo con ese nombre: %s") %(cargo)
+                except models.Cargo.DoesNotExist:
+                    log("  No existe el cargo con ese nombre: %s" %(cargo))
                     continue
 
                 perfil.cargo = objeto_cargo
 
-                if contrato == "PLANTA":
+                if contrato == "PLANTA" or contrato.lower() == 'planta':
                     contrato = "Planta"
 
-                perfil.contrato = models.Contrato.objects.get(nombre=contrato)
+                try:
+                    perfil.contrato = models.Contrato.objects.get(nombre=contrato)
+                except models.Contrato.DoesNotExist:
+                    log("  No existe un contrato con ese nombre: %s" %(contrato))
+                    continue
 
                 perfil.save()
+                cantidad_de_filas_procesadas_sin_errores += 1
             except TypeError, e:
                 log("-----")
                 log("Fila %d - ****** OMITIDA, TypeError. La fila contiene caracteres incorrectos." %(indice + 1))
                 filas_omitidas_o_con_errores += 1
                 filas_omitidas_lista += ", " + str(indice + 1)
-                log(e)
+                log(str(e))
                 log("-----")
                 continue
 
             log("Fila %d - Cargando datos de perfil para consultor: '%s'" %(indice + 1, valores["consultor"]))
 
-            listado += apellido + nombre + "," + region + "," + email_laboral + "," + random_password + "\n"
+            listado += apellido + nombre + "," + region + "," + email_laboral + "," + default_pass + "\n"
 
 
             filas_procesadas += 1
@@ -603,20 +618,18 @@ class Command(BaseCommand):
 
         log("Terminó la ejecución")
 
-        log("")
-        log("Resumen:")
-        log("")
-        log(" - cantidad total de filas:                       " + str(indice - 1))
-        log(" - filas procesadas:                              " + str(filas_procesadas))
-        log(" - cantidad de filas que fallaron:                " + str(indice - 1 - filas_procesadas))
-
-        log(" - filas que fallaron:                            " + str(filas_omitidas_lista))
-
-        log("")
-        log("")
-        print("Listado: ")
         print("")
-        print listado
+        print("Resumen:")
+        print("")
+        print(" - cantidad total de filas:                       " + str(cantidad_de_filas_con_datos))
+        print(" - filas procesadas:                              " + str(cantidad_de_filas_procesadas_sin_errores))
+        print(" - cantidad de filas que fallaron:                " + str(cantidad_de_filas_con_datos - cantidad_de_filas_procesadas_sin_errores))
+
+        print("")
+        print("")
+        #print("Listado: ")
+        #print("")
+        #print listado
         f = open('listado_de_usuarios.csv', 'w')
         f.write(listado.encode('utf-8'))
         f.close()
@@ -1191,7 +1204,7 @@ class Command(BaseCommand):
 
         for nombre in bar(nombres):
             p, created = models.TipoDeFinanciamiento.objects.get_or_create(nombre=nombre)
-            log(p)
+            log(str(p))
 
     def crear_estados_de_paquetes(self):
         nombres = ["Objetado", "Pendiente", "EducAr", "Devuelto", "Descargado"]
@@ -1201,7 +1214,7 @@ class Command(BaseCommand):
 
         for nombre in bar(nombres):
             p, created = models.EstadoDePaquete.objects.get_or_create(nombre=nombre)
-            log(p)
+            log(str(p))
 
     def crear_motivos_de_tareas(self):
         nombres = [
@@ -1225,7 +1238,7 @@ class Command(BaseCommand):
 
         for nombre in bar(nombres):
             p, created = models.MotivoDeTarea.objects.get_or_create(nombre=nombre)
-            log(p)
+            log(str(p))
 
     def crear_motivos_de_conformaciones(self):
         nombres = [
@@ -1241,7 +1254,7 @@ class Command(BaseCommand):
 
         for nombre in bar(nombres):
             p, created = models.MotivoDeConformacion.objects.get_or_create(nombre=nombre)
-            log(p)
+            log(str(p))
 
     def crear_estados_de_tareas(self):
         nombres = [
@@ -1256,7 +1269,7 @@ class Command(BaseCommand):
 
         for nombre in bar(nombres):
             p, created = models.EstadoDeTarea.objects.get_or_create(nombre=nombre)
-            log(p)
+            log(str(p))
 
     def crear_estados_de_validaciones(self):
         nombres = [
@@ -1276,7 +1289,7 @@ class Command(BaseCommand):
 
         for nombre in bar(nombres):
             p, created = models.EstadoDeValidacion.objects.get_or_create(nombre=nombre)
-            log(p)
+            log(str(p))
 
     def crear_prioridades_de_tareas(self):
         nombres = [
@@ -1290,7 +1303,7 @@ class Command(BaseCommand):
 
         for nombre in bar(nombres):
             p, created = models.PrioridadDeTarea.objects.get_or_create(nombre=nombre)
-            log(p)
+            log(str(p))
 
     def crear_niveles(self):
         nombres = ["Inicial", "Primaria", "Secundaria", "Superior"]
@@ -1300,7 +1313,7 @@ class Command(BaseCommand):
 
         for nombre in bar(nombres):
             p, created = models.Nivel.objects.get_or_create(nombre=nombre)
-            log(p)
+            log(str(p))
 
     def crear_modalidades(self):
         nombres = ["Técnica", "Especial", "Ninguna", "Artística"]
@@ -1310,7 +1323,7 @@ class Command(BaseCommand):
 
         for nombre in bar(nombres):
             p, created = models.Modalidad.objects.get_or_create(nombre=nombre)
-            log(p)
+            log(str(p))
 
     def crear_tipos_de_gestion(self):
         nombres = ["Estatal", "Privada", "Compartida"]
@@ -1320,7 +1333,7 @@ class Command(BaseCommand):
 
         for nombre in bar(nombres):
             p, created = models.TipoDeGestion.objects.get_or_create(nombre=nombre)
-            log(p)
+            log(str(p))
 
     def crear_areas(self):
         nombres = ["Urbana", "Rural"]
@@ -1330,7 +1343,7 @@ class Command(BaseCommand):
 
         for nombre in bar(nombres):
             p, created = models.Area.objects.get_or_create(nombre=nombre)
-            log(p)
+            log(str(p))
 
     def crear_programas(self):
         nombres = [
@@ -1346,7 +1359,7 @@ class Command(BaseCommand):
 
         for nombre in bar(nombres):
             p, created = models.Programa.objects.get_or_create(nombre=nombre)
-            log(p)
+            log(str(p))
 
     def crear_experiencias(self):
         nombres = [
@@ -1362,7 +1375,7 @@ class Command(BaseCommand):
 
         for nombre in bar(nombres):
             p, created = models.Experiencia.objects.get_or_create(nombre=nombre)
-            log(p)
+            log(str(p))
 
     def crear_contratos(self):
         nombres = [
@@ -1370,21 +1383,21 @@ class Command(BaseCommand):
             "Planta/PLANIED",
             "Planta",
             "ConIg",
-            "Ord. Tec."
-
-            ]
+            "Ord. Tec.",
+            "PLANIED/EDF"
+        ]
 
         print("Creando Contactos")
         bar = barra_de_progreso()
 
-
         for nombre in bar(nombres):
             p, created = models.Contrato.objects.get_or_create(nombre=nombre)
-            log(p)
+            log(str(p), str(created))
 
     def crear_cargos(self):
         nombres = [
             ("FED", "Facilitador Educación Digital"),
+            ("FEF", "FEF"),
             ("Coord", "Coordinador"),
             ("Adm", "Administrativo"),
             ("Coord EF", "Coordinador EF"),
@@ -1397,7 +1410,7 @@ class Command(BaseCommand):
 
         for nombre in bar(nombres):
             p, created = models.Cargo.objects.get_or_create(nombre=nombre[0], descripcion=nombre[1])
-            log(p)
+            log(str(p))
 
     def crear_cargos_escolares(self):
         nombres = [
@@ -1417,7 +1430,7 @@ class Command(BaseCommand):
 
         for nombre in bar(nombres):
             p, created = models.CargoEscolar.objects.get_or_create(nombre=nombre)
-            log(p)
+            log(str(p))
 
     def crear_categorias_de_eventos(self):
         nombres = [
@@ -1467,7 +1480,7 @@ class Command(BaseCommand):
 
         for nombre in bar(nombres):
             p, created = models.CategoriaDeEvento.objects.get_or_create(nombre=nombre)
-            log(p)
+            log(str(p))
 
     def limpiar_e_importar_permisos_con_grupos(self):
         # Elimina todos los permisos por omision de django.
