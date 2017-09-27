@@ -270,13 +270,13 @@ class GeneralesTestCase(APITestCase):
                 "motivoDeConformacion":null
             },
             "paquetes":[
-                ["123", "456", "789"],
-                ["", "", ""],
-                ["", "", ""],
-                ["", "", ""],
-                ["", "", ""],
-                ["", "", ""],
-                ["","",""]
+                ["123", "456", "789", "SI"],
+                ["", "", "", ""],
+                ["", "", "", ""],
+                ["", "", "", ""],
+                ["", "", "", ""],
+                ["", "", "", ""],
+                ["","","", ""]
             ]
         }
         """
@@ -350,6 +350,7 @@ class GeneralesTestCase(APITestCase):
         # Se generan 2 escuela y se les asigna distinta localidad
         escuela_1 = models.Escuela.objects.create(cue="1", nombre="escuela 1", localidad=localidad_1)
         escuela_2 = models.Escuela.objects.create(cue="2", nombre="escuela 2", localidad = localidad_2)
+        dte = models.Escuela.objects.create(cue="60000000", nombre="DTE", localidad=localidad_1)
 
 
         # Se crea una categoria
@@ -364,7 +365,7 @@ class GeneralesTestCase(APITestCase):
             fecha="2017-01-15",
             fecha_fin="2017-01-15")
         evento_2 = models.Evento.objects.create(
-            titulo="Otro evento de prueba de otra escuela, de otra region, de perfil 2",
+            titulo="Otro evento de prueba de otra escuela, de region 23, de perfil 2",
             categoria=categoria_1,
             responsable=user_2.perfil,
             escuela=escuela_2,
@@ -377,26 +378,38 @@ class GeneralesTestCase(APITestCase):
             escuela=escuela_1,
             fecha="2017-01-25",
             fecha_fin="2017-01-25")
+        evento_4 = models.Evento.objects.create(
+            titulo="Evento en region Central DTE (60000000)",
+            categoria=categoria_1,
+            responsable=user.perfil,
+            escuela=dte,
+            fecha="2017-01-25",
+            fecha_fin="2017-01-25")
 
         # Pide todos (Caso Administrador, Administración y Referente)
         response = self.client.get('/api/eventos/agenda?inicio=2017-01-01&fin=2017-02-01', format='json')
 
+        self.assertEqual(response.data['cantidad'], 4)
+
+        # Pide solo los de región 1 (Caso Coordinador) (2 en región 1 + el de DTE)
+        response = self.client.get('/api/eventos/agenda?inicio=2017-01-01&fin=2017-02-01&region=1', format='json')
+
         self.assertEqual(response.data['cantidad'], 3)
 
-        # Pide solo los de región 1 (Caso Coordinador)
-        response = self.client.get('/api/eventos/agenda?inicio=2017-01-01&fin=2017-02-01&region=1', format='json')
+        # Pide solo región 23 (Caso Coordinador) (1 En región 23 + el de DTE)
+        response = self.client.get('/api/eventos/agenda?inicio=2017-01-01&fin=2017-02-01&region=23', format='json')
 
         self.assertEqual(response.data['cantidad'], 2)
 
-        # Pide solo región 23 (Caso Coordinador)
-        response = self.client.get('/api/eventos/agenda?inicio=2017-01-01&fin=2017-02-01&region=23', format='json')
-
-        self.assertEqual(response.data['cantidad'], 1)
-
-        # Pide solo perfil 2 (Caso Facilitador ) y Región 1
+        # Pide solo perfil 2 (Caso Facilitador ) y Región 1 (Solo el evento 1, el de DTE es de otro perfil)
         response = self.client.get('/api/eventos/agenda?inicio=2017-01-01&fin=2017-02-01&perfil=2&region=1', format='json')
 
         self.assertEqual(response.data['cantidad'], 1)
+
+        # Pide solo perfil 1 (Caso Facilitador ) y Región 1 (Evento del perfil + DTE)
+        response = self.client.get('/api/eventos/agenda?inicio=2017-01-01&fin=2017-02-01&perfil=1&region=1', format='json')
+
+        self.assertEqual(response.data['cantidad'], 2)
 
     def test_puede_crear_un_evento_con_acta_desde_la_api(self):
         # Prepara el usuario para chequear contra la api

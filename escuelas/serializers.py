@@ -274,7 +274,8 @@ class PaqueteSerializer(CustomSerializer):
             'estado',
             'fecha_devolucion',
             'id_devolucion',
-            'leido'
+            'leido',
+            'tpmdata'
         )
 
 class PermissionSerializer(CustomSerializer):

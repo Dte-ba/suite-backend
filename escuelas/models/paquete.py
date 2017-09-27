@@ -16,6 +16,7 @@ class Paquete(models.Model):
     fecha_devolucion = models.DateField(default=None, blank=True, null=True) # Fecha en que se recibió el paquete solicitado desde Educar
     id_devolucion = models.IntegerField(default=None, blank=True, null=True) # ID que se relaciona con la tabla devoluciones (legacy)
     leido = models.BooleanField(default=False)
+    tpmdata = models.BooleanField(default=False)
 
     def __unicode__(self):
         return str(self.legacy_id)
