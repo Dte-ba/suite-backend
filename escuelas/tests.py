@@ -643,6 +643,99 @@ class GeneralesTestCase(APITestCase):
         self.assertEqual(response.data['eventos'][0]['resumenParaCalendario']['titulo'], 'Evento de prueba desde API')
         self.assertEqual(response.data['eventos'][0]['resumenParaCalendario']['escuela'], 'Nombre demo escuela')
 
+    def test_puede_obtener_un_listado_de_eventos_de_su_region_y_los_de_60000000(self):
+
+
+        # Se genera 1 escuela
+        region_4 = models.Region.objects.create(numero=4)
+        distrito_1 = models.Distrito.objects.create(nombre="distrito1", region=region_4)
+        localidad_1 = models.Localidad.objects.create(nombre="localidad1", distrito=distrito_1)
+        escuela_1 = models.Escuela.objects.create(cue="1", nombre="Escuela 1", localidad=localidad_1)
+
+        # Se genera la escuela central
+        region_1 = models.Region.objects.create(numero=1)
+        distrito_1 = models.Distrito.objects.create(nombre="distrito1", region=region_1)
+        localidad_1 = models.Localidad.objects.create(nombre="localidad1", distrito=distrito_1)
+        escuela_central = models.Escuela.objects.create(cue="60000000", nombre="Escuela 1", localidad=localidad_1)
+
+        # Prepara el usuario de la región 1 para chequear contra la api
+        user = User.objects.create_user(username='test', password='123')
+        self.client.force_authenticate(user=user)
+        user.perfil.region = region_4
+        user.perfil.save()
+
+        # Prepara un usuario externo
+        userExterno = User.objects.create_user(username='testExterno', password='123')
+        userExterno.perfil.region = region_1
+        userExterno.perfil.save()
+
+        # Se crea una categoria
+        categoria_1 = models.CategoriaDeEvento.objects.create(nombre="Categoria 1")
+
+        # Se crean dos eventos de prueba. Uno con fecha Enero y otro Marzo
+        evento_1 = models.Evento.objects.create(titulo="Evento de prueba", categoria=categoria_1, responsable=user.perfil, escuela=escuela_1, fecha="2017-01-15", fecha_fin="2017-01-15")
+        evento_2 = models.Evento.objects.create(titulo="Evento de prueba de Marzo", categoria=categoria_1, responsable=user.perfil, escuela=escuela_1, fecha="2017-03-15", fecha_fin="2017-03-15")
+
+        # En una región inexistente no debería haber eventos
+        response = self.client.get('/api/eventos?escuela__localidad__distrito__region__numero=10&perfil=1')
+        self.assertEqual(response.data['meta']['pagination']['count'], 0)
+
+        # En su región hay dos eventos
+        response = self.client.get('/api/eventos?escuela__localidad__distrito__region__numero=4&perfil=1')
+        self.assertEqual(response.data['meta']['pagination']['count'], 2)
+
+        # Si se agregan un evento  de región central también lo tiene que ver.
+        evento_1 = models.Evento.objects.create(titulo="Evento de prueba", categoria=categoria_1, responsable=user.perfil, escuela=escuela_central, fecha="2017-01-15", fecha_fin="2017-01-15")
+        response = self.client.get('/api/eventos?escuela__localidad__distrito__region__numero=4&perfil=1')
+
+        self.assertEqual(response.data['meta']['pagination']['count'], 3)
+
+        # Si se agregan un evento de región central pero no es responsable ni invitado no lo tiene que ver.
+        evento_1 = models.Evento.objects.create(titulo="Evento de prueba en donde no es reponsable", responsable=userExterno.perfil, categoria=categoria_1, escuela=escuela_central, fecha="2017-01-15", fecha_fin="2017-01-15")
+        response = self.client.get('/api/eventos?escuela__localidad__distrito__region__numero=4&perfil=1')
+        self.assertEqual(response.data['meta']['pagination']['count'], 3)
+
+
+    def test_puede_filtrar_escuelas_por_region_y_siembre_viene_600000(self):
+        region_2 = models.Region.objects.create(numero=2)
+        distrito_1 = models.Distrito.objects.create(nombre="distrito2", region=region_2)
+        localidad_1 = models.Localidad.objects.create(nombre="localidad2", distrito=distrito_1)
+
+        # Se construyen 3 escuelas, todas de región 2
+        escuela_1 = models.Escuela.objects.create(cue="e1", nombre="Escuela e1 - 600123-e1", localidad=localidad_1)
+        escuela_2 = models.Escuela.objects.create(cue="e2", nombre="Escuela e2 - 600123-e2", localidad=localidad_1)
+        escuela_3 = models.Escuela.objects.create(cue="e3", nombre="Escuela e3 - 600123-e3", localidad=localidad_1)
+
+
+        # Se agrega una escuela de región 1, pero que no es 60000000
+        region_1 = models.Region.objects.create(numero=1)
+        distrito_1 = models.Distrito.objects.create(nombre="distrito central", region=region_1)
+        localidad_1 = models.Localidad.objects.create(nombre="localidad central", distrito=distrito_1)
+        escuela = models.Escuela.objects.create(cue="123", nombre="123 en región central", localidad=localidad_1)
+
+
+        # Prepara el usuario para chequear contra la api
+        user = User.objects.create_user(username='test', password='123')
+        self.client.force_authenticate(user=user)
+
+        # Si busca una escuela inexistente por criterio de nombre, no retorna nada
+        response = self.client.get('/api/escuelas?conformada=false&localidad__distrito__region__numero=2&search=60010239123019230192301293', format='json')
+        self.assertEqual(response.data['meta']['pagination']['count'], 0)
+
+        # Si busca por región 2, tienen que venir las 3 creadas.
+        response = self.client.get('/api/escuelas?conformada=false&localidad__distrito__region__numero=2', format='json')
+        self.assertEqual(response.data['meta']['pagination']['count'], 3)
+
+        # Se genera la escuela con cue especial
+        region_1 = models.Region.objects.create(numero=1)
+        distrito_1 = models.Distrito.objects.create(nombre="distrito central", region=region_1)
+        localidad_1 = models.Localidad.objects.create(nombre="localidad central", distrito=distrito_1)
+        escuela = models.Escuela.objects.create(cue="60000000", nombre="DTE", localidad=localidad_1)
+
+        # Como ahora existe la escuela cue 60000000, tiene que retornarla siempre
+        response = self.client.get('/api/escuelas?conformada=false&localidad__distrito__region__numero=2', format='json')
+        self.assertEqual(response.data['meta']['pagination']['count'], 4)
+
 
     def test_puede_crear_escuela(self):
         # Prepara el usuario para chequear contra la api

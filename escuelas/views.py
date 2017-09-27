@@ -9,7 +9,9 @@ from django.contrib.auth.models import User, Group, Permission
 from django.core.files import File
 
 from rest_framework.filters import SearchFilter
-from rest_framework.filters import DjangoFilterBackend
+from django_filters.rest_framework import DjangoFilterBackend
+
+import rest_framework.filters
 
 from rest_framework.decorators import list_route
 from rest_framework.decorators import detail_route
@@ -66,16 +68,36 @@ class UserViewSet(viewsets.ModelViewSet):
 class EscuelaViewSet(viewsets.ModelViewSet):
     queryset = models.Escuela.objects.all()
     serializer_class = serializers.EscuelaSerializer
-    filter_backends = [SearchFilter, DjangoFilterBackend]
+    filter_backends = [SearchFilter]
     search_fields = ['cue', 'nombre', 'localidad__nombre', 'nivel__nombre', 'programas__nombre']
-    filter_fields = ['localidad__distrito__region__numero', 'conformada']
+    #filter_fields = ['localidad__distrito__region__numero', 'conformada']
 
     def get_queryset(self):
         #solo_padre = Q(padre__isnull=True)
         #queryset = models.Escuela.objects.filter(solo_padre)
 
         queryset = models.Escuela.objects.all()
+
         query = self.request.query_params.get('query', None)
+
+        filtro_conformada = self.request.query_params.get('conformada')
+        filtro_region = self.request.query_params.get('localidad__distrito__region__numero')
+
+        if filtro_region:
+            filtro = Q(localidad__distrito__region__numero=filtro_region) | Q(cue=60000000)
+            queryset = queryset.filter(filtro)
+
+        if filtro_conformada:
+
+            if filtro_conformada.lower() == 'true':
+                filtro_conformada = True
+            else:
+                filtro_conformada = False
+
+            filtro = Q(conformada=filtro_conformada)
+            queryset = queryset.filter(filtro)
+
+
 
         if query:
             filtro_cue = Q(cue__icontains=query)
@@ -131,11 +153,22 @@ class EventoViewSet(viewsets.ModelViewSet):
     serializer_class = serializers.EventoSerializer
     filter_backends = [SearchFilter, DjangoFilterBackend]
     search_fields = ['escuela__nombre', 'escuela__cue', 'responsable__apellido', 'responsable__dni', 'titulo']
-    filter_fields = ['escuela__localidad__distrito__region__numero']
 
     def get_queryset(self):
         queryset = self.queryset
         query = self.request.query_params.get('query', None)
+
+        filtro_region = self.request.query_params.get('escuela__localidad__distrito__region__numero', None)
+        filtro_perfil = self.request.query_params.get('perfil', None)
+
+        if filtro_region:
+            filtro = Q(escuela__localidad__distrito__region__numero=filtro_region) | Q(escuela__cue=60000000)
+            queryset = queryset.filter(filtro)
+
+            if filtro_perfil:
+                usuario = models.Perfil.objects.get(id=filtro_perfil)
+                filtro = Q(responsable=usuario) | Q(acompaniantes=usuario)
+                queryset = queryset.filter(filtro)
 
         if query:
             filtro_escuela = Q(escuela__nombre__icontains=query)
@@ -145,7 +178,7 @@ class EventoViewSet(viewsets.ModelViewSet):
 
             queryset = queryset.filter(filtro_escuela | filtro_escuela_cue | filtro_responsable_apellido | filtro_responsable_dni)
 
-        return queryset
+        return queryset.distinct()
 
     def perform_update(self, serializer):
         return self.guardar_modelo_teniendo_en_cuenta_el_acta(serializer)
