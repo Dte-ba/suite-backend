@@ -235,7 +235,7 @@ class EventoViewSet(viewsets.ModelViewSet):
         eventos = models.Evento.objects.filter(fecha__range=(inicio, fin))
 
         if region:
-            eventos = eventos.filter(escuela__localidad__distrito__region__numero=region)
+            eventos = eventos.filter(Q(escuela__localidad__distrito__region__numero=region) | Q(escuela__cue=60000000))
 
         if perfil:
             usuario = models.Perfil.objects.get(id=perfil) # El usuario logeado
@@ -720,6 +720,11 @@ class PaqueteViewSet(viewsets.ModelViewSet):
             ne = p[0]
             id_hardware = p[1]
             marca_de_arranque = p[2]
+            tpmdata = p[3]
+            if tpmdata != "":
+                tpmdata = True
+            else:
+                tpmdata = False
 
             # si la linea de handsontable define las tres columnas, se intenta
             # generar un paquete con esos datos
@@ -730,7 +735,8 @@ class PaqueteViewSet(viewsets.ModelViewSet):
                     ne=ne,
                     id_hardware=id_hardware,
                     marca_de_arranque=marca_de_arranque,
-                    estado=estadoPendiente
+                    estado=estadoPendiente,
+                    tpmdata=tpmdata
                 )
                 cantidad_de_paquetes_creados += 1
 

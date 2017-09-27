@@ -120,7 +120,8 @@ class PaqueteAdmin(admin.ModelAdmin):
         'estado',
         'fecha_devolucion',
         'id_devolucion',
-        'leido'
+        'leido',
+        'tpmdata'
     )
     search_fields = ('legacy_id', 'estado', 'escuela')
 
