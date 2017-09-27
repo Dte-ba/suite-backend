@@ -716,6 +716,7 @@ class Command(BaseCommand):
             zipanses = paquete['zipanses']
             estado = paquete['estado']
             fecha_devolucion = paquete['fecha_devolucion']
+            id_devolucion = paquete['id_devolucion']
             leido = paquete['leido']
 
 
@@ -736,7 +737,8 @@ class Command(BaseCommand):
                 print "Fecha de envío a ANSES:  ", fecha_envio_anses
                 print "ZIP ANSES:  ", zipanses
                 print "Estado:  ", estado
-                print "Fecha de devolición:  ", fecha_devolucion
+                print "Fecha de devolución:  ", fecha_devolucion,
+                print "ID devolución:  ", id_devolucion,
                 print "Leido:  ", leido
                 print "======================================================================================================"
 
@@ -781,6 +783,7 @@ class Command(BaseCommand):
             objeto_paquete.zip_paquete = zipanses
             objeto_paquete.estado = objeto_estado
             objeto_paquete.fecha_devolucion = fecha_devolucion
+            objeto_paquete.id_devolucion = id_devolucion
             objeto_paquete.leido = leido
 
             objeto_paquete.save()

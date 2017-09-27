@@ -119,6 +119,7 @@ class PaqueteAdmin(admin.ModelAdmin):
         'zip_paquete',
         'estado',
         'fecha_devolucion',
+        'id_devolucion',
         'leido'
     )
     search_fields = ('legacy_id', 'estado', 'escuela')

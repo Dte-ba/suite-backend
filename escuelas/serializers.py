@@ -273,6 +273,7 @@ class PaqueteSerializer(CustomSerializer):
             'zip_paquete',
             'estado',
             'fecha_devolucion',
+            'id_devolucion',
             'leido'
         )
 

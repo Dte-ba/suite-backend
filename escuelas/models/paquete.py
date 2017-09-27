@@ -14,6 +14,7 @@ class Paquete(models.Model):
     zip_paquete = models.CharField(max_length=512, default=None, blank=True, null=True) # Zip con pedido y llaves que se envía por mail a Educar
     estado = models.ForeignKey('EstadoDePaquete', on_delete=models.CASCADE, related_name='paquetes', default=None, blank=True, null=True)
     fecha_devolucion = models.DateField(default=None, blank=True, null=True) # Fecha en que se recibió el paquete solicitado desde Educar
+    id_devolucion = models.IntegerField(default=None, blank=True, null=True) # ID que se relaciona con la tabla devoluciones (legacy)
     leido = models.BooleanField(default=False)
 
     def __unicode__(self):
