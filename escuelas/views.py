@@ -665,7 +665,7 @@ class ValidacionViewSet(viewsets.ModelViewSet):
     serializer_class = serializers.ValidacionSerializer
     filter_backends = [SearchFilter, DjangoFilterBackend]
     search_fields = ['autor__nombre', 'escuela__nombre', 'escuela__cue', 'estado__nombre']
-    filter_fields = ['escuela__nombre']
+    filter_fields = ['escuela__nombre', 'escuela__localidad__distrito__region__numero']
 
     def get_queryset(self):
         queryset = models.Validacion.objects.all()
