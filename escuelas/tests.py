@@ -286,6 +286,49 @@ class GeneralesTestCase(APITestCase):
         self.assertEqual(models.Paquete.objects.all().count(), 1)
 
 
+
+    def test_puede_exportar_validaciones(self):
+        # Prepara el usuario para chequear contra la api
+        user = User.objects.create_user(username='test', password='123')
+        self.client.force_authenticate(user=user)
+
+        # Se genera un grupo
+        grupo = Group.objects.create(name="Administrador")
+
+        # Se genera un usuario demo
+        user_2 = User.objects.create_user(username='demo', password='123')
+        user_2.perfil.group = grupo
+        user_2.perfil.save()
+
+        # Se genera 1 escuela
+        region_1 = models.Region.objects.create(numero=1)
+        distrito_1 = models.Distrito.objects.create(nombre="distrito1", region=region_1)
+        localidad_1 = models.Localidad.objects.create(nombre="localidad1", distrito=distrito_1)
+        escuela_1 = models.Escuela.objects.create(cue="1", nombre="Escuela 1", localidad=localidad_1)
+
+        # Se crean estados de validacion
+        estado_aprobada = models.EstadoDeValidacion.objects.create(nombre="Aprobada")
+        estado_objetada = models.EstadoDeValidacion.objects.create(nombre="Objetada")
+        estado_pendiente = models.EstadoDeValidacion.objects.create(nombre="Pendiente")
+
+        # Primero no tiene que haber ninguna validación
+        self.assertEqual(models.Validacion.objects.all().count(), 0)
+
+        # Se crean 3 validaciones con distinta fecha y distintos estados
+        validacion_aprobada = models.Validacion.objects.create(fecha_de_alta="2017-10-01", autor=user_2.perfil, cantidad_pedidas="10", cantidad_validadas="10", observaciones="Prueba", estado=estado_aprobada, escuela=escuela_1)
+
+        validacion_objetada = models.Validacion.objects.create(fecha_de_alta="2017-10-03", autor=user_2.perfil, cantidad_pedidas="100", cantidad_validadas="0", observaciones="Esta no paso", estado=estado_objetada, escuela=escuela_1)
+
+        validacion_pendiente = models.Validacion.objects.create(fecha_de_alta="2017-10-10", autor=user_2.perfil, cantidad_pedidas="120", cantidad_validadas="0", observaciones="Esperando", estado=estado_pendiente, escuela=escuela_1)
+
+        response = self.client.get('/api/validaciones', format='json')
+
+        # Luego tiene que haber 3 validaciones
+        self.assertEqual(response.data['meta']['pagination']['count'], 3)
+
+        response = self.client.get('/api/validaciones/export?inicio=2017-10-01&fin=2017-10-02&estado=Aprobada', format='json')
+
+
     def test_puede_pedir_agenda_administrador(self):
         # Prepara el usuario para chequear contra la api
         user = User.objects.create_user(username='test', password='123')

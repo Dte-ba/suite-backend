@@ -947,10 +947,9 @@ class Command(BaseCommand):
             objeto_comentario_de_validacion.save()
 
             objeto_validacion.cantidad_pedidas = cantidad
-            print(objeto_validacion.estado.nombre)
             if (objeto_validacion.estado.nombre == "Aprobada"):
                 objeto_validacion.cantidad_validadas = cantidad
-                
+
             objeto_validacion.save()
 
             cantidad_de_validaciones_creadas += 1
