@@ -40,9 +40,12 @@ class Escuela(models.Model):
         resource_name = 'escuelas'
 
     def conformar_con(self, escuela_que_se_absorbera, motivo, fecha=None):
-        assert not escuela_que_se_absorbera.padre        # No permite re-absorber
-        assert not escuela_que_se_absorbera == self      # Ni conformarse consigo misma
-        #assert not self.padre                            # Ni conformar una escuela ya conformada por otra
+        
+        if escuela_que_se_absorbera.padre:
+            raise Exception('La escuela seleccionada (cue: %s) ya fue conformada' %(escuela_que_se_absorbera.cue))
+
+        if escuela_que_se_absorbera == self:
+            raise Exception('No se puede conformar una escuela consigo misma')
 
         escuela_que_se_absorbera.padre = self
         escuela_que_se_absorbera.motivo_de_conformacion = motivo

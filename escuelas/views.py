@@ -135,13 +135,14 @@ class EscuelaViewSet(viewsets.ModelViewSet):
     def conformar(self, request, pk=None):
         escuela_padre = self.get_object()
 
-        id_escuela = int(request.data['escuela_que_se_absorbera'][0])
-        id_motivo = int(request.data['motivo_id'][0])
+        id_escuela = int(request.data['escuela_que_se_absorbera'])
+        id_motivo = int(request.data['motivo_id'])
 
         escuela = models.Escuela.objects.get(id=id_escuela)
         motivo = models.MotivoDeConformacion.objects.get(id=id_motivo)
 
         escuela_padre.conformar_con(escuela, motivo)
+
         return Response({'fechaConformacion': escuela.fecha_conformacion})
 
 class ContactoViewSet(viewsets.ModelViewSet):
@@ -264,8 +265,6 @@ class EventoViewSet(viewsets.ModelViewSet):
         fin = self.request.query_params.get('fin', None)
         perfil = self.request.query_params.get('perfil', None)
         region = self.request.query_params.get('region', None)
-
-        # import ipdb; ipdb.set_trace()
 
         eventos = models.Evento.objects.filter(fecha__range=(inicio, fin))
 
