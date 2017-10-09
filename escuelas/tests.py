@@ -942,11 +942,11 @@ class GeneralesTestCase(APITestCase):
         self.assertEqual(response.data['meta']['pagination']['count'], 1)
 
         # No debería permitirse conformar una escuela más de una vez.
-        with self.assertRaises(AssertionError):
+        with self.assertRaises(Exception):
             escuela_1.conformar_con(escuela_3, motivo)
 
         # Ni una escuela con sigo misma
-        with self.assertRaises(AssertionError):
+        with self.assertRaises(Exception):
             escuela_1.conformar_con(escuela_1, motivo)
 
         # Ni una escuela que ya se conformó
