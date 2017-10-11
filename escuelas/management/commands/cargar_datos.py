@@ -1381,7 +1381,7 @@ class Command(BaseCommand):
             objeto_evento.save()
 
             log("Se ha vinculado el registro:")
-            log("Acomaniante: ", acompaniante['nombre'], "al evento con legacy_id ", acompaniante['legacy_id'])
+            log("Acomaniante: ", acompaniante['nombre'], "al evento con legacy_id ", str(acompaniante['legacy_id']))
             log("===========")
 
     def obtener_datos_desde_api(self, data):
