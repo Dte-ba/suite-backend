@@ -22,6 +22,7 @@ comandos:
 	@echo "    ${G}cargar_datos${N}                Carga toda la información inicial de los datos (escuelas + usuarios + etc...)."
 	@echo "    ${G}cargar_datos filtro='a'${N}     Permite lanzar la importación de un comando en particular."
 	@echo "    ${G}cargar_datos depuracion='1'${N} Activa el modo verbose."
+	@echo "    ${G}cargar_datos perfil_id='1'${N} Ejecuta los comandos solo para ese perfil_id."
 	@echo "    ${G}cargar_usuarios_demo${N}        Carga usuarios de prueba."
 	@echo ""
 	@echo "    ${G}generar_estaticos${N}   Genera los archivos estáticos."
@@ -108,7 +109,7 @@ filtro=""
 depuracion="0"
 
 cargar_datos:
-	python manage.py cargar_datos --filtro $(filtro) --depuracion $(depuracion)
+	python manage.py cargar_datos --filtro $(filtro) --depuracion $(depuracion) --perfil_id $(perfil_id)
 
 cargar_usuarios_demo:
 	python scripts/cargar_usuarios_demo.py

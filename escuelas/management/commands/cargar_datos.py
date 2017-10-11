@@ -19,6 +19,7 @@ from django.contrib.contenttypes.models import ContentType
 # Esta variable no se debe modificar. Se le puede cambiar el valor en tiempo
 # de ejecución invocando el comando "make cargar_datos depuracion=1"
 MODO_VERBOSE = False
+PERFIL = False
 
 def log(*k):
     global MODO_VERBOSE
@@ -46,11 +47,16 @@ class Command(BaseCommand):
     def add_arguments(self, parser):
         parser.add_argument('--filtro', help="Aplica un filtro a los comandos que se ejecutaran")
         parser.add_argument('--depuracion', help="Permite activar todos los detalles (verbose mode)")
+        parser.add_argument('--perfil_id', help="Permite aplicar un filtro de perfil al comando ejecutado")
 
     def handle(self, *args, **options):
         global MODO_VERBOSE
+        global PERFIL
         filtro = options['filtro']
         depuracion = options['depuracion']
+        perfil_id = options['perfil_id']
+
+        print(u"perfil_id: " + perfil_id)
 
 
         # A continuación están todos los comandos que el importador
@@ -91,6 +97,7 @@ class Command(BaseCommand):
             'importar_tareas',
             'importar_comentarios_de_tareas',
             'importar_eventos',
+            'importar_eventos_por_perfil',
             'vincular_acompaniantes',
             'importar_conformaciones',
             'importar_validaciones',
@@ -103,6 +110,11 @@ class Command(BaseCommand):
 
         print("Procesando comandos a ejecutar ...")
         esperar(1)
+
+        if perfil_id:
+            PERFIL = perfil_id
+            print(PERFIL)
+            print(u"Se ejecutarán los comandos solo para el perfil %s") %(perfil_id)
 
         if depuracion != '0':
             print(u"Modo depuracion activado.")
@@ -125,6 +137,7 @@ class Command(BaseCommand):
         else:
             print("Se ejecutaran %d comandos" %(len(comandos)))
             self.ejecutar_comandos(comandos)
+
 
     def ejecutar_comandos(self, comandos):
         esperar(1)
@@ -177,6 +190,138 @@ class Command(BaseCommand):
 
     def importar_eventos(self):
         eventos = self.obtener_datos_desde_api('eventos')['eventos']
+        cantidad_de_eventos_creados = 0
+        cantidad_de_eventos_omitidos = 0
+        cantidad_de_eventos_omitidos_por_perfil = 0
+        cantidad_de_eventos_omitidos_por_escuela = 0
+        cantidad_de_eventos_omitidos_por_categoria = 0
+
+        print("Creando Eventos")
+        bar = barra_de_progreso(simple=False)
+
+
+
+        for evento in bar(eventos):
+            legacy_id = evento['legacy_id']
+            fecha_inicio = evento['fecha_inicio']
+            hora_inicio = evento['hora_inicio']
+            fecha_final = evento['fecha_final']
+            hora_final = evento['hora_final']
+            fecha_carga = evento['fecha_de_carga']
+            cue = evento['cue']
+            #responsable = evento['usuario']
+            dni_usuario = evento['dni_usuario']
+            objetivo = evento['objetivo']
+            cantidad_de_participantes = evento['cantidad_de_participantes']
+            minuta = evento['minuta']
+            acta = evento['acta']
+            categoria = evento['categoria'].capitalize()
+            subcategoria = evento['subcategoria'].capitalize()
+
+            if categoria == "Asistencia a escuela":
+                categoria = "Asistencia"
+
+            if subcategoria == "Servicio técnico de netbook":
+                subcategoria = "Servicio técnico a netbook"
+
+            titulo = categoria + " " + subcategoria
+
+            categoria_2 = categoria + "/" + subcategoria
+
+            if MODO_VERBOSE:
+                print "========================================================================================================================"
+                print "   Se intenta crear el evento con legacy_id: " + str(legacy_id) + ", asociado a cue: " + str(cue)
+                print "========================================================================================================================"
+                print "legacy_id:               " + str(legacy_id)
+                print "Titulo:                  " + titulo
+                print "Inicio:                  " + fecha_inicio + " " + hora_inicio
+                print "Fin:                     " + fecha_final + " " + hora_final
+                print "Categoria:               " + categoria
+                print "Subcategoria:            " + subcategoria
+                print "Categoria 2:             " + categoria_2
+                print "Objetivo:                " + objetivo
+                print "Acta:                    " + acta
+                print "Responsable:             " + "dni " + dni_usuario
+                print "Fecha de creacion:       " + fecha_carga
+                print "Cant. de Participantes:  " + str(cantidad_de_participantes)
+                print "Escuela:                 " + str(cue)
+                print "=============================="
+
+
+            try:
+                objeto_responsable = models.Perfil.objects.get(dni=dni_usuario)
+            except models.Perfil.DoesNotExist:
+                log("Error, no existe registro de usuario buscado %s. No se registrará el evento." %(dni_usuario))
+                cantidad_de_eventos_omitidos += 1
+                cantidad_de_eventos_omitidos_por_perfil += 1
+                continue
+
+            try:
+                objeto_escuela = models.Escuela.objects.get(cue=cue)
+            except models.Escuela.DoesNotExist:
+                log("Error, no existe la escuela buscada con cue %s. No se registrará el evento." %(cue))
+                cantidad_de_eventos_omitidos += 1
+                cantidad_de_eventos_omitidos_por_escuela += 1
+                continue
+
+            try:
+                objeto_categoria = models.CategoriaDeEvento.objects.get(nombre=categoria_2)
+            except models.CategoriaDeEvento.DoesNotExist:
+                log("Error, no existe la categoria %s. No se registrará el evento" %(categoria_2))
+                cantidad_de_eventos_omitidos += 1
+                cantidad_de_eventos_omitidos_por_categoria += 1
+                continue
+
+            try:
+                objeto_evento = models.Evento.objects.get(legacy_id=legacy_id)
+            except models.Evento.DoesNotExist:
+                objeto_evento = models.Evento(legacy_id=legacy_id)
+
+            objeto_evento.responsable = objeto_responsable
+            objeto_evento.escuela = objeto_escuela
+            objeto_evento.categoria = objeto_categoria
+            objeto_evento.titulo = titulo
+            objeto_evento.fecha = fecha_inicio
+            objeto_evento.inicio = hora_inicio
+            objeto_evento.fecha_fin = fecha_final
+            objeto_evento.fin = hora_final
+            objeto_evento.objetivo = objetivo
+            objeto_evento.cantidadDeParticipantes = cantidad_de_participantes
+            objeto_evento.minuta = minuta
+            objeto_evento.acta_legacy = acta
+
+            objeto_evento.save()
+            cantidad_de_eventos_creados += 1
+
+
+            if MODO_VERBOSE:
+                print "=============================="
+                print "   SE HA CREADO EL REGISTRO   "
+                print "=============================="
+                print "legacy_id:               " + str(legacy_id)
+                print "Titulo:                  " + titulo
+                print "Inicio:                  " + fecha_inicio + " " + hora_inicio
+                print "Fin:                     " + fecha_final + " " + hora_final
+                print "Categoria:               " + categoria_2
+                print "Objetivo:                " + objetivo
+                print "Acta:                    " + acta
+                print "Responsable:             " + objeto_responsable.apellido + ", " + objeto_responsable.nombre + " (dni " + dni_usuario + ")"
+                print "Fecha de creacion:       " + fecha_carga
+                print "Cant. de Participantes:  " + str(cantidad_de_participantes)
+                print "Escuela:                 " + objeto_escuela.nombre + " " + str(cue)
+                print "=============================="
+
+        print("   Se crearon %d eventos correctamente." %(cantidad_de_eventos_creados))
+        print "Total de eventos omitidos: %d" %(cantidad_de_eventos_omitidos)
+        print "Eventos omitidos por no encontrar escuela: %d" %(cantidad_de_eventos_omitidos_por_escuela)
+        print "Eventos omitidos por no encontrar perfil: %d" %(cantidad_de_eventos_omitidos_por_perfil)
+        print "Eventos omitidos por no encontrar categoria: %d" %(cantidad_de_eventos_omitidos_por_categoria)
+
+    def importar_eventos_por_perfil(self):
+        if PERFIL:
+            print (u"El ID de perfil es " + PERFIL)
+        ruta = "eventos_por_perfil?perfil_id=" + PERFIL
+        eventos = self.obtener_datos_desde_api(ruta)['eventos_por_perfil']
         cantidad_de_eventos_creados = 0
         cantidad_de_eventos_omitidos = 0
         cantidad_de_eventos_omitidos_por_perfil = 0
