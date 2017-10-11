@@ -1360,7 +1360,7 @@ class Command(BaseCommand):
             legacy_id = acompaniante['legacy_id']
             dni_usuario = acompaniante['dni_usuario']
 
-            log("Busando acompaniantes para legacy_id: ", legacy_id)
+            log("Busando acompaniantes para legacy_id: ", str(legacy_id))
 
             try:
                 objeto_evento = models.Evento.objects.get(legacy_id=legacy_id)
