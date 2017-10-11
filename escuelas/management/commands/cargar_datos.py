@@ -99,6 +99,7 @@ class Command(BaseCommand):
             'importar_eventos',
             'importar_eventos_por_perfil',
             'vincular_acompaniantes',
+            'vincular_acompaniantes_por_perfil',
             'importar_conformaciones',
             'importar_validaciones',
             'importar_comentarios_de_validaciones',
@@ -1312,6 +1313,44 @@ class Command(BaseCommand):
 
     def vincular_acompaniantes(self):
         acompaniantes = self.obtener_datos_desde_api('acompaniantes_eventos')['acompaniantes_eventos']
+
+        print("Vinculando Acompañantes de eventos")
+        bar = barra_de_progreso(simple=False)
+
+        for acompaniante in bar(acompaniantes):
+
+            legacy_id = acompaniante['legacy_id']
+            dni_usuario = acompaniante['dni_usuario']
+
+            log("Busando acompaniantes para legacy_id: ", legacy_id)
+
+            try:
+                objeto_evento = models.Evento.objects.get(legacy_id=legacy_id)
+            except models.Evento.DoesNotExist:
+                log("Error, no existe registro de evento con legacy_id %s. No se registrará el acompañante." %(legacy_id))
+                # cantidad_de_comentarios_de_tareas_omitidos += 1
+                continue
+
+            try:
+                models.Perfil.objects.get(dni=dni_usuario)
+            except models.Perfil.DoesNotExist:
+                log("Error, no existe registro de usuario buscado %s. No se registrará el acompañante." %(dni_usuario))
+                # cantidad_de_tareas_omitidas += 1
+                continue
+
+            objeto_evento.acompaniantes.add(models.Perfil.objects.get(dni=dni_usuario))
+
+            objeto_evento.save()
+
+            log("Se ha vinculado el registro:")
+            log("Acomaniante: ", acompaniante['nombre'], "al evento con legacy_id ", acompaniante['legacy_id'])
+            log("===========")
+
+    def vincular_acompaniantes_por_perfil(self):
+        if PERFIL:
+            print (u"El ID de perfil es " + PERFIL)
+        ruta = "acompaniantes_eventos_por_perfil?perfil_id=" + PERFIL
+        acompaniantes = self.obtener_datos_desde_api(ruta)['acompaniantes_eventos_por_perfil']
 
         print("Vinculando Acompañantes de eventos")
         bar = barra_de_progreso(simple=False)
