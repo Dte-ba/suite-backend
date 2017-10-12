@@ -11,7 +11,7 @@ class Escuela(models.Model):
     latitud = models.CharField(max_length=64, default=None, blank=True, null=True)
     longitud = models.CharField(max_length=64, default=None, blank=True, null=True)
     localidad = models.ForeignKey('Localidad', related_name='escuelas', default=None, blank=True, null=True)
-    tipo_de_financiamiento = models.ForeignKey('TipoDeFinanciamiento', related_name='escuelas', default=None, blank=True, null=True)
+    tipo_de_financiamiento = models.ManyToManyField('TipoDeFinanciamiento', related_name='escuelas', default=None, blank=True, null=True)
     nivel = models.ForeignKey('Nivel', related_name='escuelas', default=None, blank=True, null=True)
     tipo_de_gestion = models.ForeignKey('TipoDeGestion', related_name='escuelas', default=None, blank=True, null=True)
     area = models.ForeignKey('Area', related_name='escuelas', default=None, blank=True, null=True)
@@ -40,7 +40,7 @@ class Escuela(models.Model):
         resource_name = 'escuelas'
 
     def conformar_con(self, escuela_que_se_absorbera, motivo, fecha=None):
-        
+
         if escuela_que_se_absorbera.padre:
             raise Exception('La escuela seleccionada (cue: %s) ya fue conformada' %(escuela_que_se_absorbera.cue))
 

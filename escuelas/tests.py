@@ -865,10 +865,10 @@ class GeneralesTestCase(APITestCase):
                         }
                     },
                     "tipo_de_financiamiento": {
-                        "data": {
+                        "data": [{
                             "type": "tipos-de-financiamiento",
-                            "id": tipo_de_financiamiento.id,
-                        }
+                            "id": tipo_de_financiamiento.id
+                        }]
                     },
                     "tipo_de_gestion": {
                         "data": {
