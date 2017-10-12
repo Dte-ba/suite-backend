@@ -585,7 +585,7 @@ class TareaViewSet(viewsets.ModelViewSet):
     serializer_class = serializers.TareaSerializer
     filter_backends = [SearchFilter, DjangoFilterBackend]
     search_fields = ['fecha_de_alta', 'titulo', 'autor__nombre', 'autor__apellido']
-    filter_fields = ['autor__nombre']
+    filter_fields = ['escuela__localidad__distrito__region__numero']
 
 
     #
