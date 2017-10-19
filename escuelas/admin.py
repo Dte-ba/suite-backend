@@ -63,7 +63,7 @@ class ComentarioDeValidacionInline(admin.TabularInline):
 
 class ValidacionAdmin(admin.ModelAdmin):
     model = models.Validacion
-    list_display = ('fecha_de_alta', 'autor', 'cantidad_pedidas', 'cantidad_validadas', 'estado', 'observaciones', 'escuela')
+    list_display = ('fecha_de_alta', 'fecha_de_modificacion', 'autor', 'cantidad_pedidas', 'cantidad_validadas', 'estado', 'observaciones', 'escuela')
     inlines = [
         ComentarioDeValidacionInline,
     ]

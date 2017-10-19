@@ -245,7 +245,7 @@ class ValidacionSerializer(CustomSerializer):
 
     class Meta:
         model = models.Validacion
-        fields = ('autor', 'fecha_de_alta', 'escuela', 'estado', 'cantidad_pedidas', 'cantidad_validadas', 'observaciones')
+        fields = ('autor', 'fecha_de_alta', 'fecha_de_modificacion', 'escuela', 'estado', 'cantidad_pedidas', 'cantidad_validadas', 'observaciones')
 
 
 class EstadoDePaqueteSerializer(CustomSerializer):

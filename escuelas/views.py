@@ -911,19 +911,19 @@ class PaqueteViewSet(viewsets.ModelViewSet):
                     region = paquete.escuela.localidad.distrito.region.numero
                     distrito = paquete.escuela.localidad.distrito.nombre
                 else:
-                    region = "Sin Datos"
-                    distrito = "Sin Datos"
+                    region = "Sin Region"
+                    distrito = "Sin Distrito"
 
                 if paquete.escuela.piso:
                     serie_servidor = paquete.escuela.piso.serie
                 else:
-                    serie_servidor = "Sin Datos"
+                    serie_servidor = "Sin Servidor"
             else:
-                cue = "Sin Datos"
-                escuela = "Sin Datos"
-
-
-
+                cue = "Sin CUE"
+                escuela = "Sin Escuela"
+                region = "Sin Region"
+                distrito = "Sin Distrito"
+                serie_servidor = "Sin Servidor"
 
 
             id_hardware = paquete.id_hardware

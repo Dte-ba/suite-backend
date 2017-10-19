@@ -117,6 +117,7 @@ class GeneralesTestCase(APITestCase):
                 "id": 1,
                 "attributes": {
                     "fecha-de-alta": "2017-11-09",
+                    "fecha_de_modificacion": "2017-11-09",
                     "cantidad-pedidas": "16",
                     "cantidad-validadas": "",
                     "observaciones": "Probando..."

@@ -5,6 +5,7 @@ class Validacion(models.Model):
     legacy_id = models.IntegerField(default=None, blank=True, null=True) # Para historico de SUITE Legacy
 
     fecha_de_alta = models.DateField(default=None, blank=True,null=True)
+    fecha_de_modificacion = models.DateField(default=None, blank=True,null=True)
     autor = models.ForeignKey('Perfil', related_name='validaciones', default=None, blank=True, null=True) #usuario creador de la validacion
     cantidad_pedidas = models.CharField(max_length=255, default=None, blank=True, null=True)
     cantidad_validadas = models.CharField(max_length=255, default=None, blank=True, null=True)
@@ -16,7 +17,7 @@ class Validacion(models.Model):
     escuela = models.ForeignKey('Escuela', related_name='validaciones', on_delete=models.CASCADE, default=None, blank=True, null=True)
 
     def __unicode__(self):
-        return str(self.fecha_de_alta)
+        return str(self.fecha_de_modificacion)
 
     class Meta:
         db_table = 'validaciones'
