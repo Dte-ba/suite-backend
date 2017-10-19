@@ -145,6 +145,68 @@ class EscuelaViewSet(viewsets.ModelViewSet):
 
         return Response({'fechaConformacion': escuela.fecha_conformacion})
 
+
+    def obtener_escuelas_para_exportar(self):
+        escuelas = models.Escuela.objects.all()
+        filas = []
+        for escuela in escuelas:
+            #import ipdb; ipdb.set_trace()
+            nombre = escuela.nombre
+            cue = escuela.cue
+            direccion = escuela.direccion
+            region = escuela.localidad.distrito.region.numero
+            localidad = escuela.localidad.nombre
+            distrito = escuela.localidad.distrito.nombre
+            if escuela.modalidad :
+                modalidad = escuela.modalidad.nombre
+            else:
+                modalidad = ''
+            filas.append([nombre,cue,direccion,region,localidad,distrito,modalidad])
+        return filas
+
+
+    @list_route(methods=['get'])
+    def export_raw(self, request):
+                        
+        return Response({
+            'filas': self.obtener_escuelas_para_exportar()  
+    })
+
+    @list_route(methods=['get'])
+    def export(self, request):
+
+        escuelas = self.obtener_escuelas_para_exportar()
+        response = HttpResponse()
+        response['Content-Disposition'] = 'attachment; filename="escuelas-export.xls"'
+        response['Content-Type'] = 'application/vnd.ms-excel'
+
+        wb = xlwt.Workbook(encoding='utf-8')
+        ws = wb.add_sheet('Escuelas')
+
+        font_style = xlwt.XFStyle()
+        font_style.font.bold = True
+
+        #TODO Definir todos los campos del archivo
+        columns = ['Escuela', 'CUE','Dirección','Región', 'Localidad', 'Distrito', 'Modalidad'] 
+        col_num = 6 
+
+        # Escribir los headers
+        for col_num in range(len(columns)):
+            ws.write(0, col_num, columns[col_num], font_style)
+
+        ws.col(0).width = 256 * 12
+        ws.col(1).width = 256 * 12      
+        font_style = xlwt.XFStyle()
+
+        row_num = 0
+        
+        for (indice, fila) in enumerate(escuelas):
+            for (indice_columna, columna) in enumerate(fila): 
+                ws.write(indice+1, indice_columna, columna, font_style)
+   
+        wb.save(response)
+        return(response)
+
 class ContactoViewSet(viewsets.ModelViewSet):
     queryset = models.Contacto.objects.all()
     serializer_class = serializers.ContactoSerializer

@@ -908,6 +908,32 @@ class GeneralesTestCase(APITestCase):
         self.assertEqual(response.data['cue'], '88008800')
         self.assertEqual(response.data['nombre'], 'Escuela de Prueba desde el test')
 
+    def test_puede_exportar_escuelas(self):
+        # Prepara el usuario para chequear contra la api
+        user = User.objects.create_user(username='test', password='123')
+        self.client.force_authenticate(user=user)
+
+        motivo = models.MotivoDeConformacion.objects.create(nombre="Prueba")
+        # Se crean 1 localidad, 1 distrito y 1 región
+        region_1 = models.Region.objects.create(numero=1)
+        distrito_1 = models.Distrito.objects.create(nombre="distrito1", region=region_1)
+        localidad_1 = models.Localidad.objects.create(nombre="localidad1", distrito=distrito_1)
+        modalidad_1 = models.Modalidad.objects.create(nombre="Especial")
+
+        # Se generan 3 escuelas
+        escuela_1 = models.Escuela.objects.create(nombre=u'San Martín', cue="1", localidad=localidad_1, modalidad=modalidad_1)
+        escuela_2 = models.Escuela.objects.create(cue="2", localidad=localidad_1, modalidad=modalidad_1)
+        escuela_3 = models.Escuela.objects.create(cue="3", localidad=localidad_1)
+ 
+     
+
+        # Inicialmente las 3 escuelas son de primer nivel, se retornan en /api/escuelas
+        response = self.client.get('/api/escuelas/export_raw', format='json')
+        self.assertEqual(len(response.data['filas']), 3)
+        self.assertEqual(response.data['filas'][0][0], u'San Martín' )
+        self.assertEqual(response.data['filas'][0][3], 1 )
+    
+
     def test_puede_conformar_escuelas(self):
         # Prepara el usuario para chequear contra la api
         user = User.objects.create_user(username='test', password='123')
