@@ -842,14 +842,28 @@ class PaqueteViewSet(viewsets.ModelViewSet):
         row_num = 0
 
         for paquete in paquetes:
-            cue = paquete.escuela.cue
-            escuela = paquete.escuela.nombre
-            region = paquete.escuela.localidad.distrito.region.numero
-            distrito = paquete.escuela.localidad.distrito.nombre
-            if paquete.escuela.piso:
-                serie_servidor = paquete.escuela.piso.serie
+            if paquete.escuela:
+                cue = paquete.escuela.cue
+                escuela = paquete.escuela.nombre
+                if paquete.escuela.localidad:
+                    region = paquete.escuela.localidad.distrito.region.numero
+                    distrito = paquete.escuela.localidad.distrito.nombre
+                else:
+                    region = "Sin Datos"
+                    distrito = "Sin Datos"
+
+                if paquete.escuela.piso:
+                    serie_servidor = paquete.escuela.piso.serie
+                else:
+                    serie_servidor = "Sin Datos"
             else:
-                serie_servidor = "Sin Datos"
+                cue = "Sin Datos"
+                escuela = "Sin Datos"
+
+
+
+
+
             id_hardware = paquete.id_hardware
             marca_de_arranque = paquete.marca_de_arranque
             ne = paquete.ne
