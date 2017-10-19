@@ -867,6 +867,88 @@ class PaqueteViewSet(viewsets.ModelViewSet):
         }
         return Response(estadisticas)
 
+    @list_route(methods=['get'])
+    def export(self, request):
+
+        estado = self.request.query_params.get('estado', None)
+        paquetes = models.Paquete.objects.all()
+
+        if estado:
+            objeto_estado = models.EstadoDePaquete.objects.get(nombre=estado)
+            paquetes = paquetes.filter(estado=objeto_estado)
+
+        response = HttpResponse()
+        response['Content-Disposition'] = 'attachment; filename="paquetes-export.xls"'
+        response['Content-Type'] = 'application/vnd.ms-excel'
+
+        wb = xlwt.Workbook(encoding='utf-8')
+        ws = wb.add_sheet('Paquetees')
+
+        font_style = xlwt.XFStyle()
+        font_style.font.bold = True
+
+        columns = ['CUE', 'Escuela', 'Región', 'Distrito', 'Nro Serie Servidor', 'ID Hardware', 'Marca de Arranque', 'NE', 'Pedido', 'Estado']
+        col_num = 2 # 0 y 1 son obligatorias
+
+        # Escribir los headers
+        for col_num in range(len(columns)):
+            ws.write(0, col_num, columns[col_num], font_style)
+
+        ws.col(0).width = 256 * 12
+        ws.col(1).width = 256 * 12
+        ws.col(2).width = 256 * 18
+        ws.col(3).width = 256 * 30
+
+        font_style = xlwt.XFStyle()
+
+        row_num = 0
+
+        for paquete in paquetes:
+            if paquete.escuela:
+                cue = paquete.escuela.cue
+                escuela = paquete.escuela.nombre
+                if paquete.escuela.localidad:
+                    region = paquete.escuela.localidad.distrito.region.numero
+                    distrito = paquete.escuela.localidad.distrito.nombre
+                else:
+                    region = "Sin Datos"
+                    distrito = "Sin Datos"
+
+                if paquete.escuela.piso:
+                    serie_servidor = paquete.escuela.piso.serie
+                else:
+                    serie_servidor = "Sin Datos"
+            else:
+                cue = "Sin Datos"
+                escuela = "Sin Datos"
+
+
+
+
+
+            id_hardware = paquete.id_hardware
+            marca_de_arranque = paquete.marca_de_arranque
+            ne = paquete.ne
+            fecha_pedido = paquete.fecha_pedido
+            pedido = fecha_pedido.strftime("%Y-%m-%d")
+            estado = paquete.estado.nombre
+
+
+            row_num += 1
+            ws.write(row_num, 0, cue, font_style)
+            ws.write(row_num, 1, escuela, font_style)
+            ws.write(row_num, 2, region, font_style)
+            ws.write(row_num, 3, distrito, font_style)
+            ws.write(row_num, 4, serie_servidor, font_style)
+            ws.write(row_num, 5, id_hardware, font_style)
+            ws.write(row_num, 6, marca_de_arranque, font_style)
+            ws.write(row_num, 7, ne, font_style)
+            ws.write(row_num, 8, pedido, font_style)
+            ws.write(row_num, 9, estado, font_style)
+
+        wb.save(response)
+        return(response)
+
     @list_route(methods=['post'])
     def importacionMasiva(self, request, **kwargs):
         # TODO: evitar esta conversión, debería llegar el dicionario de datos
