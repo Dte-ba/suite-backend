@@ -9,6 +9,9 @@ L=[01;30m
 
 BIN_MANAGE=python manage.py
 BIN_MANAGE_RELATIVO=python manage.py
+BIN_DOKKU=~/.dokku/contrib/dokku_client.sh
+DB_NOMBRE_DEL_DUMP= ~/Dropbox/4cores/Backups/suite-backend-produccion-dtelab_`date +'%Y%m%d'`.dump
+DB_DUMP_MAS_RECIENTE=~/Dropbox/4cores/Backups/`ls -Art ~/Dropbox/4cores/Backups/  | tail -n 1`
 
 comandos:
 	@echo ""
@@ -36,7 +39,8 @@ comandos:
 	@echo "  ${Y}Para gestionar datos${N}"
 	@echo ""
 	@echo "    $(G)generar_fixture_desde_base_de_datos$(N)   Genera un fixture nuevo."
-	@echo "    $(R)cargar_fixture_borrando_base_de_datos$(N) Pisa la base de datos."
+	@echo "    $(G)realizar_backup_desde_produccion$(N)      Descarga y guardar un dump en dropbox."
+	@echo "    $(G)cargar_ultimo_dump_localmente$(N)         Carga el último dump de dropbox sobre un postgres local."
 	@echo ""
 	@echo ""
 
@@ -93,9 +97,6 @@ grafico: _esta_instalado_graphviz
 	@${BIN_MANAGE} graph_models escuelas --no-color -g -o grafico_db.png
 	@echo "Se ha creado el archivo grafico_db.png"
 
-cargar_fixture_borrando_base_de_datos:
-	python manage.py loaddata fixture_db.json
-
 generar_fixture_desde_base_de_datos:
 	@echo ""
 	@echo "$(V)Generando fixture y guardándolo en el archivo fixture_db.json$(N)"
@@ -113,3 +114,13 @@ cargar_datos:
 
 cargar_usuarios_demo:
 	python scripts/cargar_usuarios_demo.py
+
+realizar_backup_desde_produccion:
+	@echo "${G}Creando el archivo ${DB_NOMBRE_DEL_DUMP}${N}"
+	${BIN_DOKKU} postgres:export suite-backend-produccion-dtelab > ${DB_NOMBRE_DEL_DUMP}
+
+
+cargar_ultimo_dump_localmente:
+	@echo "${G}Se cargará el dump mas reciente: ${DB_DUMP_MAS_RECIENTE}${N}"
+	dropdb --if-exists suite -e; createdb suite
+	pg_restore --no-acl --no-owner -d suite ${DB_DUMP_MAS_RECIENTE}
