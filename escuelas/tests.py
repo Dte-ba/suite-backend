@@ -374,27 +374,56 @@ class GeneralesTestCase(APITestCase):
 
         # Se crean dos regiones
         region_1 = models.Region.objects.create(numero=1)
-        region_23 = models.Region.objects.create(numero=23)
+        region_2 = models.Region.objects.create(numero=2)
+        region_3 = models.Region.objects.create(numero=3)
 
         # Se crea dos distritos
         distrito_1 = models.Distrito.objects.create(nombre="distrito1", region=region_1)
-        distrito_2 = models.Distrito.objects.create(nombre="distrito2", region=region_23)
+        distrito_2 = models.Distrito.objects.create(nombre="distrito2", region=region_2)
+        distrito_3 = models.Distrito.objects.create(nombre="distrito3", region=region_3)
 
         # Se crea una localidad
         localidad_1 = models.Localidad.objects.create(nombre="localidad1", distrito=distrito_1)
         localidad_2 = models.Localidad.objects.create(nombre="localidad2", distrito=distrito_2)
+        localidad_3 = models.Localidad.objects.create(nombre="localidad3", distrito=distrito_3)
 
         # Se genera un usuario demo, se asigna una region al perfil
-        user_2 = User.objects.create_user(username='demo', password='123')
-        perfil_2 = user_2.perfil
-        perfil_2.region = region_1
-        perfil_2.group = grupo
-        perfil_2.save()
+        usuario_1 = User.objects.create_user(username='usuario1', password='123')
+        perfil_usuario_1 = usuario_1.perfil
+        perfil_usuario_1.apellido = "Apellido de usuario 1"
+        perfil_usuario_1.region = region_1
+        perfil_usuario_1.group = grupo
+        perfil_usuario_1.save()
+
+        # Se genera un usuario demo, se asigna una region al perfil
+        usuario_2 = User.objects.create_user(username='usuario2', password='123')
+        perfil_usuario_2 = usuario_2.perfil
+        perfil_usuario_2.apellido = "Apellido de usuario 2"
+        perfil_usuario_2.region = region_2
+        perfil_usuario_2.group = grupo
+        perfil_usuario_2.save()
+
+        # Se genera un usuario demo, se asigna una region al perfil
+        usuario_3 = User.objects.create_user(username='usuario3', password='123')
+        perfil_usuario_3 = usuario_3.perfil
+        perfil_usuario_3.apellido = "Apellido de usuario 3"
+        perfil_usuario_3.region = region_3
+        perfil_usuario_3.group = grupo
+        perfil_usuario_3.save()
+
+        # Se genera un usuario extra para la región 3
+        usuario_extra_3 = User.objects.create_user(username='usuario_extra_3', password='123')
+        perfil_usuario_extra_3 = usuario_extra_3.perfil
+        perfil_usuario_extra_3.apellido = "Apellido de usuario extra 3"
+        perfil_usuario_extra_3.region = region_3
+        perfil_usuario_extra_3.group = grupo
+        perfil_usuario_extra_3.save()
+
 
         # Se generan 2 escuela y se les asigna distinta localidad
-        escuela_1 = models.Escuela.objects.create(cue="1", nombre="escuela 1", localidad=localidad_1)
-        escuela_2 = models.Escuela.objects.create(cue="2", nombre="escuela 2", localidad = localidad_2)
         dte = models.Escuela.objects.create(cue="60000000", nombre="DTE", localidad=localidad_1)
+        escuela_2 = models.Escuela.objects.create(cue="2", nombre="escuela 2", localidad=localidad_2)
+        escuela_3 = models.Escuela.objects.create(cue="3", nombre="escuela 3", localidad=localidad_3)
 
 
         # Se crea una categoria
@@ -402,58 +431,85 @@ class GeneralesTestCase(APITestCase):
 
         # Se crean eventos de prueba con fecha de Enero.
         evento_1 = models.Evento.objects.create(
-            titulo="Evento de prueba de region 1 y Responsable perfil 2",
+            titulo=u"Evento de la región 1, del usuario 1",
             categoria=categoria_1,
-            responsable=user_2.perfil,
-            escuela=escuela_1,
+            responsable=usuario_1.perfil,
+            escuela=dte,
             fecha="2017-01-15",
             fecha_fin="2017-01-15")
         evento_2 = models.Evento.objects.create(
-            titulo="Otro evento de prueba de otra escuela, de region 23, de perfil 2",
+            titulo=u"Otro evento de región 1 creado por usuario 2",
             categoria=categoria_1,
-            responsable=user_2.perfil,
-            escuela=escuela_2,
-            fecha="2017-01-25",
-            fecha_fin="2017-01-25")
-        evento_3 = models.Evento.objects.create(
-            titulo="Evento de otro perfil, pero de region 1",
-            categoria=categoria_1,
-            responsable=user.perfil,
-            escuela=escuela_1,
-            fecha="2017-01-25",
-            fecha_fin="2017-01-25")
-        evento_4 = models.Evento.objects.create(
-            titulo="Evento en region Central DTE (60000000)",
-            categoria=categoria_1,
-            responsable=user.perfil,
+            responsable=usuario_2.perfil,
             escuela=dte,
             fecha="2017-01-25",
             fecha_fin="2017-01-25")
+        evento_3 = models.Evento.objects.create(
+            titulo=u"Evento de región 1 pero con responsable usuario 3",
+            categoria=categoria_1,
+            responsable=usuario_3.perfil,
+            escuela=dte,
+            fecha="2017-01-25",
+            fecha_fin="2017-01-25")
+        evento_4 = models.Evento.objects.create(
+            titulo=u"Evento de la escuela 2, del usuario 2",
+            categoria=categoria_1,
+            responsable=usuario_2.perfil,
+            escuela=escuela_2,
+            fecha="2017-01-25",
+            fecha_fin="2017-01-25")
+        evento_5 = models.Evento.objects.create(
+            titulo=u"Evento de la región 3, del usuario 3",
+            categoria=categoria_1,
+            responsable=usuario_3.perfil,
+            escuela=escuela_3,
+            fecha="2017-01-25",
+            fecha_fin="2017-01-25")
+        evento_6 = models.Evento.objects.create(
+            titulo=u"Evento de la región 3 donde es hay un acompante de la 3",
+            categoria=categoria_1,
+            responsable=usuario_3.perfil,
+            escuela=escuela_3,
+            fecha="2017-01-25",
+            fecha_fin="2017-01-25")
+
+        evento_6.acompaniantes.add(usuario_extra_3.perfil)
+        evento_6.save()
+
+
 
         # Pide todos (Caso Administrador, Administración y Referente)
         response = self.client.get('/api/eventos/agenda?inicio=2017-01-01&fin=2017-02-01', format='json')
+        self.assertEqual(response.data['cantidad'], 6)
 
-        self.assertEqual(response.data['cantidad'], 4)
-
-        # Pide solo los de región 1 (Caso Coordinador) (2 en región 1 + el de DTE)
+        # Pide solo los de región 1 (Caso Coordinador) Deberían ser 1 evento, porque los otros son de reponsables de otras regiones.
         response = self.client.get('/api/eventos/agenda?inicio=2017-01-01&fin=2017-02-01&region=1', format='json')
-
-        self.assertEqual(response.data['cantidad'], 3)
-
-        # Pide solo región 23 (Caso Coordinador) (1 En región 23 + el de DTE)
-        response = self.client.get('/api/eventos/agenda?inicio=2017-01-01&fin=2017-02-01&region=23', format='json')
-
-        self.assertEqual(response.data['cantidad'], 2)
-
-        # Pide solo perfil 2 (Caso Facilitador ) y Región 1 (Solo el evento 1, el de DTE es de otro perfil)
-        response = self.client.get('/api/eventos/agenda?inicio=2017-01-01&fin=2017-02-01&perfil=2&region=1', format='json')
-
         self.assertEqual(response.data['cantidad'], 1)
 
-        # Pide solo perfil 1 (Caso Facilitador ) y Región 1 (Evento del perfil + DTE)
-        response = self.client.get('/api/eventos/agenda?inicio=2017-01-01&fin=2017-02-01&perfil=1&region=1', format='json')
-
+        # Pide un coordinador de la región 2, debería ver 2 eventos, uno de su región y otro de la dte
+        response = self.client.get('/api/eventos/agenda?inicio=2017-01-01&fin=2017-02-01&region=2', format='json')
         self.assertEqual(response.data['cantidad'], 2)
+
+        # El coordinador de la región 3 es muy similar al anterior, puede ver dos. Uno de su región y otro evento donde es responsable alguien de su equipo.
+        response = self.client.get('/api/eventos/agenda?inicio=2017-01-01&fin=2017-02-01&region=3', format='json')
+        self.assertEqual(response.data['cantidad'], 3)
+
+        # Caso de facilitador de región 2 (debe ver dos)
+        response = self.client.get('/api/eventos/agenda?inicio=2017-01-01&fin=2017-02-01&perfil=3&region=2', format='json')
+        self.assertEqual(response.data['cantidad'], 2)
+
+        # Caso de facilitador de región 1 (solo tiene que ver un evento)
+        response = self.client.get('/api/eventos/agenda?inicio=2017-01-01&fin=2017-02-01&perfil=2&region=1', format='json')
+        self.assertEqual(response.data['cantidad'], 1)
+
+        # Caso de facilitador de región 3 (solo tiene que ver un evento)
+        response = self.client.get('/api/eventos/agenda?inicio=2017-01-01&fin=2017-02-01&perfil=4&region=3', format='json')
+        self.assertEqual(response.data['cantidad'], 3)
+
+        # Caso de facilitador de región 3 que solo fue invitado a un evento (solo tiene que ver un evento)
+        response = self.client.get('/api/eventos/agenda?inicio=2017-01-01&fin=2017-02-01&perfil=5&region=3', format='json')
+        self.assertEqual(response.data['cantidad'], 1)
+
 
     def test_puede_crear_un_evento_con_acta_desde_la_api(self):
         # Prepara el usuario para chequear contra la api
@@ -925,15 +981,15 @@ class GeneralesTestCase(APITestCase):
         escuela_1 = models.Escuela.objects.create(nombre=u'San Martín', cue="1", localidad=localidad_1, modalidad=modalidad_1)
         escuela_2 = models.Escuela.objects.create(cue="2", localidad=localidad_1, modalidad=modalidad_1)
         escuela_3 = models.Escuela.objects.create(cue="3", localidad=localidad_1)
- 
-     
+
+
 
         # Inicialmente las 3 escuelas son de primer nivel, se retornan en /api/escuelas
         response = self.client.get('/api/escuelas/export_raw', format='json')
         self.assertEqual(len(response.data['filas']), 3)
         self.assertEqual(response.data['filas'][0][0], u'San Martín' )
         self.assertEqual(response.data['filas'][0][3], 1 )
-    
+
 
     def test_puede_conformar_escuelas(self):
         # Prepara el usuario para chequear contra la api

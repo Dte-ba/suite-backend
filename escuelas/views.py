@@ -167,9 +167,9 @@ class EscuelaViewSet(viewsets.ModelViewSet):
 
     @list_route(methods=['get'])
     def export_raw(self, request):
-                        
+
         return Response({
-            'filas': self.obtener_escuelas_para_exportar()  
+            'filas': self.obtener_escuelas_para_exportar()
     })
 
     @list_route(methods=['get'])
@@ -187,23 +187,23 @@ class EscuelaViewSet(viewsets.ModelViewSet):
         font_style.font.bold = True
 
         #TODO Definir todos los campos del archivo
-        columns = ['Escuela', 'CUE','Dirección','Región', 'Localidad', 'Distrito', 'Modalidad'] 
-        col_num = 6 
+        columns = ['Escuela', 'CUE','Dirección','Región', 'Localidad', 'Distrito', 'Modalidad']
+        col_num = 6
 
         # Escribir los headers
         for col_num in range(len(columns)):
             ws.write(0, col_num, columns[col_num], font_style)
 
         ws.col(0).width = 256 * 12
-        ws.col(1).width = 256 * 12      
+        ws.col(1).width = 256 * 12
         font_style = xlwt.XFStyle()
 
         row_num = 0
-        
+
         for (indice, fila) in enumerate(escuelas):
-            for (indice_columna, columna) in enumerate(fila): 
+            for (indice_columna, columna) in enumerate(fila):
                 ws.write(indice+1, indice_columna, columna, font_style)
-   
+
         wb.save(response)
         return(response)
 
@@ -336,13 +336,19 @@ class EventoViewSet(viewsets.ModelViewSet):
         if perfil:
             usuario = models.Perfil.objects.get(id=perfil) # El usuario logeado
             eventos = eventos.filter(Q(responsable=usuario) | Q(acompaniantes=usuario)).distinct()
+            eventos = eventos[:]
+        else:
+            if region:
+                eventos = [evento for evento in eventos if evento.esDelEquipoRegion(region)]
+            else:
+                eventos = eventos[:]
+
 
         return Response({
                 "inicio": inicio,
                 "fin": fin,
-                "cantidad": eventos.count(),
+                "cantidad": len(eventos),
                 "eventos": serializers.EventoSerializer(eventos, many=True).data
-
             })
 
     @list_route(methods=['get'])

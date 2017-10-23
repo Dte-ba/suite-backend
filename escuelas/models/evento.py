@@ -45,6 +45,16 @@ class Evento(models.Model):
         else:
             return "Sin resumen"
 
+    def esDelEquipoRegion(self, numero_de_region):
+        if self.responsable.region.numero is int(numero_de_region):
+            return True
+
+        for acom in self.acompaniantes.all():
+            if acom.region.numero is int(numero_de_region):
+                return True
+
+        return False
+
 
 @receiver(post_save, sender=Evento)
 def create_event_summary(sender, instance, created, **kwargs):
