@@ -11,7 +11,7 @@ BIN_MANAGE=python manage.py
 BIN_MANAGE_RELATIVO=python manage.py
 BIN_DOKKU=~/.dokku/contrib/dokku_client.sh
 DB_NOMBRE_DEL_DUMP= ~/Dropbox/4cores/Backups/suite-backend-produccion-dtelab_`date +'%Y%m%d'`.dump
-DB_DUMP_MAS_RECIENTE=~/Dropbox/4cores/Backups/`ls -Art ~/Dropbox/4cores/Backups/  | tail -n 1`
+DB_DUMP_MAS_RECIENTE=`ls -Art ~/Dropbox/4cores/Backups/*.dump  | tail -n 1`
 
 comandos:
 	@echo ""
@@ -34,6 +34,7 @@ comandos:
 	@echo "    ${G}test${N}                Ejecuta los tests."
 	@echo "    ${G}test_continuos${N}      Ejecuta los tests en forma contínua."
 	@echo "    ${G}ejecutar${N}            Ejecuta el servidor en modo desarrollo."
+	@echo "    ${G}ejecutar_produccion${N} Ejecuta el servidor usando postgres."
 	@echo "    ${G}ayuda${N}               Muestra una listado de todos los comandos django."
 	@echo ""
 	@echo "  ${Y}Para gestionar datos${N}"
@@ -69,6 +70,9 @@ test_live: dependencias
 	@make test; watchmedo shell-command --patterns="*.py" --recursive --command='make test' .
 
 ejecutar: migrar serve
+
+ejecutar_produccion: migrar 
+	DATABASE_URL=postgres://postgres:postgress@localhost/suite python manage.py runserver
 
 serve: dependencias
 	${BIN_MANAGE} runserver
