@@ -10,7 +10,8 @@ L=[01;30m
 BIN_MANAGE=python manage.py
 BIN_MANAGE_RELATIVO=python manage.py
 BIN_DOKKU=~/.dokku/contrib/dokku_client.sh
-DB_NOMBRE_DEL_DUMP= ~/Dropbox/4cores/Backups/suite-backend-produccion-dtelab_`date +'%Y%m%d'`.dump
+DB_NAME=suite-produccion
+DB_NOMBRE_DEL_DUMP= ~/Dropbox/4cores/Backups/suite-backend-produccion-dtelab_`date +'%Y%m%d_%Hhs%Mmin'`.dump
 DB_DUMP_MAS_RECIENTE=`ls -Art ~/Dropbox/4cores/Backups/*.dump  | tail -n 1`
 
 comandos:
@@ -71,7 +72,7 @@ test_live: dependencias
 
 ejecutar: migrar serve
 
-ejecutar_produccion: migrar 
+ejecutar_produccion: migrar
 	DATABASE_URL=postgres://postgres:postgress@localhost/suite python manage.py runserver
 
 serve: dependencias
@@ -121,7 +122,7 @@ cargar_usuarios_demo:
 
 realizar_backup_desde_produccion:
 	@echo "${G}Creando el archivo ${DB_NOMBRE_DEL_DUMP}${N}"
-	${BIN_DOKKU} postgres:export suite-backend-produccion-dtelab > ${DB_NOMBRE_DEL_DUMP}
+	${BIN_DOKKU} postgres:export ${DB_NAME} > ${DB_NOMBRE_DEL_DUMP}
 
 
 cargar_ultimo_dump_localmente:
