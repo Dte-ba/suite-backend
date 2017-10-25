@@ -352,11 +352,11 @@ class EventoViewSet(viewsets.ModelViewSet):
             usuario = models.Perfil.objects.get(id=perfil) # El usuario logeado
             eventos = eventos.filter(Q(responsable=usuario) | Q(acompaniantes=usuario)).distinct()
             eventos = eventos[:]
-        # else:
-        #     if region:
-        #         eventos = [evento for evento in eventos if evento.esDelEquipoRegion(region)]
-        #     else:
-        #         eventos = eventos[:]
+        else:
+            if region:
+                eventos = [evento for evento in eventos if evento.esDelEquipoRegion(region)]
+            else:
+                eventos = eventos[:]
 
 
         return Response({
