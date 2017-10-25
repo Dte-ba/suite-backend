@@ -71,7 +71,7 @@ class EscuelaViewSet(viewsets.ModelViewSet):
     queryset = models.Escuela.objects.all()
     serializer_class = serializers.EscuelaSerializer
     filter_backends = [SearchFilter]
-    search_fields = ['cue', 'nombre', 'localidad__nombre', 'nivel__nombre', 'programas__nombre']
+    search_fields = ['cue', 'nombre', 'localidad__distrito__nombre', 'localidad__nombre', 'nivel__nombre', 'programas__nombre']
     #filter_fields = ['localidad__distrito__region__numero', 'conformada']
 
     def get_queryset(self):
@@ -128,6 +128,21 @@ class EscuelaViewSet(viewsets.ModelViewSet):
             "primariaDigital": queryset.filter(programas__nombre="Primaria Digital").count(),
             "escuelasDelFuturo": queryset.filter(programas__nombre="Escuelas del Futuro").count(),
             "conformadas": models.Escuela.objects.filter(padre__isnull=False).count(),
+            "validaciones": models.Escuela.objects.filter(validaciones__estado__nombre="Aprobada").count()
+        }
+        return Response(estadisticas)
+
+    @detail_route(methods=['get'])
+    def validaciones(self, request, pk=None):
+        escuela = self.get_object()
+        filtro = Q(estado__nombre="Aprobada")
+        validaciones = escuela.validaciones.filter(filtro)
+        # validacion_2017 = escuela.filter(validaciones__estado__nombre="Aprobada")
+
+        print(escuela)
+        print(validaciones.count())
+        estadisticas = {
+            "validaciones": validaciones.count()
         }
         return Response(estadisticas)
 
@@ -337,11 +352,11 @@ class EventoViewSet(viewsets.ModelViewSet):
             usuario = models.Perfil.objects.get(id=perfil) # El usuario logeado
             eventos = eventos.filter(Q(responsable=usuario) | Q(acompaniantes=usuario)).distinct()
             eventos = eventos[:]
-        else:
-            if region:
-                eventos = [evento for evento in eventos if evento.esDelEquipoRegion(region)]
-            else:
-                eventos = eventos[:]
+        # else:
+        #     if region:
+        #         eventos = [evento for evento in eventos if evento.esDelEquipoRegion(region)]
+        #     else:
+        #         eventos = eventos[:]
 
 
         return Response({

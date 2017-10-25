@@ -153,10 +153,11 @@ class EscuelaSerializer(CustomSerializer):
     subescuelas = SubEscuelaSerializer(many=True, read_only=True)
     padre = ResourceRelatedField(read_only=True)
     motivo_de_conformacion = ResourceRelatedField(read_only=True)
+    validaciones = ResourceRelatedField(read_only=True, many=True)
 
     class Meta:
         model = models.Escuela
-        fields = ('cue', 'nombre', 'direccion', 'telefono', 'email', 'latitud', 'longitud', 'localidad', 'tipo_de_financiamiento', 'nivel', 'modalidad', 'tipo_de_gestion', 'area', 'programas', 'piso', 'contactos', 'padre', 'fecha_conformacion', 'motivo_de_conformacion', 'estado', 'conformada', 'padre', 'subescuelas')
+        fields = ('cue', 'nombre', 'direccion', 'telefono', 'email', 'latitud', 'longitud', 'localidad', 'tipo_de_financiamiento', 'nivel', 'modalidad', 'tipo_de_gestion', 'area', 'programas', 'piso', 'contactos', 'padre', 'fecha_conformacion', 'motivo_de_conformacion', 'estado', 'conformada', 'padre', 'subescuelas', 'validaciones')
 
 
 class ExperienciaSerializer(CustomSerializer):
