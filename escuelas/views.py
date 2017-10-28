@@ -100,15 +100,13 @@ class EscuelaViewSet(viewsets.ModelViewSet):
             queryset = queryset.filter(filtro)
 
 
-
         if query:
             filtro_cue = Q(cue__icontains=query)
             filtro_nombre = Q(nombre__icontains=query)
             filtro_localidad = Q(localidad__nombre__icontains=query)
             filtro_nivel = Q(nivel__nombre__icontains=query)
-            filtro_programas = Q(programas__nombre__icontains=query)
 
-            queryset = queryset.filter(filtro_cue | filtro_nombre | filtro_localidad | filtro_nivel | filtro_programas)
+            queryset = queryset.filter(filtro_cue | filtro_nombre | filtro_localidad | filtro_nivel)
 
         return queryset
 

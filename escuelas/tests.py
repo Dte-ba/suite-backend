@@ -849,6 +849,65 @@ class GeneralesTestCase(APITestCase):
         response = self.client.get('/api/escuelas?conformada=false&localidad__distrito__region__numero=2', format='json')
         self.assertEqual(response.data['meta']['pagination']['count'], 4)
 
+    def test_puede_buscar_escuelas_con_muchos_programas_y_no_se_duplican(self):
+        # Prepara el usuario para chequear contra la api
+        user = User.objects.create_user(username='test', password='123')
+        self.client.force_authenticate(user=user)
+
+        region_1 = models.Region.objects.create(numero=1)
+        distrito_1 = models.Distrito.objects.create(nombre="distrito1", region=region_1)
+        localidad_1 = models.Localidad.objects.create(nombre="localidad1", distrito=distrito_1)
+        area = models.Area.objects.create(nombre="Urbana")
+        modalidad = models.Modalidad.objects.create(nombre="Especial")
+        nivel = models.Nivel.objects.create(nombre="Primaria")
+
+        piso_1 = models.Piso.objects.create(servidor="Servidor EXO")
+        piso_2 = models.Piso.objects.create(servidor="Servidor EXO")
+
+        tipo_de_financiamiento = models.TipoDeFinanciamiento.objects.create(nombre="Provincial")
+        tipo_de_gestion = models.TipoDeGestion.objects.create(nombre="Privada")
+
+        # Se crean los programas
+        programa_pad = models.Programa.objects.create(nombre="PAD")
+        programa_ci = models.Programa.objects.create(nombre="Conectar Igualdad")
+
+
+        escuela_1 = models.Escuela.objects.create(
+            nombre="escuela 1",
+            cue="10000",
+            localidad=localidad_1,
+            area=area,
+            modalidad=modalidad,
+            piso=piso_1,
+            #tipo_de_financiamiento=tipo_de_financiamiento,
+            #tipo_de_gestion=tipo_de_gestion
+        )
+
+        escuela_2 = models.Escuela.objects.create(
+            nombre="escuela 2",
+            cue="20000",
+            localidad=localidad_1,
+            area=area,
+            modalidad=modalidad,
+            piso=piso_2,
+            #tipo_de_financiamiento=tipo_de_financiamiento,
+            #tipo_de_gestion=tipo_de_gestion
+
+        )
+
+        # Vincula los programas a las escuelas.
+        escuela_1.programas.add(programa_ci)
+        escuela_1.programas.add(programa_pad)
+
+        escuela_2.programas.add(programa_ci)
+        escuela_2.programas.add(programa_pad)
+
+        # Hay dos escuelas en la vista inicial.
+        response = self.client.get('/api/escuelas')
+        self.assertEqual(response.data['meta']['pagination']['count'], 2)
+
+        response = self.client.get('/api/escuelas?conformada=false&query=20000')
+        self.assertEqual(response.data['meta']['pagination']['count'], 1)
 
     def test_puede_crear_escuela(self):
         # Prepara el usuario para chequear contra la api
