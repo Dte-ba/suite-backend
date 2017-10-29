@@ -1063,8 +1063,10 @@ class GeneralesTestCase(APITestCase):
             modalidad=modalidad,
         )
 
+        # Si la escuela no tiene localidad, y no se puede obtener el número
+        # de región, se tiene que mostrar un string vacío en lugar de un error.
         response = self.client.get('/api/escuelas/%d' %(escuela_sin_region.id))
-        self.assertEqual(response.data['numero_de_region'], 1)
+        self.assertEqual(response.data['numero_de_region'], '')
 
     def test_puede_exportar_escuelas(self):
         # Prepara el usuario para chequear contra la api
