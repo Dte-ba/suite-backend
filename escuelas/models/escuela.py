@@ -58,3 +58,9 @@ class Escuela(models.Model):
         escuela_que_se_absorbera.conformada = True
 
         escuela_que_se_absorbera.save()
+
+    def numero_de_region(self):
+        try:
+            return self.localidad.distrito.region.numero
+        except:
+            return ""

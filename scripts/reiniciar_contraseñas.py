@@ -16,7 +16,15 @@ from django.contrib.auth.models import User
 
 password = 'asdasd123'
 
-for user in User.objects.all():
+print "Reiniciando contraseñas..."
+print "--------------------------"
+
+for user in User.objects.order_by('username'):
     user.set_password(password)
-    print "Reiniciando contraseña de", user, "a", password
+
+    if user.is_superuser:
+        print "Usuario Administrador:", user
+    else:
+        print "Usuario", user
+
     user.save()

@@ -5,7 +5,7 @@ admin.site.register(models.Contacto)
 
 class EscuelaAdmin(admin.ModelAdmin):
     model = models.Escuela
-    list_display = ('cue', 'nombre', 'localidad', 'nivel', 'modalidad')
+    list_display = ('cue', 'nombre', 'localidad', 'nivel', 'modalidad', 'numero_de_region')
     search_fields = ('cue', 'nombre')
 
 class PerfilAdmin(admin.ModelAdmin):

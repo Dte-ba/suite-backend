@@ -1024,6 +1024,48 @@ class GeneralesTestCase(APITestCase):
         self.assertEqual(response.data['cue'], '88008800')
         self.assertEqual(response.data['nombre'], 'Escuela de Prueba desde el test')
 
+    def test_puede_obtener_el_numero_de_region_directamente_desde_la_escuela(self):
+        # Prepara el usuario para chequear contra la api
+        user = User.objects.create_user(username='test', password='123')
+        self.client.force_authenticate(user=user)
+
+        region_1 = models.Region.objects.create(numero=1)
+        distrito_1 = models.Distrito.objects.create(nombre="distrito1", region=region_1)
+        localidad_1 = models.Localidad.objects.create(nombre="localidad1", distrito=distrito_1)
+        area = models.Area.objects.create(nombre="Urbana")
+        modalidad = models.Modalidad.objects.create(nombre="Especial")
+        nivel = models.Nivel.objects.create(nombre="Primaria")
+
+        piso_1 = models.Piso.objects.create(servidor="Servidor EXO")
+        piso_2 = models.Piso.objects.create(servidor="Servidor EXO")
+
+        # Se crean los programas
+        programa_pad = models.Programa.objects.create(nombre="PAD")
+        programa_ci = models.Programa.objects.create(nombre="Conectar Igualdad")
+
+
+        escuela_1 = models.Escuela.objects.create(
+            nombre="escuela 1",
+            cue="10000",
+            localidad=localidad_1,
+            area=area,
+            modalidad=modalidad,
+            piso=piso_1,
+        )
+
+        response = self.client.get('/api/escuelas/1')
+        self.assertEqual(response.data['numero_de_region'], 1)
+
+        escuela_sin_region = models.Escuela.objects.create(
+            nombre="escuela sin region",
+            cue="20000",
+            area=area,
+            modalidad=modalidad,
+        )
+
+        response = self.client.get('/api/escuelas/%d' %(escuela_sin_region.id))
+        self.assertEqual(response.data['numero_de_region'], 1)
+
     def test_puede_exportar_escuelas(self):
         # Prepara el usuario para chequear contra la api
         user = User.objects.create_user(username='test', password='123')
