@@ -26,6 +26,7 @@ import datetime
 import subprocess
 import json
 
+from rest_framework_json_api.pagination import PageNumberPagination
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.utils.timezone import now
@@ -43,6 +44,11 @@ import xlwt
 def home(request):
     return render(request, 'home.html')
 
+
+
+class SuitePageNumberPagination(PageNumberPagination):
+    max_page_size = 6000
+    pass
 
 class DemoPDFView(PDFTemplateView):
     template_name = 'hello.html'
@@ -239,13 +245,14 @@ class EventoViewSet(viewsets.ModelViewSet):
         filtro_region = self.request.query_params.get('escuela__localidad__distrito__region__numero', None)
         filtro_perfil = self.request.query_params.get('perfil', None)
 
-        if filtro_region:
-            filtro = Q(escuela__localidad__distrito__region__numero=filtro_region) | Q(escuela__cue=60000000)
-            queryset = queryset.filter(filtro)
 
-            if filtro_perfil:
-                usuario = models.Perfil.objects.get(id=filtro_perfil)
-                filtro = Q(responsable=usuario) | Q(acompaniantes=usuario)
+        if filtro_perfil:
+            usuario = models.Perfil.objects.get(id=filtro_perfil)
+            filtro = Q(responsable=usuario) | Q(acompaniantes=usuario)
+            queryset = queryset.filter(filtro)
+        else:
+            if filtro_region:
+                filtro = Q(escuela__localidad__distrito__region__numero=filtro_region)
                 queryset = queryset.filter(filtro)
 
         if query:
@@ -453,6 +460,8 @@ class RegionViewSet(viewsets.ModelViewSet):
 class PerfilViewSet(viewsets.ModelViewSet):
     queryset = models.Perfil.objects.all()
     resource_name = 'perfiles'
+    pagination_class = SuitePageNumberPagination
+
     serializer_class = serializers.PerfilSerializer
     filter_backends = [SearchFilter, DjangoFilterBackend]
     search_fields = ['nombre', 'apellido', 'dni', 'cargo__nombre']

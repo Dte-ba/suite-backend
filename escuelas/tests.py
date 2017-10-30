@@ -789,10 +789,6 @@ class GeneralesTestCase(APITestCase):
         evento_1 = models.Evento.objects.create(titulo="Evento de prueba", categoria=categoria_1, responsable=user.perfil, escuela=escuela_1, fecha="2017-01-15", fecha_fin="2017-01-15")
         evento_2 = models.Evento.objects.create(titulo="Evento de prueba de Marzo", categoria=categoria_1, responsable=user.perfil, escuela=escuela_1, fecha="2017-03-15", fecha_fin="2017-03-15")
 
-        # En una región inexistente no debería haber eventos
-        response = self.client.get('/api/eventos?escuela__localidad__distrito__region__numero=10&perfil=1')
-        self.assertEqual(response.data['meta']['pagination']['count'], 0)
-
         # En su región hay dos eventos
         response = self.client.get('/api/eventos?escuela__localidad__distrito__region__numero=4&perfil=1')
         self.assertEqual(response.data['meta']['pagination']['count'], 2)
