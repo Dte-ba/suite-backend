@@ -905,6 +905,91 @@ class GeneralesTestCase(APITestCase):
         response = self.client.get('/api/escuelas?conformada=false&query=20000')
         self.assertEqual(response.data['meta']['pagination']['count'], 1)
 
+    def test_puede_editar_escuela(self):
+        # Prepara el usuario para chequear contra la api
+        user = User.objects.create_user(username='test', password='123')
+        self.client.force_authenticate(user=user)
+
+        # Se crean 1 localidad, 1 distrito y 1 región
+        region_1 = models.Region.objects.create(numero=1)
+        distrito_1 = models.Distrito.objects.create(nombre="distrito1", region=region_1)
+        localidad_1 = models.Localidad.objects.create(nombre="localidad1", distrito=distrito_1)
+
+        # Se crea un area Urbana
+        area = models.Area.objects.create(nombre="Urbana")
+
+        # Se crea una modalidad
+        modalidad = models.Modalidad.objects.create(nombre="Especial")
+
+        # Se crea un nivel
+        nivel = models.Nivel.objects.create(nombre="Primaria")
+
+        # Se crea un piso
+        piso = models.Piso.objects.create(servidor="Servidor EXO")
+
+        # Se crean dos tipos de financiamiento
+        tipo_de_financiamiento_1 = models.TipoDeFinanciamiento.objects.create(nombre="Provincial")
+        tipo_de_financiamiento_2 = models.TipoDeFinanciamiento.objects.create(nombre="Municipal")
+
+        #Se crea un tipo de gestión
+        tipo_de_gestion = models.TipoDeGestion.objects.create(nombre="Privada")
+
+        #Se crea un programa
+        programa = models.Programa.objects.create(nombre="PAD")
+
+        # Inicialmente no hay ninguna escuela
+        self.assertEqual(models.Escuela.objects.all().count(), 0)
+
+        # Se crea una escuela
+        escuela = models.Escuela.objects.create(
+            cue="12345678",
+            nombre="Escuela de prueba para edicion",
+            localidad=localidad_1,
+            area=area,
+            modalidad=modalidad,
+            nivel=nivel,
+            piso=piso,
+            tipo_de_gestion=tipo_de_gestion
+            )
+
+        escuela.programas.add(programa)
+        escuela.tipo_de_financiamiento.add(tipo_de_financiamiento_1)
+
+        # Luego tiene que existir una escuela
+        self.assertEqual(models.Escuela.objects.all().count(), 1)
+
+        # Y la api tiene que retornarla
+        response = self.client.get('/api/escuelas/1')
+        self.assertEqual(response.data['cue'], '12345678')
+        self.assertEqual(len(response.data['tipo_de_financiamiento']), 1)
+
+        data = {
+            "data": {
+                "type": "escuelas",
+                "id": "1",
+                "attributes": {
+                    "nombre": "Escuela de prueba editada",
+                },
+                'relationships': {
+                    "tipo-de-financiamiento": {
+                        "data": [
+                          { "type": "tipos-de-financiamiento", "id": "1" },
+                          { "type": "tipos-de-financiamiento", "id": "2" }
+                        ]
+                      },
+                }
+            }
+        }
+
+        # Luego de hacer el patch ...
+        post = self.client.patch('/api/escuelas/1', json.dumps(data), content_type='application/vnd.api+json')
+        self.assertEqual(post.status_code, 200)
+
+        # La api tiene que devolver 2 tipos de financiamiento
+        response = self.client.get('/api/escuelas/1')
+        self.assertEqual(response.data['cue'], '12345678')
+        self.assertEqual(len(response.data['tipo_de_financiamiento']), 2)
+
     def test_puede_crear_escuela(self):
         # Prepara el usuario para chequear contra la api
         user = User.objects.create_user(username='test', password='123')
@@ -928,7 +1013,8 @@ class GeneralesTestCase(APITestCase):
         piso = models.Piso.objects.create(servidor="Servidor EXO")
 
         # Se crea un tipo de financiamiento
-        tipo_de_financiamiento = models.TipoDeFinanciamiento.objects.create(nombre="Provincial")
+        tipo_de_financiamiento_1 = models.TipoDeFinanciamiento.objects.create(nombre="Provincial")
+        tipo_de_financiamiento_2 = models.TipoDeFinanciamiento.objects.create(nombre="Municipal")
 
         #Se crea un tipo de gestión
         tipo_de_gestion = models.TipoDeGestion.objects.create(nombre="Privada")
@@ -977,10 +1063,16 @@ class GeneralesTestCase(APITestCase):
                         }
                     },
                     "tipo_de_financiamiento": {
-                        "data": [{
-                            "type": "tipos-de-financiamiento",
-                            "id": tipo_de_financiamiento.id
-                        }]
+                        "data": [
+                            {
+                                "type": "tipos-de-financiamiento",
+                                "id": tipo_de_financiamiento_1.id
+                            },
+                            {
+                                "type": "tipos-de-financiamiento",
+                                "id": tipo_de_financiamiento_2.id
+                            }
+                        ]
                     },
                     "tipo_de_gestion": {
                         "data": {
@@ -1011,6 +1103,7 @@ class GeneralesTestCase(APITestCase):
 
         # Luego de hacer el post ...
         post = self.client.post('/api/escuelas', json.dumps(data), content_type='application/vnd.api+json')
+        self.assertEqual(post.status_code, 201)
 
         # Luego tiene que haber una escuela
         self.assertEqual(models.Escuela.objects.all().count(), 1)
@@ -1019,6 +1112,7 @@ class GeneralesTestCase(APITestCase):
         response = self.client.get('/api/escuelas/1')
         self.assertEqual(response.data['cue'], '88008800')
         self.assertEqual(response.data['nombre'], 'Escuela de Prueba desde el test')
+        self.assertEqual(len(response.data['tipo_de_financiamiento']), 2)
 
     def test_puede_obtener_el_numero_de_region_directamente_desde_la_escuela(self):
         # Prepara el usuario para chequear contra la api
