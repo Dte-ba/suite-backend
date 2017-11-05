@@ -1,4 +1,3 @@
-
 # coding: utf-8
 from django.contrib.auth.models import User
 from django.contrib.auth.models import Group
@@ -14,12 +13,9 @@ import serializers
 
 import fixture
 
+
 class APIUsuariosTests(APITestCase):
 
-    def setUp(self):
-        #escuela = models.Escuela.objects.create(nombre="Escuela de ejemplo", cue="123")
-        #escuela.save()
-        pass
 
     def test_ruta_principal_de_la_api(self):
         response = self.client.get('/api/', format='json')
