@@ -1,6 +1,8 @@
 from django.contrib import admin
 import models
+from django.contrib.auth.models import Permission
 
+admin.site.register(Permission)
 admin.site.register(models.Contacto)
 
 class EscuelaAdmin(admin.ModelAdmin):
