@@ -898,8 +898,11 @@ class PaqueteViewSet(viewsets.ModelViewSet):
     @list_route(methods=['get'])
     def export(self, request):
 
+        inicio = self.request.query_params.get('inicio', None)
+        fin = self.request.query_params.get('fin', None)
         estado = self.request.query_params.get('estado', None)
-        paquetes = models.Paquete.objects.all()
+
+        paquetes = models.Paquete.objects.filter(fecha_pedido__range=(inicio, fin))
 
         if estado:
             objeto_estado = models.EstadoDePaquete.objects.get(nombre=estado)
