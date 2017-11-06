@@ -87,7 +87,7 @@ ayuda:
 	${BIN_MANAGE}
 
 shell: dependencias
-	${BIN_MANAGE} shell
+	DATABASE_URL=postgres://postgres:postgress@localhost/suite ${BIN_MANAGE} shell
 
 crear_migraciones:
 	${BIN_MANAGE} makemigrations

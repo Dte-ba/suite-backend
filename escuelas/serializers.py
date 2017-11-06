@@ -144,7 +144,7 @@ class EscuelaSerializer(CustomSerializer):
     localidad = ResourceRelatedField(queryset=models.Localidad.objects)
     tipo_de_financiamiento = ResourceRelatedField(queryset=models.TipoDeFinanciamiento.objects, many=True)
     nivel = ResourceRelatedField(queryset=models.Nivel.objects)
-    modalidad = ResourceRelatedField(queryset=models.Modalidad.objects)
+    modalidad = ResourceRelatedField(queryset=models.Modalidad.objects, required=False, allow_null=True)
     tipo_de_gestion = ResourceRelatedField(queryset=models.TipoDeGestion.objects)
     area = ResourceRelatedField(queryset=models.Area.objects)
     programas = ResourceRelatedField(queryset=models.Programa.objects, many=True)
