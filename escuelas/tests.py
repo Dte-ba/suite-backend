@@ -1455,4 +1455,5 @@ class Emails(APITestCase):
 class Scripts(APITestCase):
 
     def test_puede_buscar_localidades_y_distritos_duplicados(self):
-        self.assertEqual(1, 1)
+        from scripts import limpiar_registros_duplicados
+        limpiar_registros_duplicados.eliminar_duplicados(solo_simular=True, verbose=True)

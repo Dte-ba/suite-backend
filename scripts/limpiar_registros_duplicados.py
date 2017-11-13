@@ -14,13 +14,19 @@ django.setup()
 from escuelas import models
 from django.contrib.auth.models import User
 
-def eliminar_duplicados(solo_simular):
-    print("Intentando encontrar y eliminar duplicados")
+
+def eliminar_duplicados(solo_simular, verbose):
+
+    def log(mensaje):
+        if verbose:
+            print(mensaje)
+
+    log("Intentando encontrar y eliminar duplicados")
 
     if solo_simular:
-        print("Modo simulación, no se eliminaran registros")
+        log("Modo simulación, no se eliminaran registros")
     else:
-        print("Modo real: se eliminaran efectivamente los registros")
+        log("Modo real: se eliminaran efectivamente los registros")
 
 if __name__ == "__main__":
-    eliminar_duplicados(solo_simular=False)
+    eliminar_duplicados(solo_simular=False, verbose=True)
