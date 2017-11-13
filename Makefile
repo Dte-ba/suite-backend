@@ -44,6 +44,7 @@ comandos:
 	@echo "    $(G)generar_fixture_desde_base_de_datos$(N)   Genera un fixture nuevo."
 	@echo "    $(G)realizar_backup_desde_produccion$(N)      Descarga y guardar un dump en dropbox."
 	@echo "    $(G)cargar_ultimo_dump_localmente$(N)         Carga el último dump de dropbox sobre un postgres local."
+	@echo "    $(G)limpiar_registros_duplicados$(N)          Detecta y elimina localidades y distritos duplicados."
 	@echo ""
 	@echo ""
 
@@ -120,6 +121,9 @@ cargar_datos:
 
 cargar_usuarios_demo:
 	python scripts/cargar_usuarios_demo.py
+
+limpiar_registros_duplicados:
+	python scripts/limpiar_registros_duplicados.py
 
 realizar_backup_desde_produccion:
 	@echo "${G}Creando el archivo ${DB_NOMBRE_DEL_DUMP}${N}"
