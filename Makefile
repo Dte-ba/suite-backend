@@ -123,7 +123,7 @@ cargar_usuarios_demo:
 	python scripts/cargar_usuarios_demo.py
 
 limpiar_registros_duplicados:
-	python scripts/limpiar_registros_duplicados.py
+	DATABASE_URL=postgres://postgres:postgress@localhost/suite  python scripts/limpiar_registros_duplicados.py
 
 realizar_backup_desde_produccion:
 	@echo "${G}Creando el archivo ${DB_NOMBRE_DEL_DUMP}${N}"
