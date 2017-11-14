@@ -14,65 +14,86 @@ django.setup()
 from escuelas import models
 from django.contrib.auth.models import User
 
-mapa_de_distritos = {
-  "A. Alsina": "Adolfo Alsina",
-  "A. Brown": "Almirante Brown",
-  "A. G. Chaves": "Adolfo Gonzales Chaves",
-  "B. Juarez": "Benito Juárez",
-  "C. Brandsen": "Coronel Brandsen",
-  "C. De Areco": "Carmen de Areco",
-  "C. Dorrego": "Coronel Dorrego",
-  "C. Patagones": "Carmen de Patagones",
-  "C. Pringles": "Coronel Pringles",
-  "C. Rosales": "Coronel Rosales",
-  "C. Sarmiento": "Capitán Sarmiento",
-  "C. Suarez": "Coronel Suárez",
-  "C. Tejedor": "Carlos Tejedor",
-  "E. De La Cruz": "Exaltación de la Cruz",
-  "E. Echeverria": "Esteban Echeverría",
-  "F. Ameghino": "Florentino Ameghino",
-  "G. Alvear": "General Alvear",
-  "G. Arenales": "General Arenales",
-  "G. Belgrano": "General Belgrano",
-  "G. Las Heras": "General Las Heras",
-  "G. Lavalle": "General Lavalle",
-  "G. Madariaga": "General Madariaga",
-  "G. Paz": "General Paz",
-  "G. Pinto": "General Pinto",
-  "G. Rodriguez": "General Rodríguez",
-  "G. Viamonte": "General Viamonte",
-  "G. Villegas": "General Villegas",
-  "Gral. Alvarado": "General Alvarado",
-  "Gral. Pueyrredón": "General Pueyrredón",
-  "Gral. San Martín": "General San Martín",
-  "Hurlingahm": "Hurlingham",
-  "L. N. Alem": "Leandro N. Alem",
-  "Lanus": "Lanús",
-  "M. Argentinas": "Malvinas Argentinas",
-  "M. Hermoso": "Monte Hermoso",
-  "Pte. Perón": "Presidente Perón",
-  "Roque Perez": "Roque Pérez",
-  "S. A. De Giles": "San Antonio de Giles",
-  "S. Cayetano": "San Cayetano",
-  "San Nicolas": "San Nicolás",
-  "T. De Febrero": "Tres de Febrero",
-  "T. Lauquen": "Trenque Lauquen",
-  "Tapalque": "Tapalqué",
-  "Vte. Lopez": "Vicente López",
-  "Zarate": "Zárate"
-}
+log = None
+
 
 
 def eliminar_duplicados(solo_simular, verbose):
+    global log
 
-    def log(mensaje):
-        if verbose:
-            print(mensaje)
+    def imprimir_mensaje(mensaje):
+        print(mensaje)
+
+    def omitir_mensaje(mensaje):
+        pass
+
+    if verbose:
+        log = imprimir_mensaje
+    else:
+        log = omitir_mensaje
 
     if solo_simular:
         log("Modo simulación, no se eliminaran registros")
     else:
         log("Modo real: se eliminaran efectivamente los registros")
+
+
+    unificar_nombres_de_distritos(solo_simular, verbose)
+    eliminar_distritos_duplicados(solo_simular, verbose)
+    eliminar_distritos_sin_region(solo_simular, verbose)
+    eliminar_localidades_duplicadas(solo_simular, verbose)
+
+
+
+
+def unificar_nombres_de_distritos(solo_simular, verbose):
+    mapa_de_distritos = {
+      "A. Alsina": "Adolfo Alsina",
+      "A. Brown": "Almirante Brown",
+      "A. G. Chaves": "Adolfo Gonzales Chaves",
+      "B. Juarez": "Benito Juárez",
+      "C. Brandsen": "Coronel Brandsen",
+      "C. De Areco": "Carmen de Areco",
+      "C. Dorrego": "Coronel Dorrego",
+      "C. Patagones": "Carmen de Patagones",
+      "C. Pringles": "Coronel Pringles",
+      "C. Rosales": "Coronel Rosales",
+      "C. Sarmiento": "Capitán Sarmiento",
+      "C. Suarez": "Coronel Suárez",
+      "C. Tejedor": "Carlos Tejedor",
+      "E. De La Cruz": "Exaltación de la Cruz",
+      "E. Echeverria": "Esteban Echeverría",
+      "F. Ameghino": "Florentino Ameghino",
+      "G. Alvear": "General Alvear",
+      "G. Arenales": "General Arenales",
+      "G. Belgrano": "General Belgrano",
+      "G. Las Heras": "General Las Heras",
+      "G. Lavalle": "General Lavalle",
+      "G. Madariaga": "General Madariaga",
+      "G. Paz": "General Paz",
+      "G. Pinto": "General Pinto",
+      "G. Rodriguez": "General Rodríguez",
+      "G. Viamonte": "General Viamonte",
+      "G. Villegas": "General Villegas",
+      "Gral. Alvarado": "General Alvarado",
+      "Gral. Pueyrredón": "General Pueyrredón",
+      "Gral. San Martín": "General San Martín",
+      "Hurlingahm": "Hurlingham",
+      "L. N. Alem": "Leandro N. Alem",
+      "Lanus": "Lanús",
+      "M. Argentinas": "Malvinas Argentinas",
+      "M. Hermoso": "Monte Hermoso",
+      "Pte. Perón": "Presidente Perón",
+      "Roque Perez": "Roque Pérez",
+      "S. A. De Giles": "San Antonio de Giles",
+      "S. Cayetano": "San Cayetano",
+      "San Nicolas": "San Nicolás",
+      "T. De Febrero": "Tres de Febrero",
+      "T. Lauquen": "Trenque Lauquen",
+      "Tapalque": "Tapalqué",
+      "Vte. Lopez": "Vicente López",
+      "Zarate": "Zárate"
+    }
 
     log("Unificando nombres de distritos")
     todos_los_distritos = models.Distrito.objects.order_by('id').all()
@@ -89,8 +110,11 @@ def eliminar_duplicados(solo_simular, verbose):
                 distrito.save()
                 log("  Corrigiendo nombre al distrito %s (id=%d)" %(distrito.nombre, distrito.id))
 
+
+def eliminar_distritos_duplicados(solo_simular, verbose):
     log("Buscando duplicados de distritos")
 
+    todos_los_distritos = models.Distrito.objects.order_by('id').all()
     nombres_unicos = set([d.nombre for d in todos_los_distritos])
 
     log(" Hay %d distritos unicos, el resto son duplicados" %(len(nombres_unicos)))
@@ -114,7 +138,7 @@ def eliminar_duplicados(solo_simular, verbose):
                     log("   Eliminando el distrito %s (id=%d) luego de haber re-asignado localidades" %(distrito_a_eliminar.nombre, distrito_a_eliminar.id))
                     distrito_a_eliminar.delete()
 
-
+def eliminar_distritos_sin_region(solo_simular, verbose):
     log("Buscando distritos sin vincular a regiones")
 
     distritos_sin_region = models.Distrito.objects.filter(region=None)
@@ -125,24 +149,59 @@ def eliminar_duplicados(solo_simular, verbose):
         log("No hay distritos sin región")
 
 
+def eliminar_localidades_duplicadas(solo_simular, verbose):
     log("Buscando localidades para unificar")
     todos_los_distritos = models.Distrito.objects.order_by('id').all()
 
     for distrito in todos_los_distritos:
-        log(" Buscando unificar localidades del distrito %s" %(distrito.nombre))
         localidades_del_distrito = distrito.localidades.all()
         cantidad_de_localidades_en_el_distrito = len(localidades_del_distrito)
 
-        nombres_unicos_de_localides = set([l.nombre for l in localidades_del_distrito])
-        cantidad_unicos = len(nombres_unicos_de_localides)
+        nombres_unicos_de_localidades = set([l.nombre for l in localidades_del_distrito])
+        cantidad_unicos = len(nombres_unicos_de_localidades)
 
-        log("  Hay %d distritos unicos, %d son duplicados" %(cantidad_unicos, cantidad_de_localidades_en_el_distrito - cantidad_unicos))
-
-        
+        cantidad_a_eliminar = cantidad_de_localidades_en_el_distrito - cantidad_unicos
 
 
-    #for distrito in distritos_sin_region:
+        if cantidad_a_eliminar > 0:
+            log("  Hay %d localidades, se deben eliminar %d porque son duplicadas." %(cantidad_de_localidades_en_el_distrito, cantidad_a_eliminar))
 
+            for nombre_de_localidad_a_preservar in nombres_unicos_de_localidades:
+                localidades_duplicadas = models.Localidad.objects.filter(nombre=nombre_de_localidad_a_preservar)
+
+                if len(localidades_duplicadas) > 1:
+                    localidad_a_preservar = localidades_duplicadas[0]
+                    log("Se preservará la localidad %s (id: %d)" %(localidad_a_preservar.nombre, localidad_a_preservar.id))
+
+                    localidades_a_eliminar = localidades_duplicadas[1:]
+
+                    for localidad in localidades_a_eliminar:
+                        log("Se eliminará la localidad %s (id: %d)" %(localidad.nombre, localidad.id))
+
+                        escuelas = localidad.escuelas.all()
+
+                        if escuelas:
+                            for escuela in escuelas:
+                                log(" Moviendo la escuela de cue %s (id: %d) a la localidad a preservar (id: %d)" %(escuela.cue, escuela.id, localidad_a_preservar.id))
+
+                                if not solo_simular:
+                                    escuela.localidad = localidad_a_preservar
+                                    escuela.save()
+                        else:
+                            log(" No tiene escuelas")
+
+                        perfiles = localidad.perfiles.all()
+
+                        if perfiles:
+                            for perfil in perfiles:
+                                log(" Moviendo el perfil dni %s (id: %d) a la localidad a preservar (id: %d)" %(perfil.dni, perfil.id, localidad_a_preservar.id))
+
+                                if not solo_simular:
+                                    perfil.localidad = localidad_a_preservar
+                                    perfil.save()
+
+                        if not solo_simular:
+                            localidad.delete()
 
 if __name__ == "__main__":
     eliminar_duplicados(solo_simular=False, verbose=True)
