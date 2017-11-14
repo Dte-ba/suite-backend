@@ -1,10 +1,8 @@
 # coding: utf-8
 from __future__ import unicode_literals
 import sys
-import pprint
 import os
 import django
-import pprint
 sys.path.append("..")
 sys.path.append(".")
 # Configuración inicial de django
@@ -176,31 +174,32 @@ def eliminar_localidades_duplicadas(solo_simular, verbose):
                     localidades_a_eliminar = localidades_duplicadas[1:]
 
                     for localidad in localidades_a_eliminar:
-                        log("Se eliminará la localidad %s (id: %d)" %(localidad.nombre, localidad.id))
+                        log("  Buscando mover escuelas y perfiles de la localidad duplicada %s (id: %d)" %(localidad.nombre, localidad.id))
 
                         escuelas = localidad.escuelas.all()
 
                         if escuelas:
                             for escuela in escuelas:
-                                log(" Moviendo la escuela de cue %s (id: %d) a la localidad a preservar (id: %d)" %(escuela.cue, escuela.id, localidad_a_preservar.id))
+                                log("     Moviendo la escuela de cue %s (id: %d) a la localidad a preservar (id: %d)" %(escuela.cue, escuela.id, localidad_a_preservar.id))
 
                                 if not solo_simular:
                                     escuela.localidad = localidad_a_preservar
                                     escuela.save()
                         else:
-                            log(" No tiene escuelas")
+                            log("    No tiene escuelas")
 
                         perfiles = localidad.perfiles.all()
 
                         if perfiles:
                             for perfil in perfiles:
-                                log(" Moviendo el perfil dni %s (id: %d) a la localidad a preservar (id: %d)" %(perfil.dni, perfil.id, localidad_a_preservar.id))
+                                log("    Moviendo el perfil dni %s (id: %d) a la localidad a preservar (id: %d)" %(perfil.dni, perfil.id, localidad_a_preservar.id))
 
                                 if not solo_simular:
                                     perfil.localidad = localidad_a_preservar
                                     perfil.save()
 
                         if not solo_simular:
+                            log("  Eliminando la localidad duplicada %s (id: %d)" %(localidad.nombre, localidad.id))
                             localidad.delete()
 
 if __name__ == "__main__":
