@@ -55,6 +55,24 @@ class Evento(models.Model):
 
         return False
 
+    def puedeSerEditadaPor(self, perfil):
+        "Indica si un evento puede ser editado por un perfil en particular."
+
+        # Sin importar el perfil, el evento no se tiene que poder editar
+        # si tiene acta.
+        if self.acta_legacy or self.acta:
+            return False
+
+        # Si es responsable tiene que poder editarlo.
+        if perfil == self.responsable:
+            return True
+
+        # igualmente si es un acompañate.
+        if perfil in self.acompaniantes.all():
+            return True
+
+        return False
+
 
 @receiver(post_save, sender=Evento)
 def create_event_summary(sender, instance, created, **kwargs):

@@ -360,6 +360,71 @@ class GeneralesTestCase(APITestCase):
         self.assertEqual(response.data['cantidad'], 1)
         self.assertEqual(len(response.data['eventos']), 1)
 
+    def test_puede_consultar_si_un_evento_es_editable(self):
+        # Prepara el usuario para chequear contra la api
+        user = User.objects.create_user(username='test', password='123')
+        self.client.force_authenticate(user=user)
+
+        # Se genera un grupo
+        grupo = Group.objects.create(name="Administrador")
+
+        # Se genera un usuario demo
+        user_2 = User.objects.create_user(username='demo', password='123')
+        user_2.perfil.group = grupo
+        user_2.perfil.save()
+
+        # Se genera 1 escuela
+        region_1 = models.Region.objects.create(numero=1)
+        distrito_1 = models.Distrito.objects.create(nombre="distrito1", region=region_1)
+        localidad_1 = models.Localidad.objects.create(nombre="localidad1", distrito=distrito_1)
+        escuela_1 = models.Escuela.objects.create(cue="1", nombre="Escuela 1", localidad=localidad_1)
+
+        # Se crea una categoria
+        categoria_1 = models.CategoriaDeEvento.objects.create(nombre="Categoria 1")
+
+        evento_de_user = models.Evento.objects.create(
+            titulo="Evento del usuario user",
+            categoria=categoria_1,
+            responsable=user.perfil,
+            escuela=escuela_1,
+            fecha="2017-01-15",
+            fecha_fin="2017-01-15"
+        )
+
+        evento_de_user2 = models.Evento.objects.create(
+            titulo="Evento del usuario user2",
+            categoria=categoria_1,
+            responsable=user_2.perfil,
+            escuela=escuela_1,
+            fecha="2017-03-15",
+            fecha_fin="2017-03-15"
+        )
+
+        evento_de_user2_con_user_de_invitado = models.Evento.objects.create(
+            titulo="Evento del usuario user2 pero con user de invitado",
+            categoria=categoria_1,
+            responsable=user_2.perfil,
+            escuela=escuela_1,
+            fecha="2017-03-15",
+            fecha_fin="2017-03-15"
+        )
+
+        evento_de_user2_con_user_de_invitado.acompaniantes.add(user.perfil)
+        evento_de_user2.save()
+
+        # El primer evento lo tiene como responsable a user 1, así que tiene que ser editable por el.
+        response = self.client.get('/api/perfiles/%d/puede-editar-la-accion?accion_id=%d' %(user.perfil.id, evento_de_user.id), format='json')
+        self.assertEqual(response.data['puedeEditar'], True)
+
+        # El segundo evento no, porque no es responsable ni invitado.
+        response = self.client.get('/api/perfiles/%d/puede-editar-la-accion?accion_id=%d' %(user.perfil.id, evento_de_user2.id), format='json')
+        self.assertEqual(response.data['puedeEditar'], False)
+
+        # En el tercer evento es invitado, así que debería poder editarlo.
+        response = self.client.get('/api/perfiles/%d/puede-editar-la-accion?accion_id=%d' %(user.perfil.id, evento_de_user2_con_user_de_invitado.id), format='json')
+        self.assertEqual(response.data['puedeEditar'], True)
+
+
     def test_puede_pedir_agenda_coordinador(self):
         # Prepara el usuario para chequear contra la api
         user = User.objects.create_user(username='test', password='123')

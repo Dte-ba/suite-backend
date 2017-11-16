@@ -45,6 +45,14 @@ def home(request):
     return render(request, 'home.html')
 
 
+def responseError(mensaje):
+    response = Response({
+        "error": mensaje
+    })
+
+    response.status_code = 500
+    return response
+
 
 class SuitePageNumberPagination(PageNumberPagination):
     max_page_size = 6000
@@ -493,6 +501,26 @@ class PerfilViewSet(viewsets.ModelViewSet):
         }
         return Response(estadisticas)
 
+    @detail_route(methods=['get'], url_path='puede-editar-la-accion')
+    def puedeEditarLaAccion(self, request, pk=None):
+        accion_id = self.request.query_params.get('accion_id', None)
+        accion = None
+
+        perfil = self.get_object()
+
+        if not accion_id:
+            return responseError("No ha especificado accion_id")
+
+        try:
+            accion = models.Evento.objects.get(id=accion_id)
+        except models.Evento.DoesNotExist:
+            return responseError("No se encuentra el evento id=%d" %(accion_id))
+
+        return Response({
+            'puedeEditar': accion.puedeSerEditadaPor(perfil),
+            'accion_id': accion_id
+        })
+
 class MiPerfilViewSet(viewsets.ViewSet):
     authentication_classes = (TokenAuthentication,)
     permission_classes = (IsAuthenticated,)
@@ -513,6 +541,7 @@ class MiPerfilViewSet(viewsets.ViewSet):
             'region': perfil.region.numero
         }
         return Response(data)
+
 
     @detail_route(methods=['get'])
     def detalle(self, request, pk=None):
