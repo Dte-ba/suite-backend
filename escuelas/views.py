@@ -244,7 +244,7 @@ class EventoViewSet(viewsets.ModelViewSet):
     queryset = models.Evento.objects.all()
     serializer_class = serializers.EventoSerializer
     filter_backends = [SearchFilter, DjangoFilterBackend]
-    search_fields = ['escuela__nombre', 'escuela__cue', 'responsable__apellido', 'responsable__dni', 'titulo']
+    search_fields = ['escuela__nombre', 'escuela__cue', 'titulo']
 
     def get_queryset(self):
         queryset = self.queryset
@@ -266,10 +266,8 @@ class EventoViewSet(viewsets.ModelViewSet):
         if query:
             filtro_escuela = Q(escuela__nombre__icontains=query)
             filtro_escuela_cue = Q(escuela__cue__icontains=query)
-            filtro_responsable_apellido = Q(responsable__apellido__icontains=query)
-            filtro_responsable_dni = Q(responsable__dni=query)
 
-            queryset = queryset.filter(filtro_escuela | filtro_escuela_cue | filtro_responsable_apellido | filtro_responsable_dni)
+            queryset = queryset.filter(filtro_escuela | filtro_escuela_cue)
 
         return queryset.distinct()
 
