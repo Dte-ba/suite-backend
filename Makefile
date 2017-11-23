@@ -74,12 +74,10 @@ test_live: dependencias
 
 ejecutar: migrar serve
 
-ejecutar_produccion: migrar
-	DATABASE_URL=postgres://postgres:postgress@localhost/suite python manage.py runserver
+ejecutar_produccion: ejecutar
 
 serve: dependencias
-	${BIN_MANAGE} runserver
-	#${BIN_MANAGE} testserver escuelas/fixtures/*
+	DATABASE_URL=postgres://postgres:postgress@localhost/suite ${BIN_MANAGE} runserver
 
 s: serve
 server: serve
@@ -94,7 +92,7 @@ crear_migraciones:
 	${BIN_MANAGE} makemigrations
 
 crear_usuario_admin:
-	${BIN_MANAGE} createsuperuser
+	DATABASE_URL=postgres://postgres:postgress@localhost/suite ${BIN_MANAGE} createsuperuser
 
 _esta_instalado_graphviz:
 	@python utils/esta_instalado_graphviz.py
