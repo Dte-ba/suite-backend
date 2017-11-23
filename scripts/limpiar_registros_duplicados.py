@@ -165,7 +165,7 @@ def eliminar_localidades_duplicadas(solo_simular, verbose):
             log("  Hay %d localidades, se deben eliminar %d porque son duplicadas." %(cantidad_de_localidades_en_el_distrito, cantidad_a_eliminar))
 
             for nombre_de_localidad_a_preservar in nombres_unicos_de_localidades:
-                localidades_duplicadas = models.Localidad.objects.filter(nombre=nombre_de_localidad_a_preservar)
+                localidades_duplicadas = localidades_del_distrito.filter(nombre=nombre_de_localidad_a_preservar)
 
                 if len(localidades_duplicadas) > 1:
                     localidad_a_preservar = localidades_duplicadas[0]
