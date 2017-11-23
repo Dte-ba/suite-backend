@@ -665,6 +665,41 @@ class GeneralesTestCase(APITestCase):
         #os.remove(archivo_temporal)
 
 
+    def test_puede_crear_usuario(self):
+        # Prepara el usuario para chequear contra la api
+        user = User.objects.create_user(username='test', password='123')
+        self.client.force_authenticate(user=user)
+
+        data = {
+            "data": {
+                "type": "User",
+                # "id": 2,
+                "attributes": {
+                    "username": "usuario1",
+                    "password": "asdasd123"
+                }
+            }
+        }
+
+        # Inicialmente solo hay un usuario (el usuario logeado)
+        self.assertEqual(User.objects.all().count(), 1)
+        # Y tiene que haber un perfil asociado
+        self.assertEqual(models.Perfil.objects.all().count(), 1)
+
+        # Luego de hacer el post ...
+        post = self.client.post('/api/users/create_user', json.dumps(data), content_type='application/vnd.api+json')
+
+        # ... tiene que haber 2 usuarios ...
+        self.assertEqual(User.objects.all().count(), 2)
+
+        # ... y 2 perfiles ...
+        self.assertEqual(models.Perfil.objects.all().count(), 2)
+
+
+        # # Y la api tiene que retornar el nuevo usuario
+        response = self.client.get('/api/users/2')
+        self.assertEqual(response.data['username'], 'usuario1')
+
     def test_puede_crear_persona(self):
         # Prepara el usuario para chequear contra la api
         user = User.objects.create_user(username='test', password='123')

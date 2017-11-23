@@ -4,7 +4,7 @@ from rest_framework import viewsets
 from django.db.models import Q
 from rest_framework.response import Response
 from rest_framework.authentication import TokenAuthentication
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, AllowAny
 from django.contrib.auth.models import User, Group, Permission
 from django.core.files import File
 from django.http import HttpResponse
@@ -16,6 +16,7 @@ import rest_framework.filters
 
 from rest_framework.decorators import list_route
 from rest_framework.decorators import detail_route
+from rest_framework import status
 
 import serializers
 import models
@@ -80,6 +81,16 @@ class UserViewSet(viewsets.ModelViewSet):
     serializer_class = serializers.UserSerializer
     authentication_classes = (TokenAuthentication,)
     permission_classes = (IsAuthenticated,)
+
+    @list_route(methods=['post'])
+    def create_user(self, request):
+        permission_classes = (AllowAny,)
+        serialized = serializers.UserSerializer(data=request.data, context={'request': request})
+        if serialized.is_valid():
+            serialized.save()
+            return Response(serialized.data, status=status.HTTP_201_CREATED)
+        else:
+            return Response(serialized._errors, status=status.HTTP_400_BAD_REQUEST)
 
 class EscuelaViewSet(viewsets.ModelViewSet):
     queryset = models.Escuela.objects.all()

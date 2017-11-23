@@ -15,11 +15,18 @@ class CustomSerializer(serializers.HyperlinkedModelSerializer):
 
         return expanded_fields
 
-class UserSerializer(CustomSerializer):
+class UserSerializer(serializers.ModelSerializer):
+    password = serializers.CharField(write_only=True)
 
     class Meta:
         model = User
-        fields = ('url', 'username', 'email', 'is_staff')
+        fields = ('url', 'username', 'email', 'is_staff', 'password')
+
+    def create(self, validated_data):
+        user = super(UserSerializer, self).create(validated_data)
+        user.set_password(validated_data['password'])
+        user.save()
+        return user
 
 class ContactoSerializer(CustomSerializer):
 
