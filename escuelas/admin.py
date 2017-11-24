@@ -61,8 +61,8 @@ class LocalidadForm(forms.ModelForm):
 class LocalidadAdmin(CustomModelAdmin):
     form = LocalidadForm
     model = models.Localidad
-    list_display = ('id', 'nombre', 'distrito', 'cantidad_de_escuelas', 'cantidad_de_perfiles')
-    search_fields = ('id', 'nombre')
+    list_display = ('id', 'nombre', 'distrito', 'cantidad_de_escuelas', 'numero_de_region', 'cantidad_de_perfiles_con_domicilio_vinculado')
+    search_fields = ('id', 'nombre',)
 
 
 class ComentarioDeTareaInline(admin.TabularInline):

@@ -8,7 +8,7 @@ class Localidad(models.Model):
     def cantidad_de_escuelas(self):
         return self.escuelas.count()
 
-    def cantidad_de_perfiles(self):
+    def cantidad_de_perfiles_con_domicilio_vinculado(self):
         return self.perfiles.count()
 
     def __unicode__(self):
@@ -20,3 +20,6 @@ class Localidad(models.Model):
 
     class JSONAPIMeta:
         resource_name = "localidades"
+
+    def numero_de_region(self):
+        return self.distrito.region.numero
