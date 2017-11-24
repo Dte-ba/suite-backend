@@ -1,48 +1,69 @@
 from django.contrib import admin
 import models
 from django.contrib.auth.models import Permission
+from dal import autocomplete
+from django import forms
 
-admin.site.register(Permission)
-admin.site.register(models.Contacto)
+class CustomModelAdmin(admin.ModelAdmin):
 
-class EscuelaAdmin(admin.ModelAdmin):
+    class Media:
+         js = (
+            'http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js',
+            )
+
+class EscuelaForm(forms.ModelForm):
+
+    class Meta:
+        model = models.Escuela
+        fields = ('__all__')
+        widgets = {
+            'localidad': autocomplete.ModelSelect2()
+        }
+
+class EscuelaAdmin(CustomModelAdmin):
+    form = EscuelaForm
     model = models.Escuela
-    list_display = ('cue', 'nombre', 'localidad', 'nivel', 'modalidad', 'numero_de_region')
+    list_display = ('id', 'cue', 'nombre', 'localidad', 'nivel', 'modalidad', 'numero_de_region')
     search_fields = ('cue', 'nombre')
 
-class PerfilAdmin(admin.ModelAdmin):
+class PerfilForm(forms.ModelForm):
+
+    class Meta:
+        model = models.Perfil
+        fields = ('__all__')
+        widgets = {
+            'localidad': autocomplete.ModelSelect2(),
+            'user': autocomplete.ModelSelect2()
+        }
+
+class PerfilAdmin(CustomModelAdmin):
+    form = PerfilForm
     model = models.Perfil
     list_display = ('user', 'nombre', 'apellido', 'group', 'region', 'dni', 'email')
     search_fields = ('nombre', 'apellido', 'dni')
 
-class EventoAdmin(admin.ModelAdmin):
+class EventoAdmin(CustomModelAdmin):
     model = models.Evento
     list_display = ('id', 'titulo', 'fecha', 'inicio', 'fecha_fin', 'fin',  'responsable')
     search_fields = ('id', 'titulo', 'legacy_id')
 
-admin.site.register(models.Escuela, EscuelaAdmin)
-admin.site.register(models.Evento, EventoAdmin)
-admin.site.register(models.Perfil, PerfilAdmin)
 
-admin.site.register(models.MotivoDeConformacion)
 
-admin.site.register(models.TipoDeFinanciamiento)
-admin.site.register(models.Nivel)
-admin.site.register(models.Modalidad)
-admin.site.register(models.TipoDeGestion)
-admin.site.register(models.Area)
-admin.site.register(models.Programa)
+class LocalidadForm(forms.ModelForm):
 
-class LocalidadAdmin(admin.ModelAdmin):
+    class Meta:
+        model = models.Localidad
+        fields = ('__all__')
+        widgets = {
+            'distrito': autocomplete.ModelSelect2()
+        }
+
+class LocalidadAdmin(CustomModelAdmin):
+    form = LocalidadForm
     model = models.Localidad
-    list_display = ('nombre', 'distrito')
+    list_display = ('id', 'nombre', 'distrito', 'cantidad_de_escuelas', 'cantidad_de_perfiles')
     search_fields = ('id', 'nombre')
 
-admin.site.register(models.Localidad, LocalidadAdmin)
-
-admin.site.register(models.Experiencia)
-admin.site.register(models.Cargo)
-admin.site.register(models.Contrato)
 
 class ComentarioDeTareaInline(admin.TabularInline):
     model = models.ComentarioDeTarea
@@ -52,13 +73,6 @@ class TareaAdmin(admin.ModelAdmin):
         ComentarioDeTareaInline,
     ]
 
-admin.site.register(models.Tarea, TareaAdmin)
-admin.site.register(models.MotivoDeTarea)
-admin.site.register(models.PrioridadDeTarea)
-admin.site.register(models.EstadoDeTarea)
-admin.site.register(models.ComentarioDeTarea)
-
-admin.site.register(models.EstadoDeValidacion)
 
 class ComentarioDeValidacionInline(admin.TabularInline):
     model = models.ComentarioDeValidacion
@@ -70,27 +84,23 @@ class ValidacionAdmin(admin.ModelAdmin):
         ComentarioDeValidacionInline,
     ]
 
-admin.site.register(models.Validacion, ValidacionAdmin)
-admin.site.register(models.ComentarioDeValidacion)
 
-class CategoriaDeEventoAdmin(admin.ModelAdmin):
+class CategoriaDeEventoAdmin(CustomModelAdmin):
     model = models.CategoriaDeEvento
     list_display = ('nombre', )
 
-admin.site.register(models.CategoriaDeEvento, CategoriaDeEventoAdmin)
 
-class PisoAdmin(admin.ModelAdmin):
+class PisoAdmin(CustomModelAdmin):
     model = models.Piso
     list_display = ('servidor', 'serie', 'ups', 'rack', 'estado', 'llave')
     search_fields = ('id', 'servidor', 'serie', 'estado', 'llave')
 
-admin.site.register(models.Piso, PisoAdmin)
 
 
 class DistritoInline(admin.TabularInline):
     model = models.Distrito
 
-class RegionAdmin(admin.ModelAdmin):
+class RegionAdmin(CustomModelAdmin):
     inlines = [
         DistritoInline,
     ]
@@ -98,15 +108,12 @@ class RegionAdmin(admin.ModelAdmin):
 class LocalidadInline(admin.TabularInline):
     model = models.Localidad
 
-class DistritoAdmin(admin.ModelAdmin):
+class DistritoAdmin(CustomModelAdmin):
     inlines = [
         LocalidadInline,
     ]
 
-admin.site.register(models.Region, RegionAdmin)
-admin.site.register(models.Distrito, DistritoAdmin)
-
-class PaqueteAdmin(admin.ModelAdmin):
+class PaqueteAdmin(CustomModelAdmin):
     model = models.Paquete
     list_display = (
         'legacy_id',
@@ -127,4 +134,37 @@ class PaqueteAdmin(admin.ModelAdmin):
     )
     search_fields = ('legacy_id', 'estado', 'escuela')
 
+admin.site.register(Permission)
+admin.site.register(models.Contacto)
+admin.site.register(models.Escuela, EscuelaAdmin)
+admin.site.register(models.Evento, EventoAdmin)
+admin.site.register(models.Perfil, PerfilAdmin)
+
+admin.site.register(models.MotivoDeConformacion)
+
+admin.site.register(models.TipoDeFinanciamiento)
+admin.site.register(models.Nivel)
+admin.site.register(models.Modalidad)
+admin.site.register(models.TipoDeGestion)
+admin.site.register(models.Area)
+admin.site.register(models.Programa)
+admin.site.register(models.Localidad, LocalidadAdmin)
+
+admin.site.register(models.Experiencia)
+admin.site.register(models.Cargo)
+admin.site.register(models.Contrato)
+
+admin.site.register(models.Tarea, TareaAdmin)
+admin.site.register(models.MotivoDeTarea)
+admin.site.register(models.PrioridadDeTarea)
+admin.site.register(models.EstadoDeTarea)
+admin.site.register(models.ComentarioDeTarea)
+
+admin.site.register(models.EstadoDeValidacion)
+admin.site.register(models.Validacion, ValidacionAdmin)
+admin.site.register(models.ComentarioDeValidacion)
+admin.site.register(models.CategoriaDeEvento, CategoriaDeEventoAdmin)
+admin.site.register(models.Piso, PisoAdmin)
+admin.site.register(models.Region, RegionAdmin)
+admin.site.register(models.Distrito, DistritoAdmin)
 admin.site.register(models.Paquete, PaqueteAdmin)

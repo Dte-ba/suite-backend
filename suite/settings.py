@@ -38,6 +38,8 @@ APPEND_SLASH = False
 # Application definition
 
 INSTALLED_APPS = [
+    'dal',
+    'dal_select2',
     'escuelas.apps.EscuelasConfig',
     'django.contrib.admin',
     'django.contrib.auth',
