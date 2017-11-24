@@ -112,6 +112,8 @@ class DistritoAdmin(CustomModelAdmin):
     inlines = [
         LocalidadInline,
     ]
+    list_display = ('id', 'nombre', 'cantidad_de_localidades', 'cantidad_de_escuelas', 'cantidad_de_perfiles')
+    search_fields = ('id', 'nombre')
 
 class PaqueteAdmin(CustomModelAdmin):
     model = models.Paquete

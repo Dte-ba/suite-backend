@@ -15,3 +15,12 @@ class Distrito(models.Model):
 
     class JSONAPIMeta:
         resource_name = "distritos"
+
+    def cantidad_de_localidades(self):
+        return self.localidades.count()
+
+    def cantidad_de_escuelas(self):
+        return sum([localidad.cantidad_de_escuelas() for localidad in self.localidades.all()])
+
+    def cantidad_de_perfiles(self):
+        return sum([localidad.cantidad_de_perfiles() for localidad in self.localidades.all()])
