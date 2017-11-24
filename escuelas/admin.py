@@ -112,7 +112,7 @@ class DistritoAdmin(CustomModelAdmin):
     inlines = [
         LocalidadInline,
     ]
-    list_display = ('id', 'nombre', 'cantidad_de_localidades', 'cantidad_de_escuelas', 'cantidad_de_perfiles')
+    list_display = ('id', 'nombre', 'cantidad_de_localidades', 'cantidad_de_escuelas', 'region', 'cantidad_de_perfiles_en_la_region')
     search_fields = ('id', 'nombre')
 
 class PaqueteAdmin(CustomModelAdmin):
