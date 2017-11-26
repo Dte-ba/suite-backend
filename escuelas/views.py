@@ -547,7 +547,8 @@ class MiPerfilViewSet(viewsets.ViewSet):
             'permisos': perfil.obtenerPermisos(),
             'grupos': perfil.obtenerListaDeGrupos(),
             'idPerfil': perfil.id,
-            'region': perfil.region.numero
+            'region': perfil.region.numero,
+            'idRegion': perfil.region.id
         }
         return Response(data)
 
