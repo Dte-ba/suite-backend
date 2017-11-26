@@ -712,8 +712,8 @@ class TareaViewSet(viewsets.ModelViewSet):
     queryset = models.Tarea.objects.all()
     serializer_class = serializers.TareaSerializer
     filter_backends = [SearchFilter, DjangoFilterBackend]
-    search_fields = ['fecha_de_alta', 'titulo', 'autor__nombre', 'autor__apellido']
-    filter_fields = ['escuela__localidad__distrito__region__numero']
+    search_fields = ['autor__nombre', 'autor__apellido', 'titulo']
+    filter_fields = ['escuela__localidad__distrito__region__numero', 'escuela', 'estado_de_tarea']
 
 
     #
