@@ -34,6 +34,7 @@ from django.utils.timezone import now
 from django.views.generic import DetailView
 from easy_pdf.views import PDFTemplateResponseMixin, PDFTemplateView
 import xlwt
+import pprint
 
 #
 # class LargeResultsSetPagination(pagination.PageNumberPagination):
@@ -529,6 +530,30 @@ class PerfilViewSet(viewsets.ModelViewSet):
             'puedeEditar': accion.puedeSerEditadaPor(perfil),
             'accion_id': accion_id
         })
+
+    @detail_route(methods=['post'], url_path='definir-clave')
+    def definirClave(self, request, **kwargs):
+        data = json.loads(request.data.keys()[0])
+
+        if data['clave'] != data['confirmacion']:
+            return Response({
+                'ok': False,
+                'error': 'Las constraseñas no coinciden.'
+            })
+
+        if len(data['clave']) < 4:
+            return Response({
+                'ok': False,
+                'error': 'La contraseña es demasiado corta.'
+            })
+
+        perfil = self.get_object()
+        perfil.user.set_password(data['clave'])
+        perfil.user.save()
+
+        return Response({'ok': True})
+
+
 
 class MiPerfilViewSet(viewsets.ViewSet):
     authentication_classes = (TokenAuthentication,)

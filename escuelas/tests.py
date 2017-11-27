@@ -424,6 +424,27 @@ class GeneralesTestCase(APITestCase):
         response = self.client.get('/api/perfiles/%d/puede-editar-la-accion?accion_id=%d' %(user.perfil.id, evento_de_user2_con_user_de_invitado.id), format='json')
         self.assertEqual(response.data['puedeEditar'], True)
 
+    def test_puede_cambiar_clave_de_perfil(self):
+        user = User.objects.create_user(username='test', password='123')
+        self.client.force_authenticate(user=user)
+
+        # Se genera un usuario demo
+        user_2 = User.objects.create_user(username='demo', password='123')
+        user_2.perfil.save()
+
+        # Se asegura que la contraseña inicial es 123
+        self.assertTrue(user_2.check_password('123'))
+
+        data = """{"clave": "demo123", "confirmacion": "demo123"}"""
+
+        response = self.client.post('/api/perfiles/%d/definir-clave' %(user_2.perfil.id), data, content_type='application/x-www-form-urlencoded; charset=UTF-8')
+        self.assertEqual(response.data['ok'], True)
+
+        user_2 = User.objects.get(username='demo')
+
+        # Se asegura que la contraseña cambió a demo123 luego de hacer el post.
+        self.assertTrue(user_2.check_password('demo123'))
+
 
     def test_puede_pedir_agenda_coordinador(self):
         # Prepara el usuario para chequear contra la api
