@@ -38,8 +38,6 @@ APPEND_SLASH = False
 # Application definition
 
 INSTALLED_APPS = [
-    'dal',
-    'dal_select2',
     'escuelas.apps.EscuelasConfig',
     'django.contrib.admin',
     'django.contrib.auth',
@@ -49,6 +47,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django_coverage',
     'django.contrib.staticfiles',
+    'dal',
+    'dal_select2',
     'rest_framework',
     'rest_framework.authtoken',
     'django_extensions',
