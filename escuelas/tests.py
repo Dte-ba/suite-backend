@@ -437,7 +437,7 @@ class GeneralesTestCase(APITestCase):
 
         data = """{"clave": "demo123", "confirmacion": "demo123"}"""
 
-        response = self.client.post('/api/perfiles/%d/definir-clave' %(user_2.perfil.id), data, content_type='application/x-www-form-urlencoded; charset=UTF-8')
+        response = self.client.post('/api/perfiles/%d/definir-clave' %(user_2.perfil.id), data)
         self.assertEqual(response.data['ok'], True)
 
         user_2 = User.objects.get(username='demo')

@@ -533,7 +533,7 @@ class PerfilViewSet(viewsets.ModelViewSet):
 
     @detail_route(methods=['post'], url_path='definir-clave')
     def definirClave(self, request, **kwargs):
-        data = json.loads(request.data.keys()[0])
+        data = request.data
 
         if data['clave'] != data['confirmacion']:
             return Response({
