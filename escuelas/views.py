@@ -1101,3 +1101,4 @@ class PermissionViewSet(viewsets.ModelViewSet):
 class GroupViewSet(viewsets.ModelViewSet):
     queryset = Group.objects.all()
     serializer_class = serializers.GroupSerializer
+    resource_name = 'groups'

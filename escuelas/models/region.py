@@ -10,3 +10,6 @@ class Region(models.Model):
     class Meta:
         db_table = 'regiones'
         verbose_name_plural = "regiones"
+
+    class JSONAPIMeta:
+        resource_name = 'regiones'

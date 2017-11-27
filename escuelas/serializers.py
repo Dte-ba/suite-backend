@@ -62,7 +62,11 @@ class CargoSerializer(CustomSerializer):
 
 class PerfilSerializer(CustomSerializer):
 
-    cargo = CargoSerializer()
+    cargo = ResourceRelatedField(queryset=models.Cargo.objects)
+    region = ResourceRelatedField(queryset=models.Region.objects)
+    contrato = ResourceRelatedField(queryset=models.Contrato.objects)
+    localidad = ResourceRelatedField(queryset=models.Localidad.objects)
+    group = ResourceRelatedField(queryset=Group.objects)
 
     class Meta:
         model = models.Perfil
@@ -293,7 +297,7 @@ class PermissionSerializer(CustomSerializer):
         model = Permission
         fields = ('name', 'codename', 'content_type')
 
-class GroupSerializer(serializers.HyperlinkedModelSerializer):
+class GroupSerializer(CustomSerializer):
     perfiles = ResourceRelatedField(read_only=True, many=True)
     permissions = ResourceRelatedField(read_only=True, many=True)
 
