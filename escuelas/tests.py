@@ -435,7 +435,10 @@ class GeneralesTestCase(APITestCase):
         # Se asegura que la contraseña inicial es 123
         self.assertTrue(user_2.check_password('123'))
 
-        data = """{"clave": "demo123", "confirmacion": "demo123"}"""
+        data = {
+            "clave": "demo123",
+            "confirmacion": "demo123"
+        }
 
         response = self.client.post('/api/perfiles/%d/definir-clave' %(user_2.perfil.id), data)
         self.assertEqual(response.data['ok'], True)
