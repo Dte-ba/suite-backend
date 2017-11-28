@@ -87,9 +87,17 @@ class UserViewSet(viewsets.ModelViewSet):
     def create_user(self, request):
         permission_classes = (AllowAny,)
         serialized = serializers.UserSerializer(data=request.data, context={'request': request})
+
         if serialized.is_valid():
-            serialized.save()
-            return Response(serialized.data, status=status.HTTP_201_CREATED)
+            usuario = serialized.save()
+
+            resultado = {
+                "idPerfil": usuario.perfil.id,
+                "idUsuario": usuario.id,
+                "data": serialized.data
+            }
+
+            return Response(resultado, status=status.HTTP_201_CREATED)
         else:
             return Response(serialized._errors, status=status.HTTP_400_BAD_REQUEST)
 
