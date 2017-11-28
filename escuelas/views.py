@@ -99,7 +99,9 @@ class UserViewSet(viewsets.ModelViewSet):
 
             return Response(resultado, status=status.HTTP_201_CREATED)
         else:
-            return Response(serialized._errors, status=status.HTTP_400_BAD_REQUEST)
+            values = serialized._errors
+            values['errors'] = [{"detail": i[1], "source": {'pointer': i[0]}} for i in values.items()]
+            return Response(values, status=status.HTTP_400_BAD_REQUEST)
 
 class EscuelaViewSet(viewsets.ModelViewSet):
     queryset = models.Escuela.objects.all()
