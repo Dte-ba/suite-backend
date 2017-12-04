@@ -70,7 +70,7 @@ class PerfilSerializer(CustomSerializer):
 
     class Meta:
         model = models.Perfil
-        fields = ('user', 'group', 'image', 'nombre', 'apellido', 'fechadenacimiento', 'titulo', 'experiencia', 'dni', 'cuit', 'cbu', 'email', 'estado', 'direccionCalle', 'direccionAltura', 'direccionPiso', 'direccionDepto', 'direccionTorre', 'codigoPostal', 'localidad', 'telefonoCelular', 'telefonoAlternativo', 'region', 'cargo', 'contrato', 'expediente', 'fechaDeIngreso', 'fechaDeRenuncia', 'emailLaboral')
+        fields = ('user', 'group', 'image', 'nombre', 'apellido', 'fechadenacimiento', 'titulo', 'experiencia', 'dni', 'cuit', 'cbu', 'email', 'estado', 'direccion_calle', 'direccion_altura', 'direccion_piso', 'direccion_depto', 'direccion_torre', 'codigo_postal', 'localidad', 'telefono_celular', 'telefono_alternativo', 'region', 'cargo', 'contrato', 'expediente', 'fecha_de_ingreso', 'fecha_de_renuncia', 'email_laboral')
         read_only_fields = ('image',)
 
 class DistritoSerializer(CustomSerializer):

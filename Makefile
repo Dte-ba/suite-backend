@@ -13,6 +13,7 @@ BIN_DOKKU=~/.dokku/contrib/dokku_client.sh
 DB_NAME=suite-produccion
 DB_NOMBRE_DEL_DUMP= ~/Dropbox/4cores/Backups/suite-backend-produccion-dtelab_`date +'%Y%m%d_%Hhs%Mmin'`.dump
 DB_DUMP_MAS_RECIENTE=`ls -Art ~/Dropbox/4cores/Backups/*.dump  | tail -n 1`
+DB_URL="postgres://postgres:postgress@localhost/suite"
 
 comandos:
 	@echo ""
@@ -59,7 +60,7 @@ dependencias: #_esta_dentro_de_un_entorno_virtual
 iniciar: dependencias
 
 migrar: dependencias
-	${BIN_MANAGE} migrate --noinput
+	DATABASE_URL=${DB_URL} ${BIN_MANAGE} migrate --noinput
 
 test: dependencias
 	@clear;
@@ -77,7 +78,7 @@ ejecutar: migrar serve
 ejecutar_produccion: ejecutar
 
 serve: dependencias
-	DATABASE_URL=postgres://postgres:postgress@localhost/suite ${BIN_MANAGE} runserver
+	DATABASE_URL=${DB_URL} ${BIN_MANAGE} runserver
 
 s: serve
 server: serve
@@ -86,13 +87,13 @@ ayuda:
 	${BIN_MANAGE}
 
 shell: dependencias
-	DATABASE_URL=postgres://postgres:postgress@localhost/suite ${BIN_MANAGE} shell
+	DATABASE_URL=${DB_URL} ${BIN_MANAGE} shell
 
 crear_migraciones:
-	${BIN_MANAGE} makemigrations
+	DATABASE_URL=${DB_URL} ${BIN_MANAGE} makemigrations
 
 crear_usuario_admin:
-	DATABASE_URL=postgres://postgres:postgress@localhost/suite ${BIN_MANAGE} createsuperuser
+	DATABASE_URL=${DB_URL} ${BIN_MANAGE} createsuperuser
 
 _esta_instalado_graphviz:
 	@python utils/esta_instalado_graphviz.py
@@ -128,7 +129,7 @@ realizar_backup_desde_produccion:
 	${BIN_DOKKU} postgres:export ${DB_NAME} > ${DB_NOMBRE_DEL_DUMP}
 
 reiniciar_contraseñas:
-	DATABASE_URL=postgres://postgres:postgress@localhost/suite python scripts/reiniciar_contraseñas.py
+	DATABASE_URL=${DB_URL} python scripts/reiniciar_contraseñas.py
 
 cargar_ultimo_dump_localmente:
 	@echo "${G}Se cargará el dump mas reciente: ${DB_DUMP_MAS_RECIENTE}${N}"

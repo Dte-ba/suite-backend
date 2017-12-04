@@ -31,16 +31,16 @@ class Perfil(models.Model):
     estado = models.BooleanField(default=1)
 
     # Dirección Particular
-    direccionCalle = models.CharField(max_length=200, default=None, blank=True, null=True)
-    direccionAltura = models.CharField(max_length=20, default=None, blank=True, null=True)
-    direccionPiso = models.CharField(max_length=3, default=None, blank=True, null=True)
-    direccionDepto = models.CharField(max_length=3, default=None, blank=True, null=True)
-    direccionTorre = models.CharField(max_length=200, default=None, blank=True, null=True)
-    codigoPostal = models.CharField(max_length=15, default=None, blank=True, null=True)
+    direccion_calle = models.CharField(max_length=200, default=None, blank=True, null=True)
+    direccion_altura = models.CharField(max_length=20, default=None, blank=True, null=True)
+    direccion_piso = models.CharField(max_length=3, default=None, blank=True, null=True)
+    direccion_depto = models.CharField(max_length=3, default=None, blank=True, null=True)
+    direccion_torre = models.CharField(max_length=200, default=None, blank=True, null=True)
+    codigo_postal = models.CharField(max_length=15, default=None, blank=True, null=True)
     # Ver si partido es lo mismo que distrito
     localidad = models.ForeignKey('Localidad', related_name='perfiles', default=None, blank=True, null=True) # Evaluar si la lista de localidades es la mejor opción.
-    telefonoCelular = models.CharField(max_length=25, default=None, blank=True, null=True)
-    telefonoAlternativo = models.CharField(max_length=25, default=None, blank=True, null=True)
+    telefono_celular = models.CharField(max_length=25, default=None, blank=True, null=True)
+    telefono_alternativo = models.CharField(max_length=25, default=None, blank=True, null=True)
 
     # 2) Datos administrativos
     # permisosSuite =
@@ -48,9 +48,9 @@ class Perfil(models.Model):
     cargo = models.ForeignKey('cargo', related_name='perfiles', default=None, blank=True, null=True)
     contrato = models.ForeignKey('contrato', related_name='perfiles', default=None, blank=True, null=True)
     expediente = models.CharField(max_length=25, default=None, blank=True, null=True)
-    fechaDeIngreso = models.DateField(default="2010-10-10")
-    fechaDeRenuncia = models.DateField(default=None, blank=True,null=True)
-    emailLaboral = models.CharField(max_length=200, default=None, blank=True, null=True)
+    fecha_de_ingreso = models.DateField(default="2010-10-10")
+    fecha_de_renuncia = models.DateField(default=None, blank=True,null=True)
+    email_laboral = models.CharField(max_length=200, default=None, blank=True, null=True)
 
     # 3) Disponibilidad Horaria (?):
 
@@ -100,7 +100,7 @@ class Perfil(models.Model):
 
     def enviar_correo(self, asunto, mensaje):
         utils.enviar_correo(desde="hugoruscitti@gmail.com", hasta="hugoruscitti@gmail.com", asunto=asunto, mensaje=mensaje)
-        
+
 
 @receiver(post_save, sender=User)
 def create_user_profile(sender, instance, created, **kwargs):
