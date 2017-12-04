@@ -242,7 +242,7 @@ class GeneralesTestCase(APITestCase):
         localidad_1 = models.Localidad.objects.create(nombre="localidad1", distrito=distrito_1)
         escuela_1 = models.Escuela.objects.create(cue="61480600", nombre="Escuela 1", localidad=localidad_1)
 
-        data = """{
+        data_con_errores = """{
             "fecha":"2017-11-09",
             "escuela": {
                 "cue":61480600,
@@ -268,18 +268,56 @@ class GeneralesTestCase(APITestCase):
             },
             "paquetes":[
                 ["123", "456", "789", "SI"],
+                ["aaa123", "dasd", "2222", ""],
+                ["ddd", "222", "3333", ""],
+                ["", "eee", "", ""],
                 ["", "", "", ""],
-                ["", "", "", ""],
-                ["", "", "", ""],
-                ["", "", "", ""],
-                ["", "", "", ""],
+                ["12345678901234567890", "A12345678901", "123", "no"],
                 ["","","", ""]
             ]
         }
         """
-        response = self.client.post('/api/paquetes/importacionMasiva', data, content_type='application/x-www-form-urlencoded; charset=UTF-8')
-        self.assertEquals(response.data, {'paquetes': 1})
+        response = self.client.post('/api/paquetes/importacionMasiva', data_con_errores, content_type='application/x-www-form-urlencoded; charset=UTF-8')
 
+
+        self.assertTrue(response.data['error'])
+        self.assertEquals(response.data['cantidad_de_errores'], 11)
+
+
+
+        data_correcta = """{
+            "fecha":"2017-11-09",
+            "escuela": {
+                "cue":61480600,
+                "nombre":"Eem Nº 14",
+                "direccion":"SARCIONE E/ MANCO Y PAZ S/N",
+                "telefono":"4268-3084",
+                "email":null,
+                "latitud":-34.82445078,
+                "longitud":-58.34397019,
+                "fechaConformacion":null,
+                "estado":true,
+                "conformada":false,
+                "localidad":"122",
+                "tipoDeFinanciamiento":null,
+                "tipoDeGestion":null,
+                "nivel":"3",
+                "modalidad":null,
+                "area":"1",
+                "programas":["1"],
+                "piso":"1553",
+                "padre":null,
+                "motivoDeConformacion":null
+            },
+            "paquetes":[
+                ["12345678901234567890", "A12345678901", "123", "no"],
+                ["","","", ""]
+            ]
+        }
+        """
+        response = self.client.post('/api/paquetes/importacionMasiva', data_correcta, content_type='application/x-www-form-urlencoded; charset=UTF-8')
+
+        self.assertEquals(response.data, {'paquetes': 1})
         self.assertEqual(models.Paquete.objects.all().count(), 1)
 
 

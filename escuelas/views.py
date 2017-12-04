@@ -1,4 +1,5 @@
 # coding: utf-8
+from __future__ import unicode_literals
 from django.shortcuts import render
 from rest_framework import viewsets
 from django.db.models import Q
@@ -35,6 +36,7 @@ from django.views.generic import DetailView
 from easy_pdf.views import PDFTemplateResponseMixin, PDFTemplateView
 import xlwt
 import pprint
+import re
 
 #
 # class LargeResultsSetPagination(pagination.PageNumberPagination):
@@ -1055,6 +1057,55 @@ class PaqueteViewSet(viewsets.ModelViewSet):
         wb.save(response)
         return(response)
 
+    def _detectar_errores_en_importacion_masiva_de_paquetes(self, filas):
+        """Retorna una lista de errores y evaluaciones sobre las
+        filas de importación masiva.
+
+        Si el conjunto de datos no tiene errores, retorna un diccionario
+        donde la clave "error" no tendrá valor.
+        """
+        errores = []
+        filas_correctas = 0
+
+        for indice, paquete in enumerate(filas):
+            ne = unicode(paquete[0])
+            id_hardware = unicode(paquete[1])
+            marca_de_arranque = unicode(paquete[2])
+            tpm_data = unicode(paquete[3])
+
+            if not ne and not id_hardware and not marca_de_arranque and not tpm_data:
+                continue
+
+            if not re.match(r'^[a-fA-F0-9]{20}$', ne):
+                errores.append(u"Error en la linea %d. El campo NE tiene un valor inválido: '%s'. Tiene que ser un valor hexadecimal de 20 dígitos." %(indice + 1, ne))
+
+            if not re.match(r'^[a-fA-F0-9]{12}$', id_hardware):
+                errores.append(u"Error en la linea %d. El campo ID Hardware tiene un valor inválido: '%s'. Tiene que ser un valor hexadecimal de 12 dígitos." %(indice + 1, id_hardware))
+
+            if not re.match(r'^[a-fA-F0-9]+$', marca_de_arranque):
+                errores.append(u"Error en la linea %d. El campo Marca de arranque tiene un valor inválido: '%s'." %(indice + 1, marca_de_arranque))
+
+            if not re.match(r'^si$|^no$|^$', tpm_data, re.IGNORECASE):
+                errores.append(u"Error en la linea %d. El campo TPMData tiene un valor inválido: '%s'. Tiene que ser un texto con valor 'si', 'no' o ningún valor." %(indice + 1, tpm_data))
+
+            filas_correctas += 1
+
+        if filas_correctas < 1:
+            errores.append("No ha especificado ninguna fila.")
+
+        if errores:
+            return {
+                'error': u"La importación ha fallado",
+                'errores': errores,
+                'cantidad_de_errores': len(errores)
+            }
+        else:
+            return {
+                'error': False,
+                'errores': [],
+                'cantidad_de_errores': 0
+            }
+
     @list_route(methods=['post'])
     def importacionMasiva(self, request, **kwargs):
         # TODO: evitar esta conversión, debería llegar el dicionario de datos
@@ -1074,29 +1125,40 @@ class PaqueteViewSet(viewsets.ModelViewSet):
 
         cantidad_de_paquetes_creados = 0
 
-        for p in paquetes:
-            ne = p[0]
-            id_hardware = p[1]
-            marca_de_arranque = p[2]
-            tpmdata = p[3]
-            if tpmdata != "":
-                tpmdata = True
-            else:
-                tpmdata = False
+        validacion = self._detectar_errores_en_importacion_masiva_de_paquetes(paquetes)
 
-            # si la linea de handsontable define las tres columnas, se intenta
-            # generar un paquete con esos datos
-            if ne and id_hardware and marca_de_arranque:
-                models.Paquete.objects.create(
-                    escuela=escuela,
-                    fecha_pedido=fecha,
-                    ne=ne,
-                    id_hardware=id_hardware,
-                    marca_de_arranque=marca_de_arranque,
-                    estado=estadoPendiente,
-                    tpmdata=tpmdata
-                )
-                cantidad_de_paquetes_creados += 1
+        if validacion['error']:
+            return Response({
+                'error': validacion['error'],
+                'errores': validacion['errores'],
+                'cantidad_de_errores': len(validacion['errores'])
+            })
+        else:
+
+            for p in paquetes:
+                ne = p[0]
+                id_hardware = p[1]
+                marca_de_arranque = p[2]
+                tpmdata = p[3]
+
+                if tpmdata in ['no', 'NO', 'No'] or tpmdata == "":
+                    tpmdata = False
+                else:
+                    tpmdata = True
+
+                # si la linea de handsontable define las tres columnas, se intenta
+                # generar un paquete con esos datos
+                if ne and id_hardware and marca_de_arranque:
+                    models.Paquete.objects.create(
+                        escuela=escuela,
+                        fecha_pedido=fecha,
+                        ne=ne,
+                        id_hardware=id_hardware,
+                        marca_de_arranque=marca_de_arranque,
+                        estado=estadoPendiente,
+                        tpmdata=tpmdata
+                    )
+                    cantidad_de_paquetes_creados += 1
 
         return Response({
             "paquetes": cantidad_de_paquetes_creados
