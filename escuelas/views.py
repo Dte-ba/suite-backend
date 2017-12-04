@@ -501,7 +501,14 @@ class PerfilViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         queryset = self.queryset
+
         query = self.request.query_params.get('query', None)
+
+        filtro_activos = self.request.query_params.get('activos')
+
+        if filtro_activos:
+            filtro = Q(fecha_de_renuncia=None)
+            queryset = queryset.filter(filtro)
 
         if query:
             filtro_nombre = Q(nombre__icontains=query)
@@ -517,8 +524,10 @@ class PerfilViewSet(viewsets.ModelViewSet):
     def estadistica(self, request):
         estadisticas = {
             "total": models.Perfil.objects.all().count(),
-            "enDTE": models.Perfil.objects.filter(region__numero=27).count(),
-            "enTerritorio": models.Perfil.objects.all().exclude(region__numero=27).count(),
+            "activos": models.Perfil.objects.filter(fecha_de_renuncia=None).count(),
+            "inactivos": models.Perfil.objects.all().exclude(fecha_de_renuncia=None).count(),
+            "enDTE": models.Perfil.objects.filter(region__numero=27).exclude(fecha_de_renuncia__isnull=False).count(),
+            "enTerritorio": models.Perfil.objects.all().exclude(region__numero=27).exclude(fecha_de_renuncia__isnull=False).count(),
         }
         return Response(estadisticas)
 
