@@ -18,6 +18,7 @@ class Escuela(models.Model):
     programas = models.ManyToManyField('Programa', related_name='escuelas')
     piso = models.OneToOneField('Piso', related_name='escuela', default=None, blank=True, null=True)
     modalidad = models.ForeignKey('Modalidad', related_name='escuelas', default=None, blank=True, null=True)
+    observaciones = models.CharField(max_length=1024, default=None, blank=True, null=True)
 
 
 
