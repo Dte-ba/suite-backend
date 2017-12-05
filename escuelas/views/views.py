@@ -361,7 +361,6 @@ class EventoViewSet(viewsets.ModelViewSet):
 
         return ruta_completa
 
-
     @list_route(methods=['get'])
     def informe(self, request):
         start_date = self.request.query_params.get('inicio', None)
@@ -481,6 +480,55 @@ class EventoViewSet(viewsets.ModelViewSet):
         }
         return Response(estadisticas)
 
+    @list_route(methods=['get'])
+    def export(self, request):
+
+        inicio = self.request.query_params.get('inicio', None)
+        fin = self.request.query_params.get('fin', None)
+        eventos = models.Evento.objects.filter(fecha__range=(inicio, fin))
+
+        response = HttpResponse()
+        response['Content-Disposition'] = 'attachment; filename="acciones-export.xls"'
+        response['Content-Type'] = 'application/vnd.ms-excel'
+
+        wb = xlwt.Workbook(encoding='utf-8')
+        ws = wb.add_sheet('Acciones')
+
+        font_style = xlwt.XFStyle()
+        font_style.font.bold = True
+
+        columns = ['Fecha Inicio', 'Fecha Fin', 'Responsable', 'Categoria']
+        col_num = 2 # 0 y 1 son obligatorias
+
+        # Escribir los headers
+        for col_num in range(len(columns)):
+            ws.write(0, col_num, columns[col_num], font_style)
+
+        ws.col(0).width = 256 * 12
+        ws.col(1).width = 256 * 12
+        ws.col(2).width = 256 * 18
+        ws.col(3).width = 256 * 30
+
+        font_style = xlwt.XFStyle()
+
+        row_num = 0
+
+        for accion in eventos:
+            fecha = accion.fecha
+            fecha_inicio = fecha.strftime("%Y-%m-%d")
+            fecha_final = accion.fecha_fin
+            fecha_fin = fecha_final.strftime("%Y-%m-%d")
+            responsable = accion.responsable.nombre
+            categoria = accion.categoria.nombre
+
+            row_num += 1
+            ws.write(row_num, 0, fecha_inicio, font_style)
+            ws.write(row_num, 1, fecha_fin, font_style)
+            ws.write(row_num, 2, responsable, font_style)
+            ws.write(row_num, 3, categoria, font_style)
+
+        wb.save(response)
+        return(response)
 
 class RegionViewSet(viewsets.ModelViewSet):
     resource_name = 'regiones'
