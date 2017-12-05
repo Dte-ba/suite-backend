@@ -281,7 +281,7 @@ class GeneralesTestCase(APITestCase):
 
 
         self.assertTrue(response.data['error'])
-        self.assertEquals(response.data['cantidad_de_errores'], 11)
+        self.assertEquals(response.data['cantidad_de_errores'], 9)
 
 
 
