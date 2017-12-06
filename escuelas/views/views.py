@@ -19,8 +19,8 @@ from rest_framework.decorators import list_route
 from rest_framework.decorators import detail_route
 from rest_framework import status
 
-import serializers
-import models
+from escuelas import serializers
+from escuelas import models
 import base64
 import uuid
 import os

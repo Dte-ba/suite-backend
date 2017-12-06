@@ -43,7 +43,7 @@ router.register('estados-de-paquete', views.EstadoDePaqueteViewSet)
 router.register('paquetes', views.PaqueteViewSet)
 router.register('permissions', views.PermissionViewSet)
 router.register('groups', views.GroupViewSet)
-
+router.register('informes', views.informes_view.InformesViewSet, 'Informes')
 
 
 router.register('mi-perfil', views.MiPerfilViewSet, 'Perfil')

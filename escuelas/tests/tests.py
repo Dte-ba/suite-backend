@@ -3,15 +3,15 @@ from django.contrib.auth.models import User
 from django.contrib.auth.models import Group
 from django.contrib.auth.models import Permission
 from django.contrib.contenttypes.models import ContentType
+from rest_framework.test import APITestCase
 
 import os
-from rest_framework.test import APITestCase
-import models
 import json
 import pprint
-import serializers
 
-import fixture
+from escuelas import fixture
+from escuelas import models
+from escuelas import serializers
 
 
 class APIUsuariosTests(APITestCase):
