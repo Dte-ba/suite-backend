@@ -11,8 +11,17 @@ class InformesViewSet(viewsets.ViewSet):
         if not request.user.is_authenticated():
             return Response({'error': 'El usuario no esta autenticado.'})
 
+        perfil_id = self.request.query_params.get('perfil_id', None)
+        desde = self.request.query_params.get('desde', None)
+        hasta = self.request.query_params.get('hasta', None)
+
+        if None in [perfil_id, desde, hasta]:
+            return Response({
+                'error': "No han especificado todos los argumentos: perfil_id, desde y hasta."
+            })
+
         data = {
-            'error': "No ha especificados argumentos."
+            'eventos': []
         }
 
         return Response(data)
