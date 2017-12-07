@@ -27,7 +27,10 @@ class InformesTests(APITestCase):
         # Se genera un usuario demo
         user_2 = User.objects.create_user(username='demo', password='123')
         user_2.perfil.group = grupo
-        user_2.perfil.nombre = "Nombre de Ejemplo"
+        user_2.perfil.nombre = "Juan"
+        user_2.perfil.apellido = "Perez"
+        user_2.perfil.cargo = models.Cargo.objects.create(nombre='FED', descripcion="Facilitador Educación Digital")
+        user_2.perfil.region = models.Region.objects.create(numero=2)
         user_2.perfil.save()
 
         # Se genera 1 escuela
@@ -48,12 +51,23 @@ class InformesTests(APITestCase):
         response = self.client.get('/api/informes')
         self.assertEqual(response.data['error'], 'No han especificado todos los argumentos: perfil_id, desde y hasta.')
 
+
         # Se solicita el informe en modo json para un perfil en particular
         response = self.client.get('/api/informes?perfil_id=%d&desde=2017-01-01&hasta=2018-01-01' %(user_2.perfil.id))
         self.assertEqual(len(response.data['eventos']), 2)
-        self.assertEqual(len(response.data['nombre']), "Nombre de Ejemplo")
+        self.assertEqual(response.data['perfil']['nombre'], "Juan")
+        self.assertEqual(response.data['perfil']['apellido'], "Perez")
 
         # Si solicita con una fecha inicial posterior al primer evento, tiene que retornar solamente
         # un solo evento
         response = self.client.get('/api/informes?perfil_id=%d&desde=2017-01-18&hasta=2018-01-01' %(user_2.perfil.id))
         self.assertEqual(len(response.data['eventos']), 1)
+
+        # Puede perdir el informe en formato html
+        response = self.client.get('/api/informes?perfil_id=%d&desde=2017-01-01&hasta=2018-01-01&formato=html' %(user_2.perfil.id))
+        self.assertTrue("html" in str(response))
+        self.assertFalse("javascript" in str(response))
+
+        # Puede perdir el informe en formato html, con pedido de impresión inmediato
+        response = self.client.get('/api/informes?perfil_id=%d&desde=2017-01-01&hasta=2018-01-01&formato=html&imprimir=true' %(user_2.perfil.id))
+        self.assertTrue("javascript" in str(response))

@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Informe </title>
+
+    <style type="text/css">
+        body {
+          margin: 3em;
+          font-family: sans-serif;
+          line-height: 1.5;
+        }
+
+        .cabecera {
+          border: 2px solid black;
+          border-bottom: 0;
+        }
+
+        .titulo {
+          text-align: center;
+          font-size: x-large;
+          border-bottom: 2px solid black;
+        }
+
+        span {
+          font-weight: bold;
+        }
+
+        .fila {
+          border-bottom: 2px solid black;
+          padding: 0.25em;
+        }
+
+        .evento {
+          padding-top: 2em;
+        }
+
+        i {
+          font-style: initial;
+        }
+
+        .rojo {
+          color: red;
+        }
+
+        .verde {
+          color: green;
+        }
+
+    </style>
+
+  </head>
+  <body>
+
+    <div class="cabecera">
+      <div class="titulo"> Informe de consultoría </div>
+
+      <div class="fila">
+        <span>Nombre:</span> {{perfil.nombre}} {{perfil.apellido}}
+      </div>
+
+      <div class="fila">
+        <span>DNI:</span> {{perfil.dni}}
+      </div>
+
+      <div class="fila">
+        <span>Cargo:</span> {{perfil.cargo.nombre}}
+      </div>
+
+      <div class="fila">
+        <span>Region:</span> {{perfil.region.numero}}
+      </div>
+
+      <div class="fila">
+        <span>Periodo:</span> de {{desde}} hasta {{hasta}}
+      </div>
+
+    </div>
+
+    {% for evento in eventos %}
+      <div class="evento">
+        <div><span>Fecha:</span> {{evento.fecha|date:'d/m/Y'}}</div>
+        <div><span>Escuela</span> {{evento.escuela.cue}} - {{evento.escuela.nombre}}</div>
+        <div><span>Categoría:</span> {{evento.categoria.nombre}}</div>
+        <div><span>Título:</span> {{evento.titulo}}</div>
+        <div><span>Objetivo:</span> {{evento.objetivo}}</div>
+        <div><span>Minuta:</span>
+            {% if evento.minuta %}
+              {{evento.minuta}}
+            {% else %}
+              no tiene
+            {% endif %}
+        </div>
+
+        <div>
+            {% if evento.acta %}
+              <i class='verde'>✔ Tiene acta</i>
+            {% else %}
+              <i class='rojo'>✖ sin acta</i>
+            {% endif %}
+        </div>
+
+      </div>
+    {% endfor %}
+
+  </body>
+
+
+{% if imprimir %}
+
+<script type="text/javascript">
+window.print();
+</script>
+
+{% endif %}
+
+</html>

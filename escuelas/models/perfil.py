@@ -101,6 +101,9 @@ class Perfil(models.Model):
     def enviar_correo(self, asunto, mensaje):
         utils.enviar_correo(desde="hugoruscitti@gmail.com", hasta="hugoruscitti@gmail.com", asunto=asunto, mensaje=mensaje)
 
+    def obtener_eventos_por_fecha(self, desde, hasta):
+        return self.eventos.filter(fecha__range=(desde, hasta))
+
 
 @receiver(post_save, sender=User)
 def create_user_profile(sender, instance, created, **kwargs):
