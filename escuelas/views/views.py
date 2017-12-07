@@ -485,7 +485,12 @@ class EventoViewSet(viewsets.ModelViewSet):
 
         inicio = self.request.query_params.get('inicio', None)
         fin = self.request.query_params.get('fin', None)
+        region = self.request.query_params.get('region', None)
+
         eventos = models.Evento.objects.filter(fecha__range=(inicio, fin))
+
+        if region:
+            eventos = eventos.filter(escuela__localidad__distrito__region__numero=region)
 
         response = HttpResponse()
         response['Content-Disposition'] = 'attachment; filename="acciones-export.xls"'
@@ -497,7 +502,7 @@ class EventoViewSet(viewsets.ModelViewSet):
         font_style = xlwt.XFStyle()
         font_style.font.bold = True
 
-        columns = ['Fecha Inicio', 'Fecha Fin', 'Responsable', 'Categoria']
+        columns = ['Fecha Inicio', 'Fecha Fin', 'Titulo', 'Región', 'Distrito', 'CUE', 'Responsable', 'Acompañantes', 'Categoria', 'Objetivo', 'Minuta', 'Acta']
         col_num = 2 # 0 y 1 son obligatorias
 
         # Escribir los headers
@@ -506,8 +511,8 @@ class EventoViewSet(viewsets.ModelViewSet):
 
         ws.col(0).width = 256 * 12
         ws.col(1).width = 256 * 12
-        ws.col(2).width = 256 * 18
-        ws.col(3).width = 256 * 30
+        ws.col(2).width = 256 * 12
+        ws.col(3).width = 256 * 12
 
         font_style = xlwt.XFStyle()
 
@@ -518,14 +523,39 @@ class EventoViewSet(viewsets.ModelViewSet):
             fecha_inicio = fecha.strftime("%Y-%m-%d")
             fecha_final = accion.fecha_fin
             fecha_fin = fecha_final.strftime("%Y-%m-%d")
+            titulo = accion.titulo
+            region = accion.escuela.localidad.distrito.region.numero
+            distrito = accion.escuela.localidad.distrito.nombre
+            cue = accion.escuela.cue
             responsable = accion.responsable.nombre
+
+            acompaniantes = accion.acompaniantes
+            perfiles = ""
+            for acompaniante in acompaniantes.all():
+                perfiles += acompaniante.nombre + acompaniante.apellido + ", "
+
             categoria = accion.categoria.nombre
+            objetivo = accion.objetivo
+            minuta = accion.minuta
+            acta = accion.acta
+            if acta:
+                acta = "Con Acta"
+            else:
+                acta = ""
 
             row_num += 1
             ws.write(row_num, 0, fecha_inicio, font_style)
             ws.write(row_num, 1, fecha_fin, font_style)
-            ws.write(row_num, 2, responsable, font_style)
-            ws.write(row_num, 3, categoria, font_style)
+            ws.write(row_num, 2, titulo, font_style)
+            ws.write(row_num, 3, region, font_style)
+            ws.write(row_num, 4, distrito, font_style)
+            ws.write(row_num, 5, cue, font_style)
+            ws.write(row_num, 6, responsable, font_style)
+            ws.write(row_num, 7, perfiles, font_style)
+            ws.write(row_num, 8, categoria, font_style)
+            ws.write(row_num, 9, objetivo, font_style)
+            ws.write(row_num, 10, minuta, font_style)
+            ws.write(row_num, 11, acta, font_style)
 
         wb.save(response)
         return(response)
