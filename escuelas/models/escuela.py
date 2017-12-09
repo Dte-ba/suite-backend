@@ -11,7 +11,7 @@ class Escuela(models.Model):
     latitud = models.CharField(max_length=64, default=None, blank=True, null=True)
     longitud = models.CharField(max_length=64, default=None, blank=True, null=True)
     localidad = models.ForeignKey('Localidad', related_name='escuelas', default=None, blank=True, null=True)
-    tipo_de_financiamiento = models.ManyToManyField('TipoDeFinanciamiento', related_name='escuelas', default=None, blank=True, null=True)
+    tipo_de_financiamiento = models.ManyToManyField('TipoDeFinanciamiento', related_name='escuelas', default=None, blank=True)
     nivel = models.ForeignKey('Nivel', related_name='escuelas', default=None, blank=True, null=True)
     tipo_de_gestion = models.ForeignKey('TipoDeGestion', related_name='escuelas', default=None, blank=True, null=True)
     area = models.ForeignKey('Area', related_name='escuelas', default=None, blank=True, null=True)
