@@ -51,17 +51,27 @@ class InformesTests(APITestCase):
         response = self.client.get('/api/informes')
         self.assertEqual(response.data['error'], 'No han especificado todos los argumentos: perfil_id, desde y hasta.')
 
-
         # Se solicita el informe en modo json para un perfil en particular
         response = self.client.get('/api/informes?perfil_id=%d&desde=2017-01-01&hasta=2018-01-01' %(user_2.perfil.id))
         self.assertEqual(len(response.data['eventos']), 2)
         self.assertEqual(response.data['perfil']['nombre'], "Juan")
         self.assertEqual(response.data['perfil']['apellido'], "Perez")
 
+        # Se asegura que los eventos llegan en orden, el primero es el mas antiguo.
+        self.assertEqual(response.data['eventos'][0]['fecha'], "2017-01-15")
+        self.assertEqual(response.data['eventos'][1]['fecha'], "2017-01-20")
+
         # Si solicita con una fecha inicial posterior al primer evento, tiene que retornar solamente
-        # un solo evento
+        # un solo evento (el segundo)
         response = self.client.get('/api/informes?perfil_id=%d&desde=2017-01-18&hasta=2018-01-01' %(user_2.perfil.id))
         self.assertEqual(len(response.data['eventos']), 1)
+        self.assertEqual(response.data['eventos'][0]['titulo'], "Evento de prueba de Marzo")
+
+        # Si solicita con un rango de fechas que deja afuera al segundo evento, solo tendría
+        # que mostrar el primero de los dos eventos.
+        response = self.client.get('/api/informes?perfil_id=%d&desde=2017-01-14&hasta=2017-01-16' %(user_2.perfil.id))
+        self.assertEqual(len(response.data['eventos']), 1)
+        self.assertEqual(response.data['eventos'][0]['titulo'], "Evento de prueba")
 
         # Puede perdir el informe en formato html
         response = self.client.get('/api/informes?perfil_id=%d&desde=2017-01-01&hasta=2018-01-01&formato=html' %(user_2.perfil.id))
@@ -71,3 +81,7 @@ class InformesTests(APITestCase):
         # Puede perdir el informe en formato html, con pedido de impresión inmediato
         response = self.client.get('/api/informes?perfil_id=%d&desde=2017-01-01&hasta=2018-01-01&formato=html&imprimir=true' %(user_2.perfil.id))
         self.assertTrue("javascript" in str(response))
+
+        # Puede perdir el informe en formato pdf
+        response = self.client.get('/api/informes?perfil_id=%d&desde=2017-01-01&hasta=2018-01-01&formato=pdf' %(user_2.perfil.id))
+        self.assertTrue("ReportLab generated PDF document" in str(response))

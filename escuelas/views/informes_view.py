@@ -56,8 +56,8 @@ class InformesViewSet(viewsets.ViewSet):
             contexto = {
                 "perfil": perfil,
                 "eventos": eventos,
-                "desde": desde,
-                "hasta": hasta,
+                "desde": self._formatear_fecha(desde),
+                "hasta": self._formatear_fecha(hasta),
                 "imprimir": imprimir,
                 "pdf": (formato == 'html')
             }
@@ -65,21 +65,12 @@ class InformesViewSet(viewsets.ViewSet):
             if formato == 'html':
                 return HttpResponse(template.render(contexto, request))
             else:
-
-                import pdfkit
-                body = """
-    <html>
-      <head>
-        <meta name="pdfkit-page-size" content="Legal"/>
-        <meta name="pdfkit-orientation" content="Landscape"/>
-      </head>
-      Hello World!
-      </html>
-    """
-
-                pdfkit.from_string(body, 'out.pdf')
-                #return easy_pdf.rendering.render_to_pdf_response(request, "informe.html", contexto)
+                return easy_pdf.rendering.render_to_pdf_response(request, "informe.html", contexto)
         else:
             return Response({
                     'error': u'Formato %s no reconocido' %(formato)
                 })
+
+    def _formatear_fecha(self, fecha_como_string):
+        import datetime
+        return datetime.datetime.strptime(fecha_como_string, "%Y-%m-%d").strftime("%d/%m/%Y")

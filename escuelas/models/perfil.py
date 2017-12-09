@@ -102,7 +102,7 @@ class Perfil(models.Model):
         utils.enviar_correo(desde="hugoruscitti@gmail.com", hasta="hugoruscitti@gmail.com", asunto=asunto, mensaje=mensaje)
 
     def obtener_eventos_por_fecha(self, desde, hasta):
-        return self.eventos.filter(fecha__range=(desde, hasta))
+        return self.eventos.filter(fecha__range=(desde, hasta)).order_by('fecha')
 
 
 @receiver(post_save, sender=User)

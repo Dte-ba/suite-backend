@@ -1,109 +1,142 @@
-<!DOCTYPE html>
-<html>
-  <head>
-    <meta charset="utf-8">
-    <title>Informe </title>
+{% extends "easy_pdf/base.html" %}
 
+{% block extra_style %}
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <style type="text/css">
-        body {
-          margin: 3em;
-          font-family: sans-serif;
-          line-height: 1.5;
-        }
 
-        .cabecera {
-          border: 2px solid black;
-          border-bottom: 0;
-        }
-
-        .titulo {
+        .tc {
           text-align: center;
-          font-size: x-large;
-          border-bottom: 2px solid black;
         }
 
-        span {
-          font-weight: bold;
+        .w100 {
+          width: 100%;
         }
 
-        .fila {
-          border-bottom: 2px solid black;
-          padding: 0.25em;
-        }
-
-        .evento {
-          padding-top: 2em;
+        .w2 {
+          width: 20%;
         }
 
         i {
-          font-style: initial;
+          font-style: normal;
         }
 
-        .rojo {
-          color: red;
-        }
-
-        .verde {
+        i.verde {
           color: green;
         }
 
+        i.rojo {
+          color: red;
+        }
+
+        th {
+          text-align: left;
+        }
+
+        .w80 {
+          width: 80%;
+
+        }
+
+
+
     </style>
+{% endblock %}
 
-  </head>
-  <body>
+{% if pdf %}
+  {%block page_foot %}
+    <div class='tc'>Página <pdf:pagenumber> de <pdf:pagecount> </div>
+  {% endblock%}
+{% endif %}
 
-    <div class="cabecera">
-      <div class="titulo"> Informe de consultoría </div>
 
-      <div class="fila">
-        <span>Nombre:</span> {{perfil.nombre}} {{perfil.apellido}}
-      </div>
+{% block content %}
 
-      <div class="fila">
-        <span>DNI:</span> {{perfil.dni}}
-      </div>
+  <table class="w100" border="1" cellspacing="0" cellpadding="4">
 
-      <div class="fila">
-        <span>Cargo:</span> {{perfil.cargo.nombre}}
-      </div>
+    <tr>
+      <td class="tc" colspan="2"><h3>Informe de consultoría<h3></td>
+    </tr>
 
-      <div class="fila">
-        <span>Region:</span> {{perfil.region.numero}}
-      </div>
+    <tr>
+      <th class="w2" width={{w}}>Nombre</th>
+      <td>{{perfil.nombre}} {{perfil.apellido}}</td>
+    </tr>
 
-      <div class="fila">
-        <span>Periodo:</span> de {{desde}} hasta {{hasta}}
-      </div>
+    <tr>
+      <th class="w2" width={{w}}>DNI</th>
+      <td>{{perfil.dni}}</td>
+    </tr>
 
-    </div>
+    <tr>
+      <th class="w2" width={{w}}>Cargo</th>
+      <td>{{perfil.cargo.nombre}}</td>
+    </tr>
 
-    {% for evento in eventos %}
-      <div class="evento">
-        <div><span>Fecha:</span> {{evento.fecha|date:'d/m/Y'}}</div>
-        <div><span>Escuela</span> {{evento.escuela.cue}} - {{evento.escuela.nombre}}</div>
-        <div><span>Categoría:</span> {{evento.categoria.nombre}}</div>
-        <div><span>Título:</span> {{evento.titulo}}</div>
-        <div><span>Objetivo:</span> {{evento.objetivo}}</div>
-        <div><span>Minuta:</span>
-            {% if evento.minuta %}
-              {{evento.minuta}}
-            {% else %}
-              no tiene
-            {% endif %}
-        </div>
+    <tr>
+      <th class="w2" width={{w}}>Region</th>
+      <td>{{perfil.region.numero}}</td>
+    </tr>
 
-        <div>
-            {% if evento.acta %}
-              <i class='verde'>✔ Tiene acta</i>
-            {% else %}
-              <i class='rojo'>✖ sin acta</i>
-            {% endif %}
-        </div>
+    <tr>
+      <th class="w2" width={{w}}>Periodo</th>
+      <td>{{desde}} - {{hasta}}</td>
+    </tr>
 
-      </div>
-    {% endfor %}
+  </table>
 
-  </body>
+
+  {% for evento in eventos %}
+    <br/>
+    <br/>
+
+    <table class="w100" border="1" cellspacing="0" cellpadding="2">
+      <tr>
+        <th class="w2" width={{w}}>Fecha</th>
+        <td>{{evento.fecha|date:'d/m/Y'}}</td>
+
+        <th class="w2" width={{w}}>Categoría</th>
+        <td> {{evento.categoria.nombre}}</td>
+      </tr>
+
+      <tr>
+        <th class="w2" width={{w}}>Escuela</th>
+        <td colspan="3"> {{evento.escuela.cue}} - {{evento.escuela.nombre}}</td>
+      </tr>
+
+      <tr>
+        <th class="w2" width={{w}}>Título</th>
+        <td colspan="3"> {{evento.titulo}}</td>
+      </tr>
+
+      <tr>
+        <th class="w2" width={{w}}>Objetivo</th>
+        <td> {{evento.objetivo}}</td>
+
+        <th class="w2" width={{w}}>Acta</th>
+        <td>
+          {% if evento.acta %}
+            <i class='verde'>✔ Tiene acta</i>
+          {% else %}
+            <i class='rojo'>✖ sin acta</i>
+          {% endif %}
+        </td>
+      </tr>
+
+      <tr>
+        <th class="w2" width={{w}}>Minuta:</th>
+        <td colspan="3">
+          {% if evento.minuta %}
+            {{evento.minuta}}
+          {% else %}
+            no tiene
+          {% endif %}
+        </td>
+
+      </tr>
+
+    </table>
+  {% endfor %}
+
 
 
 {% if imprimir %}
@@ -114,4 +147,4 @@ window.print();
 
 {% endif %}
 
-</html>
+{% endblock %}
