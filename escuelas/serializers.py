@@ -129,7 +129,7 @@ class ModalidadSerializer(CustomSerializer):
         fields = "__all__"
 
 class PisoSerializer(CustomSerializer):
-    escuela = ResourceRelatedField(queryset=models.Escuela.objects)
+    escuela = ResourceRelatedField(queryset=models.Escuela.objects, allow_null=True)
 
     class Meta:
         model = models.Piso
