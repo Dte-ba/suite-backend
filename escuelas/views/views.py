@@ -926,6 +926,11 @@ class ValidacionViewSet(viewsets.ModelViewSet):
         queryset = models.Validacion.objects.all()
         query = self.request.query_params.get('query', None)
 
+        filtro_eliminada = self.request.query_params.get('eliminada')
+
+        if filtro_eliminada:
+            queryset = models.Validacion.objects.all().exclude(estado__nombre="Eliminada")
+
         if query:
             filtro_autor = Q(autor__nombre__icontains=query)
             filtro_escuela = Q(escuela__nombre__icontains=query)
