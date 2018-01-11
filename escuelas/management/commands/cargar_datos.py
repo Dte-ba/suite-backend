@@ -1911,13 +1911,20 @@ class Command(BaseCommand):
                 estado_objetado = models.EstadoDePaquete.objects.get(nombre="Objetado")
 
                 try:
-                    paquete = models.Paquete.objects.get(escuela__cue=cue, ne=ne, id_hardware=hardware_id, marca_de_arranque=marca_de_arranque)
+                    paquete = models.Paquete.objects.get(escuela__cue=cue, ne=ne, id_hardware=hardware_id)
                 except models.Paquete.DoesNotExist:
                     print("-----------------------------------")
                     print("No existe un paquete con esos datos")
                     print("-----------------------------------")
-                    listado += cue + ";" + numero_de_servidor + ";" + ne + ";" + hardware_id + ";" + marca_de_arranque + ";" + motivo_de_objecion + "\n"
+                    listado += cue + ";" + numero_de_servidor + ";" + ne + ";" + hardware_id + ";" + marca_de_arranque + ";" + motivo_de_objecion + ";Falló porque no fue encontrado. \n"
                     continue
+                except models.Paquete.MultipleObjectsReturned:
+                    print("-----------------------------------")
+                    print("Mas de un registro encontrado")
+                    print("-----------------------------------")
+                    listado += cue + ";" + numero_de_servidor + ";" + ne + ";" + hardware_id + ";" + marca_de_arranque + ";" + motivo_de_objecion + ";Falló porque se encontró mas de un registro.\n"
+                    continue
+
 
                 paquete.estado = estado_objetado
                 paquete.comentario = motivo_de_objecion
