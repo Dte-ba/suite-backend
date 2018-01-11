@@ -163,6 +163,7 @@ admin.site.register(models.EstadoDeTarea)
 admin.site.register(models.ComentarioDeTarea)
 
 admin.site.register(models.EstadoDeValidacion)
+admin.site.register(models.EstadoDePaquete)
 admin.site.register(models.Validacion, ValidacionAdmin)
 admin.site.register(models.ComentarioDeValidacion)
 admin.site.register(models.CategoriaDeEvento, CategoriaDeEventoAdmin)

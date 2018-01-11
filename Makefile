@@ -116,7 +116,7 @@ filtro=""
 depuracion="0"
 
 cargar_datos:
-	python manage.py cargar_datos --filtro $(filtro) --depuracion $(depuracion) --perfil_id $(perfil_id)
+	DATABASE_URL=${DB_URL} python manage.py cargar_datos --filtro $(filtro) --depuracion $(depuracion) --perfil_id $(perfil_id)
 
 cargar_usuarios_demo:
 	python scripts/cargar_usuarios_demo.py

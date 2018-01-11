@@ -106,6 +106,7 @@ class Command(BaseCommand):
             'importar_paquetes',
             'aplicar_permiso_sin_definir_a_los_perfiles_faltantes',
             'aplicar_password_inicial_para_usuarios',
+            'importar_estado_de_paquetes',
         ]
 
 
@@ -1834,3 +1835,130 @@ class Command(BaseCommand):
             if not perfil.group:
                 perfil.group = Group.objects.get(name='Sin Definir')
                 perfil.save()
+
+    def importar_estado_de_paquetes(self):
+        # ARCHIVO = './/archivos_para_importacion/dte_perfiles_2017.xlsx'
+        ARCHIVO = './/archivos_para_importacion/objetados.xlsx'
+        LIMITE_DE_FILAS = 800
+
+        print("Comenzando la importación de paquetes")
+        log("Iniciando la importación del archivo: " + ARCHIVO)
+        wb = load_workbook(ARCHIVO)
+
+        columnas_como_string = ", ".join(wb.get_sheet_names())
+        log("Las páginas de la planilla son: " + columnas_como_string)
+
+        filas_procesadas = 0
+        filas_omitidas_o_con_errores = 0
+        filas_omitidas_lista = ""
+
+        listado = ""
+
+        def formatear_fecha(fecha):
+            if fecha:
+                return fecha.strftime('%Y-%m-%d')
+            else:
+                return fecha
+
+        def obtener_valores_desde_fila(fila):
+            return {
+                "cue":                  unicode(fila[0].value),
+                "numero_de_servidor":   unicode(fila[1].value),
+                "ne":                   unicode(fila[2].value),
+                "hardware_id":          unicode(fila[3].value),
+                "marca_de_arranque":    unicode(fila[4].value),
+                "motivo_de_objecion":   unicode(fila[5].value),
+            }
+
+        bar = barra_de_progreso(simple=False)
+        #for conformacion in bar(conformaciones):
+
+        cantidad_de_filas_con_datos = 0
+        cantidad_de_filas_procesadas_sin_errores = 0
+
+        for indice, fila in bar(enumerate(wb.active.rows)):
+
+            if indice is 0:
+                continue;             # Ignora la cabecera
+
+            if not fila[0].value: # Se elige la primer columna porque siempre va a haber un CUE, pero puede no haber número de servidor.
+                log("Terminando en la fila %d porque no parece haber mas registros." %(indice + 1))
+                break
+
+            cantidad_de_filas_con_datos += 1
+            log("Procesando fila '%d'" %(indice +1))
+
+            try:
+                valores = obtener_valores_desde_fila(fila)
+
+                cue = valores['cue']
+                numero_de_servidor = valores['numero_de_servidor']
+                ne = valores['ne']
+                hardware_id = valores['hardware_id']
+                marca_de_arranque = valores['marca_de_arranque']
+                motivo_de_objecion = valores['motivo_de_objecion']
+
+                print("-----------------------------------------")
+                print("Se va a procesar el paquete:")
+                print("-----------------------------------------")
+                print("CUE: " + cue)
+                print("Nro de servidor: " + numero_de_servidor)
+                print("N/E: " + ne)
+                print("HWID: " + hardware_id)
+                print("Marca de arranque: " + marca_de_arranque)
+                print("Motivo: " + motivo_de_objecion)
+
+                estado_objetado = models.EstadoDePaquete.objects.get(nombre="Objetado")
+
+                try:
+                    paquete = models.Paquete.objects.get(escuela__cue=cue, ne=ne, id_hardware=hardware_id, marca_de_arranque=marca_de_arranque)
+                except models.Paquete.DoesNotExist:
+                    print("-----------------------------------")
+                    print("No existe un paquete con esos datos")
+                    print("-----------------------------------")
+                    listado += cue + ";" + numero_de_servidor + ";" + ne + ";" + hardware_id + ";" + marca_de_arranque + ";" + motivo_de_objecion + "\n"
+                    continue
+
+                paquete.estado = estado_objetado
+                paquete.comentario = motivo_de_objecion
+                paquete.save()
+
+                cantidad_de_filas_procesadas_sin_errores += 1
+
+            except TypeError, e:
+                log("-----")
+                log("Fila %d - ****** OMITIDA, TypeError. La fila contiene caracteres incorrectos." %(indice + 1))
+                filas_omitidas_o_con_errores += 1
+                filas_omitidas_lista += ", " + str(indice + 1)
+                log(str(e))
+                log("-----")
+                continue
+
+            # log("Fila %d - Cargando datos de perfil para consultor: '%s'" %(indice + 1, valores["consultor"]))
+
+            # listado += apellido + nombre + "," + region + "," + email_laboral + "," + default_pass + "\n"
+
+
+            filas_procesadas += 1
+
+            if indice > LIMITE_DE_FILAS:
+                break
+
+
+        log("Terminó la ejecución")
+
+        print("")
+        print("Resumen:")
+        print("")
+        print(" - cantidad total de filas:                       " + str(cantidad_de_filas_con_datos))
+        print(" - filas procesadas:                              " + str(cantidad_de_filas_procesadas_sin_errores))
+        print(" - cantidad de filas que fallaron:                " + str(cantidad_de_filas_con_datos - cantidad_de_filas_procesadas_sin_errores))
+
+        print("")
+        print("")
+        print("Listado: ")
+        print("")
+        print listado
+        f = open('listado_de_paquetes_fallados.csv', 'w')
+        f.write(listado.encode('utf-8'))
+        f.close()
