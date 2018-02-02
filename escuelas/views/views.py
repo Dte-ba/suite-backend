@@ -1133,7 +1133,6 @@ class PaqueteViewSet(viewsets.ModelViewSet):
             pedido = fecha_pedido.strftime("%Y-%m-%d")
             estado = paquete.estado.nombre
 
-
             row_num += 1
             ws.write(row_num, 0, cue, font_style)
             ws.write(row_num, 1, escuela, font_style)
@@ -1145,6 +1144,12 @@ class PaqueteViewSet(viewsets.ModelViewSet):
             ws.write(row_num, 7, ne, font_style)
             ws.write(row_num, 8, pedido, font_style)
             ws.write(row_num, 9, estado, font_style)
+
+            # Cambiar el estado del paquete a Enviado a EducAr
+            estado_enviado = models.EstadoDePaquete.objects.get(nombre="EducAr")
+            paquete.estado = estado_enviado
+            paquete.save()
+
 
         wb.save(response)
         return(response)
