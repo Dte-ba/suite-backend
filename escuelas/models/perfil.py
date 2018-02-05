@@ -3,8 +3,10 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.contrib.auth.models import Group, Permission
 from django.db.models.signals import post_save
+from django.db.models import Q
 from django.dispatch import receiver
 from escuelas import utils
+from escuelas.models import Evento
 
 
 def upload_to(instance, filename):
@@ -102,7 +104,8 @@ class Perfil(models.Model):
         utils.enviar_correo(desde="hugoruscitti@gmail.com", hasta="hugoruscitti@gmail.com", asunto=asunto, mensaje=mensaje)
 
     def obtener_eventos_por_fecha(self, desde, hasta):
-        return self.eventos.filter(fecha__range=(desde, hasta)).order_by('fecha')
+        filtro = Q(responsable=self) | Q(acompaniantes=self)
+        return Evento.objects.filter(filtro).filter(fecha__range=(desde, hasta)).distinct().order_by('fecha')
 
 
 @receiver(post_save, sender=User)

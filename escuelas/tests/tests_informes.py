@@ -85,3 +85,12 @@ class InformesTests(APITestCase):
         # Puede perdir el informe en formato pdf
         response = self.client.get('/api/informes?perfil_id=%d&desde=2017-01-01&hasta=2018-01-01&formato=pdf' %(user_2.perfil.id))
         self.assertTrue("ReportLab generated PDF document" in str(response))
+
+        # Si hay un evento mas, donde el usuario es acompañante
+        evento_3 = models.Evento.objects.create(titulo="Evento de prueba de Marzo", categoria=categoria_1, responsable=user.perfil, escuela=escuela_1, fecha="2017-01-20", fecha_fin="2017-01-20")
+        evento_3.acompaniantes.add(user_2.perfil)
+        evento_3.save()
+
+        # Se solicita el informe en modo json para un perfil en particular, ahora deberían ser 3 porque es responsable en 2 y acompañante en 1.
+        response = self.client.get('/api/informes?perfil_id=%d&desde=2017-01-01&hasta=2018-01-01' %(user_2.perfil.id))
+        self.assertEqual(len(response.data['eventos']), 3)
