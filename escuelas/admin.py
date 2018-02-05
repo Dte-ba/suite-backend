@@ -134,7 +134,7 @@ class PaqueteAdmin(CustomModelAdmin):
         'leido',
         'tpmdata'
     )
-    search_fields = ('legacy_id', 'estado', 'escuela')
+    search_fields = ('legacy_id', 'estado__nombre', 'escuela__cue', 'id_hardware')
 
 admin.site.register(Permission)
 admin.site.register(models.Contacto)
