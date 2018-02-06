@@ -106,6 +106,7 @@ class Command(BaseCommand):
             'importar_paquetes',
             'aplicar_permiso_sin_definir_a_los_perfiles_faltantes',
             'aplicar_password_inicial_para_usuarios',
+            'aplicar_recibido_a_paquetes',
             'importar_estado_de_paquetes',
         ]
 
@@ -1835,6 +1836,39 @@ class Command(BaseCommand):
             if not perfil.group:
                 perfil.group = Group.objects.get(name='Sin Definir')
                 perfil.save()
+
+    def aplicar_recibido_a_paquetes(self):
+
+        print("Asignando estado Recibido a paquetes del año 2017")
+        bar = barra_de_progreso()
+
+        inicio = "2017-01-01"
+        fin = "2017-12-31"
+
+        paquetes_modificados = 0
+
+        total_paquetes = models.Paquete.objects.all()
+        paquetes_2017 = total_paquetes.filter(fecha_pedido__range=(inicio, fin))
+        paquetes_2017_objetados = paquetes_2017.filter(estado__nombre="Objetado").distinct()
+        paquetes_2017_pendientes = paquetes_2017.filter(estado__nombre="Pendiente").distinct()
+        print("Total de paquetes: " + str(total_paquetes.count()))
+        print("Paquetes 2017: " + str(paquetes_2017.count()))
+        print("Paquetes 2017 Objetados: " + str(paquetes_2017_objetados.count()))
+        print("Paquetes 2017 Pendientes: " + str(paquetes_2017_pendientes.count()))
+
+        estado_recibido = models.EstadoDePaquete.objects.get(nombre="Devuelto")
+
+        for paquete in paquetes_2017_pendientes:
+            print("Se va a cambiar el estado del paquete id " + str(paquete.id) + " a Devuelto...")
+            paquete.estado = estado_recibido
+            paquete.save()
+            print("Estado cambiado correctamente")
+            paquetes_modificados += 1
+
+        print ("Finalizó la actualización de estados de paquetes 2017.")
+        print ("Se modificaron " + str(paquetes_modificados) + " paquetes.")
+
+
 
     def importar_estado_de_paquetes(self):
         # ARCHIVO = './/archivos_para_importacion/dte_perfiles_2017.xlsx'
