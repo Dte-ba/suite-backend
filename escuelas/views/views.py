@@ -1069,12 +1069,12 @@ class PaqueteViewSet(viewsets.ModelViewSet):
 
         inicio = self.request.query_params.get('inicio', None)
         fin = self.request.query_params.get('fin', None)
-        estado = self.request.query_params.get('estado', None)
+        estadoPedido = self.request.query_params.get('estado', None)
 
         paquetes = models.Paquete.objects.filter(fecha_pedido__range=(inicio, fin))
 
-        if estado:
-            objeto_estado = models.EstadoDePaquete.objects.get(nombre=estado)
+        if estadoPedido != "Todos":
+            objeto_estado = models.EstadoDePaquete.objects.get(nombre=estadoPedido)
             paquetes = paquetes.filter(estado=objeto_estado)
 
         response = HttpResponse()
@@ -1145,10 +1145,13 @@ class PaqueteViewSet(viewsets.ModelViewSet):
             ws.write(row_num, 8, pedido, font_style)
             ws.write(row_num, 9, estado, font_style)
 
-            # Cambiar el estado del paquete a Enviado a EducAr
-            estado_enviado = models.EstadoDePaquete.objects.get(nombre="EducAr")
-            paquete.estado = estado_enviado
-            paquete.save()
+            # Si se pidió exportar los paquetes Pendientes, y el estado del paquete era Pendiente, cambiarlo por EducAr
+            # Esto es para evitar que al exportar Todos, se actualicen los paquetes.
+            if estadoPedido == "Pendiente":
+                if paquete.estado.nombre == "Pendiente":
+                    estado_enviado = models.EstadoDePaquete.objects.get(nombre="EducAr")
+                    paquete.estado = estado_enviado
+                    paquete.save()
 
 
         wb.save(response)
