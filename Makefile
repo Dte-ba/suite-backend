@@ -29,7 +29,7 @@ comandos:
 	@echo "    ${G}cargar_datos depuracion='1'${N} Activa el modo verbose."
 	@echo "    ${G}cargar_datos perfil_id='1'${N} Ejecuta los comandos solo para ese perfil_id."
 	@echo "    ${G}cargar_usuarios_demo${N}        Carga usuarios de prueba."
-	@echo "    ${G}reiniciar_contraseñas${N}       Carga usuarios de prueba."
+	@echo "    ${G}reiniciar_contraseñas${N}       Le aplica la contraseña 'asdasd123' a todos los usuarios."
 	@echo ""
 	@echo "    ${G}generar_estaticos${N}   Genera los archivos estáticos."
 	@echo "    ${G}migrar${N}              Ejecuta las migraciones sobre la base de datos."
