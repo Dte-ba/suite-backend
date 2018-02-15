@@ -956,12 +956,12 @@ class ValidacionViewSet(viewsets.ModelViewSet):
 
         inicio = self.request.query_params.get('inicio', None)
         fin = self.request.query_params.get('fin', None)
-        estado = self.request.query_params.get('estado', None)
+        estadoPedido = self.request.query_params.get('estado', None)
 
         validaciones = models.Validacion.objects.filter(fecha_de_alta__range=(inicio, fin))
 
-        if estado:
-            objeto_estado = models.EstadoDeValidacion.objects.get(nombre=estado)
+        if estadoPedido != "Todos":
+            objeto_estado = models.EstadoDeValidacion.objects.get(nombre=estadoPedido)
             validaciones = validaciones.filter(estado=objeto_estado)
 
         response = HttpResponse()
