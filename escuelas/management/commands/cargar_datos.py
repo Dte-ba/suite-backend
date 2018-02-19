@@ -1839,11 +1839,11 @@ class Command(BaseCommand):
 
     def aplicar_recibido_a_paquetes(self):
 
-        print("Asignando estado Recibido a paquetes del año 2017")
+        print("Asignando estado Recibido a paquetes de Enero de 2018")
         bar = barra_de_progreso()
 
-        inicio = "2017-01-01"
-        fin = "2017-12-31"
+        inicio = "2018-01-01"
+        fin = "2018-01-31"
 
         paquetes_modificados = 0
 
@@ -1851,21 +1851,23 @@ class Command(BaseCommand):
         paquetes_2017 = total_paquetes.filter(fecha_pedido__range=(inicio, fin))
         paquetes_2017_objetados = paquetes_2017.filter(estado__nombre="Objetado").distinct()
         paquetes_2017_pendientes = paquetes_2017.filter(estado__nombre="Pendiente").distinct()
+        paquetes_2017_enviados = paquetes_2017.filter(estado__nombre="EducAr").distinct()
         print("Total de paquetes: " + str(total_paquetes.count()))
-        print("Paquetes 2017: " + str(paquetes_2017.count()))
-        print("Paquetes 2017 Objetados: " + str(paquetes_2017_objetados.count()))
-        print("Paquetes 2017 Pendientes: " + str(paquetes_2017_pendientes.count()))
+        print("Paquetes Enero 2018: " + str(paquetes_2017.count()))
+        print("Paquetes Enero 2018 Objetados: " + str(paquetes_2017_objetados.count()))
+        print("Paquetes Enero 2018 Pendientes: " + str(paquetes_2017_pendientes.count()))
+        print("Paquetes Enero 2018 Enviados: " + str(paquetes_2017_pendientes.count()))
 
         estado_recibido = models.EstadoDePaquete.objects.get(nombre="Devuelto")
 
-        for paquete in paquetes_2017_pendientes:
+        for paquete in paquetes_2017_enviados:
             print("Se va a cambiar el estado del paquete id " + str(paquete.id) + " a Devuelto...")
             paquete.estado = estado_recibido
             paquete.save()
             print("Estado cambiado correctamente")
             paquetes_modificados += 1
 
-        print ("Finalizó la actualización de estados de paquetes 2017.")
+        print ("Finalizó la actualización de estados de paquetes Enero 2018.")
         print ("Se modificaron " + str(paquetes_modificados) + " paquetes.")
 
 
