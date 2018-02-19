@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'escuelas.apps.EscuelasConfig',
     'django.contrib.admin',
     'django.contrib.auth',
+    'django_rq',
     'permisos.apps.PermisosConfig',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
@@ -54,6 +55,13 @@ INSTALLED_APPS = [
     'django_extensions',
     'easy_pdf',
 ]
+
+
+RQ_QUEUES = {
+    'default': {
+         'URL': os.getenv('REDIS_URL', 'redis://localhost:6379/0'),
+    }
+}
 
 
 STATIC_ROOT = 'staticfiles'

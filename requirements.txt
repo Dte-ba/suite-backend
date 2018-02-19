@@ -4,6 +4,7 @@ backports.shutil-get-terminal-size==1.0.0
 cairocffi==0.8.0
 CairoSVG==1.0.22
 cffi==1.10.0
+click==6.7
 coverage==4.4.1
 cssselect2==0.2.0
 decorator==4.0.10
@@ -16,6 +17,7 @@ django-coverage==1.2.4
 django-easy-pdf==0.1.1
 django-extensions==1.7.5
 django-filter==1.0.4
+django-rq==1.0.1
 django-toolbelt==0.0.1
 djangorestframework==3.5.3
 djangorestframework-jsonapi==2.2.0
@@ -56,9 +58,11 @@ python-utils==2.1.0
 pytz==2017.2
 PyYAML==3.12
 redgreenunittest==0.1.1
+redis==2.10.6
 reportlab==3.4.0
 requests==2.12.4
 requests-futures==0.9.7
+rq==0.10.0
 sendgrid==5.2.0
 sendgrid-python==0.1.1
 simplegeneric==0.8.1

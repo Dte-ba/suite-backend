@@ -44,6 +44,7 @@ router.register('paquetes', views.PaqueteViewSet)
 router.register('permissions', views.PermissionViewSet)
 router.register('groups', views.GroupViewSet)
 router.register('informes', views.informes_view.InformesViewSet, 'Informes')
+router.register('trabajos', views.trabajos_view.TrabajosViewSet, 'Trabajos')
 
 
 router.register('mi-perfil', views.MiPerfilViewSet, 'Perfil')
@@ -55,5 +56,6 @@ urlpatterns = [
     url(r'^api/', include(router.urls)),
     url(r'^api/auth', obtain_auth_token),
     url(r'^admin/', admin.site.urls),
-    url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework'))
+    url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
+    url(r'^django-rq/', include('django_rq.urls')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

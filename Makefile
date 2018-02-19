@@ -38,6 +38,8 @@ comandos:
 	@echo "    ${G}test_continuos${N}      Ejecuta los tests en forma contínua."
 	@echo "    ${G}ejecutar${N}            Ejecuta el servidor en modo desarrollo."
 	@echo "    ${G}ejecutar_produccion${N} Ejecuta el servidor usando postgres."
+	@echo "    ${G}ejecutar_worker${N}     Ejecuta el servidor para tareas con redis queue."
+	@echo "    ${G}monitor${N}             Muestra los trabajos del worker."
 	@echo "    ${G}ayuda${N}               Muestra una listado de todos los comandos django."
 	@echo ""
 	@echo "  ${Y}Para gestionar datos${N}"
@@ -65,7 +67,7 @@ migrar: dependencias
 test: dependencias
 	@clear;
 	@echo "${G}Ejecutando tests ...${N}"
-	@${BIN_MANAGE_RELATIVO} test
+	DATABASE_URL=${DB_URL} ${BIN_MANAGE_RELATIVO} test
 
 
 test_continuos: test_live
@@ -76,6 +78,12 @@ test_live: dependencias
 ejecutar: migrar serve
 
 ejecutar_produccion: ejecutar
+
+ejecutar_worker:
+	DATABASE_URL=${DB_URL} python manage.py rqworker default
+	
+monitor:
+	DATABASE_URL=${DB_URL} python manage.py rqstats --interval=1
 
 serve: dependencias
 	DATABASE_URL=${DB_URL} ${BIN_MANAGE} runserver
