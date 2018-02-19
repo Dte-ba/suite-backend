@@ -1860,7 +1860,7 @@ class Command(BaseCommand):
 
         estado_recibido = models.EstadoDePaquete.objects.get(nombre="Devuelto")
 
-        for paquete in paquetes_2017_enviados:
+        for paquete in paquetes_2017_pendientes:
             print("Se va a cambiar el estado del paquete id " + str(paquete.id) + " a Devuelto...")
             paquete.estado = estado_recibido
             paquete.save()
