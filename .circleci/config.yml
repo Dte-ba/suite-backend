@@ -1,0 +1,42 @@
+version: 2
+jobs:
+  build:
+    docker:
+      - image: circleci/python:2.7.14
+        environment:
+          DATABASE_URL: postgresql://root@localhost/circle_test
+          REDIS_URL: redis://localhost:6391
+      - image: circleci/postgres:9.6.2
+        environment:
+          POSTGRES_USER: root
+          POSTGRES_DB: circle_test
+          POSTGRES_PASSWORD: ""
+      - image: redis:2.8.19
+    steps:
+      - checkout
+      - run: sudo chown -R circleci:circleci /usr/local/bin
+      - run: sudo chown -R circleci:circleci /usr/local/lib/python2.7/site-packages
+      - run:
+          name: Instalando dependencias
+          command: |
+            sudo pip install pipenv
+            pipenv install
+      - run:
+          name: Ejecutando test
+          command: pipenv run "python manage.py test -v 2"
+---
+
+test:
+  override:
+    - coverage run manage.py test
+deployment:
+  production:
+    branch: master
+    commands:
+      - git remote add dokku dokku@enjambrelab.com.ar:suite-backend
+      - git push dokku master:master
+  production_dtelab:
+    branch: produccion
+    commands:
+      - git remote add dokku2 dokku@dtelab.com.ar:suite2-backend
+      - git push dokku2 produccion:master

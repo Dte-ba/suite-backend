@@ -53,8 +53,7 @@ comandos:
 
 
 dependencias: #_esta_dentro_de_un_entorno_virtual
-	@echo "${G}actualizando dependencias pip ...${N}"
-	@pip install -r requirements.txt | sed '/Requirement\ \w*/d'
+	@echo "omitido..."
 
 #_esta_dentro_de_un_entorno_virtual:
 #	@python utils/esta_dentro_de_entorno_virtual.py
@@ -67,7 +66,7 @@ migrar: dependencias
 test: dependencias
 	@clear;
 	@echo "${G}Ejecutando tests ...${N}"
-	DATABASE_URL=${DB_URL} ${BIN_MANAGE_RELATIVO} test
+	@pipenv run "${BIN_MANAGE_RELATIVO} test -v 2"
 
 
 test_continuos: test_live
@@ -81,7 +80,7 @@ ejecutar_produccion: ejecutar
 
 ejecutar_worker:
 	DATABASE_URL=${DB_URL} python manage.py rqworker default
-	
+
 monitor:
 	DATABASE_URL=${DB_URL} python manage.py rqstats --interval=1
 

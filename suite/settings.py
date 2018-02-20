@@ -140,17 +140,11 @@ DATABASES = {
 
 
 
-#DATABASES['default'] = dj_database_url.config()
-#DATABASE_URL=postgres://postgres:postgress@localhost/suite
 db_url = os.environ.get('DOKKU_POSTGRES_WHITE_URL', 'sqlite://./database.sqlite')
 DATABASES['default'] = dj_database_url.config(conn_max_age=600, default=db_url)
 
 SENDGRID_API_KEY = os.environ.get('SENDGRID_API_KEY', None)
 
-
-# Forzando sqlite si se están ejecutando los tests.
-if 'test' in sys.argv or 'test_coverage' in sys.argv:
-    DATABASES['default']['ENGINE'] = 'django.db.backends.sqlite3'
 
 # Password validation
 # https://docs.djangoproject.com/en/1.10/ref/settings/#auth-password-validators

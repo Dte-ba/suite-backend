@@ -1,0 +1,2 @@
+import tests_informes
+import tests_generales
