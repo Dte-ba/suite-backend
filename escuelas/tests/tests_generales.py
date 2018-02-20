@@ -1408,18 +1408,18 @@ class GeneralesTestCase(APITestCase):
         response = self.client.post('/api/escuelas/%d/conformar' %(escuela_1.id), data)
 
         # NOTA: Luego de hacer el request, se tiene que actualizar el objeto
-        escuela_4 = models.Escuela.objects.get(id=4)
+        escuela_4 = models.Escuela.objects.get(id=escuela_4.id)
 
         self.assertEqual(escuela_4.padre, escuela_1)
         self.assertTrue(escuela_4.motivo_de_conformacion, 'tiene que tener un motivo')
         self.assertTrue(escuela_4.fecha_conformacion, 'tiene que tener una fecha')
 
         # La escuela 4 se conformó, la api tiene que informarlo
-        response = self.client.get('/api/escuelas/4', format='json')
+        response = self.client.get('/api/escuelas/{0}'.format(escuela_4.id), format='json')
         self.assertEqual(response.data['conformada'], True)
 
         # La escuela 1 nunca se conformó
-        response = self.client.get('/api/escuelas/1', format='json')
+        response = self.client.get('/api/escuelas/{0}'.format(escuela_1.id), format='json')
         self.assertEqual(response.data['conformada'], False)
 
         self.assertEqual(escuela_1.subescuelas.count(), 3)

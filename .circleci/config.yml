@@ -22,11 +22,8 @@ jobs:
             sudo pip install pipenv
             pipenv install
       - run:
-          name: Ejecutando migraciones
-          command: pipenv run "python manage.py migrate"
-      - run:
           name: Ejecutando test
-          command: pipenv run "python manage.py test"
+          command: pipenv run "python manage.py test -v 2"
 ---
 
 test:
