@@ -105,8 +105,6 @@ class GeneralesTestCase(APITestCase):
         # Se crea un estado de paquete
         estado = models.EstadoDeValidacion.objects.create(nombre="Pendiente")
 
-
-
         data = {
             "data": {
                 "type": "validaciones",
@@ -122,19 +120,19 @@ class GeneralesTestCase(APITestCase):
                     "escuela": {
                         "data": {
                             "type": "escuelas",
-                            "id": 1
+                            "id": escuela_1.id
                         }
                     },
                     "autor": {
                         "data": {
                             "type": "perfiles",
-                            "id": 2
+                            "id": user_2.id
                         }
                     },
                     "estado": {
                         "data": {
                             "type": "estados-de-validacion",
-                            "id": 1
+                            "id": estado.id
                         }
                     }
                 }
@@ -148,6 +146,7 @@ class GeneralesTestCase(APITestCase):
 
         # Luego de hacer el post ...
         post = self.client.post('/api/validaciones', json.dumps(data), content_type='application/vnd.api+json')
+        self.assertEqual(post.status_code, 201)
 
         # Luego tiene que haber un evento
         self.assertEqual(models.Validacion.objects.all().count(), 1)
@@ -201,13 +200,13 @@ class GeneralesTestCase(APITestCase):
                     "escuela": {
                         "data": {
                             "type": "escuelas",
-                            "id": 1
+                            "id": escuela_1.id
                         }
                     },
                     "estado": {
                         "data": {
                             "type": "estados-de-paquete",
-                            "id": 1
+                            "id": estado.id
                         }
                     }
                 }
@@ -225,8 +224,10 @@ class GeneralesTestCase(APITestCase):
         # Luego tiene que haber un evento
         self.assertEqual(models.Paquete.objects.all().count(), 1)
 
+        paquete = models.Paquete.objects.all()[0]
+
         # Y la api tiene que retornarla
-        response = self.client.get('/api/paquetes/1')
+        response = self.client.get('/api/paquetes/{0}'.format(paquete.id))
         self.assertEqual(response.data['fecha_pedido'], '2017-11-09')
         self.assertEqual(response.data['id_hardware'], '240a64647f8c')
 
@@ -393,7 +394,7 @@ class GeneralesTestCase(APITestCase):
         # A estos eventos se les tiene que autogenerar el resumen
         self.assertEqual(evento_1.resumen, '{"categoria": "Categoria 1", "titulo": "Evento de prueba", "region": 1, "responsable": " ", "escuela": "Escuela 1"}')
 
-        response = self.client.get('/api/eventos/agenda?inicio=2017-01-01&fin=2017-02-01&perfil=2&region=1', format='json')
+        response = self.client.get('/api/eventos/agenda?inicio=2017-01-01&fin=2017-02-01&perfil={0}&region=1'.format(user_2.perfil.id), format='json')
 
         self.assertEqual(response.data['cantidad'], 1)
         self.assertEqual(len(response.data['eventos']), 1)
@@ -599,39 +600,24 @@ class GeneralesTestCase(APITestCase):
         evento_6.acompaniantes.add(usuario_extra_3.perfil)
         evento_6.save()
 
-
-
-        # Pide todos (Caso Administrador, Administración y Referente)
         response = self.client.get('/api/eventos/agenda?inicio=2017-01-01&fin=2017-02-01', format='json')
         self.assertEqual(response.data['cantidad'], 6)
 
-        # Pide solo los de región 1 (Caso Coordinador) Deberían ser 1 evento, porque los otros son de reponsables de otras regiones.
         response = self.client.get('/api/eventos/agenda?inicio=2017-01-01&fin=2017-02-01&region=1', format='json')
         self.assertEqual(response.data['cantidad'], 1)
 
-        # Pide un coordinador de la región 2, debería ver 2 eventos, uno de su región y otro de la dte
         response = self.client.get('/api/eventos/agenda?inicio=2017-01-01&fin=2017-02-01&region=2', format='json')
         self.assertEqual(response.data['cantidad'], 2)
 
-        # El coordinador de la región 3 es muy similar al anterior, puede ver dos. Uno de su región y otro evento donde es responsable alguien de su equipo.
         response = self.client.get('/api/eventos/agenda?inicio=2017-01-01&fin=2017-02-01&region=3', format='json')
         self.assertEqual(response.data['cantidad'], 3)
 
-        # Caso de facilitador de región 2 (debe ver dos)
-        response = self.client.get('/api/eventos/agenda?inicio=2017-01-01&fin=2017-02-01&perfil=3&region=2', format='json')
-        self.assertEqual(response.data['cantidad'], 2)
-
-        # Caso de facilitador de región 1 (solo tiene que ver un evento)
-        response = self.client.get('/api/eventos/agenda?inicio=2017-01-01&fin=2017-02-01&perfil=2&region=1', format='json')
+        response = self.client.get('/api/eventos/agenda?inicio=2017-01-01&fin=2017-02-01&perfil={0}&region={1}'.format(perfil_usuario_2.id, region_1.id), format='json')
         self.assertEqual(response.data['cantidad'], 1)
 
-        # Caso de facilitador de región 3 (solo tiene que ver un evento)
-        response = self.client.get('/api/eventos/agenda?inicio=2017-01-01&fin=2017-02-01&perfil=4&region=3', format='json')
-        self.assertEqual(response.data['cantidad'], 3)
-
-        # Caso de facilitador de región 3 que solo fue invitado a un evento (solo tiene que ver un evento)
-        response = self.client.get('/api/eventos/agenda?inicio=2017-01-01&fin=2017-02-01&perfil=5&region=3', format='json')
+        response = self.client.get('/api/eventos/agenda?inicio=2017-01-01&fin=2017-02-01&perfil={0}&region={1}'.format(usuario_3.perfil.id, region_3.id), format='json')
         self.assertEqual(response.data['cantidad'], 1)
+
 
 
     def test_puede_crear_un_evento_con_acta_desde_la_api(self):
@@ -692,19 +678,19 @@ class GeneralesTestCase(APITestCase):
                     "categoria":{
                         "data":{
                             "type": "categorias-de-eventos",
-                            "id": "1"
+                            "id": categoria_1.id
                         }
                     },
                     "responsable":{
                         "data":{
                             "type": "perfiles",
-                            "id": "1"
+                            "id": user.perfil.id
                         }
                     },
                     "escuela":{
                         "data":{
                             "type":"escuelas",
-                            "id":"1"
+                            "id": escuela_1.id
                         }
                     },
                     "acompaniantes":{
@@ -735,7 +721,6 @@ class GeneralesTestCase(APITestCase):
         data = {
             "data": {
                 "type": "User",
-                # "id": 2,
                 "attributes": {
                     "username": "usuario1",
                     "password": "asdasd123"
@@ -757,9 +742,10 @@ class GeneralesTestCase(APITestCase):
         # ... y 2 perfiles ...
         self.assertEqual(models.Perfil.objects.all().count(), 2)
 
+        user_2 = models.Perfil.objects.all()[1].user
 
         # # Y la api tiene que retornar el nuevo usuario
-        response = self.client.get('/api/users/2')
+        response = self.client.get('/api/users/{0}'.format(user_2.id))
         self.assertEqual(response.data['username'], 'usuario1')
 
     def test_puede_crear_persona(self):
@@ -866,13 +852,13 @@ class GeneralesTestCase(APITestCase):
                     "responsable": {
                         "data": {
                             "type": "perfiles",
-                            "id": 1
+                            "id": perfil.id
                         }
                     },
                     "escuela": {
                         "data": {
                             "type": "escuelas",
-                            "id": 1
+                            "id": escuela_1.id
                         }
                     },
                     "acompaniantes": {
@@ -884,7 +870,7 @@ class GeneralesTestCase(APITestCase):
                     "categoria": {
                         "data": {
                             "type": "categorias-de-eventos",
-                            "id": 1
+                            "id": categoria_1.id
                         }
                     }
                 }
@@ -902,7 +888,8 @@ class GeneralesTestCase(APITestCase):
         self.assertEqual(models.Evento.objects.all().count(), 1)
 
         # Y la api tiene que retornarla
-        response = self.client.get('/api/eventos/1')
+        evento = models.Evento.objects.all()[0]
+        response = self.client.get('/api/eventos/{0}'.format(evento.id))
         self.assertEqual(response.data['fecha'], '2017-09-06')
         self.assertEqual(response.data['cantidad_de_participantes'], '23')
         self.assertEqual(response.data['requiere_traslado'], True)
@@ -948,18 +935,18 @@ class GeneralesTestCase(APITestCase):
         evento_2 = models.Evento.objects.create(titulo="Evento de prueba de Marzo", categoria=categoria_1, responsable=user.perfil, escuela=escuela_1, fecha="2017-03-15", fecha_fin="2017-03-15")
 
         # En su región hay dos eventos
-        response = self.client.get('/api/eventos?escuela__localidad__distrito__region__numero=4&perfil=1')
+        response = self.client.get('/api/eventos?escuela__localidad__distrito__region__numero=4&perfil={0}'.format(user.perfil.id))
         self.assertEqual(response.data['meta']['pagination']['count'], 2)
 
         # Si se agregan un evento  de región central también lo tiene que ver.
         evento_1 = models.Evento.objects.create(titulo="Evento de prueba", categoria=categoria_1, responsable=user.perfil, escuela=escuela_central, fecha="2017-01-15", fecha_fin="2017-01-15")
-        response = self.client.get('/api/eventos?escuela__localidad__distrito__region__numero=4&perfil=1')
+        response = self.client.get('/api/eventos?escuela__localidad__distrito__region__numero=4&perfil={0}'.format(user.perfil.id))
 
         self.assertEqual(response.data['meta']['pagination']['count'], 3)
 
         # Si se agregan un evento de región central pero no es responsable ni invitado no lo tiene que ver.
         evento_1 = models.Evento.objects.create(titulo="Evento de prueba en donde no es reponsable", responsable=userExterno.perfil, categoria=categoria_1, escuela=escuela_central, fecha="2017-01-15", fecha_fin="2017-01-15")
-        response = self.client.get('/api/eventos?escuela__localidad__distrito__region__numero=4&perfil=1')
+        response = self.client.get('/api/eventos?escuela__localidad__distrito__region__numero=4&perfil={0}'.format(user.perfil.id))
         self.assertEqual(response.data['meta']['pagination']['count'], 3)
 
 
@@ -1117,7 +1104,8 @@ class GeneralesTestCase(APITestCase):
         self.assertEqual(models.Escuela.objects.all().count(), 1)
 
         # Y la api tiene que retornarla
-        response = self.client.get('/api/escuelas/1')
+        escuela = models.Escuela.objects.all()[0]
+        response = self.client.get('/api/escuelas/{0}'.format(escuela.id))
         self.assertEqual(response.data['cue'], '12345678')
         self.assertEqual(len(response.data['tipo_de_financiamiento']), 1)
 
@@ -1131,8 +1119,8 @@ class GeneralesTestCase(APITestCase):
                 'relationships': {
                     "tipo-de-financiamiento": {
                         "data": [
-                          { "type": "tipos-de-financiamiento", "id": "1" },
-                          { "type": "tipos-de-financiamiento", "id": "2" }
+                          { "type": "tipos-de-financiamiento", "id": tipo_de_financiamiento_1.id },
+                          { "type": "tipos-de-financiamiento", "id": tipo_de_financiamiento_2.id }
                         ]
                       },
                 }
@@ -1140,11 +1128,11 @@ class GeneralesTestCase(APITestCase):
         }
 
         # Luego de hacer el patch ...
-        post = self.client.patch('/api/escuelas/1', json.dumps(data), content_type='application/vnd.api+json')
+        post = self.client.patch('/api/escuelas/{0}'.format(escuela.id), json.dumps(data), content_type='application/vnd.api+json')
         self.assertEqual(post.status_code, 200)
 
         # La api tiene que devolver 2 tipos de financiamiento
-        response = self.client.get('/api/escuelas/1')
+        response = self.client.get('/api/escuelas/{0}'.format(escuela.id))
         self.assertEqual(response.data['cue'], '12345678')
         self.assertEqual(len(response.data['tipo_de_financiamiento']), 2)
 
@@ -1241,7 +1229,7 @@ class GeneralesTestCase(APITestCase):
                     "programas": {
                         "data": [{
                             "type": "programas",
-                            "id": 1
+                            "id": programa.id
                         }]
                     }
                 }
@@ -1267,7 +1255,8 @@ class GeneralesTestCase(APITestCase):
         self.assertEqual(models.Escuela.objects.all().count(), 1)
 
         # Y la api tiene que retornarla
-        response = self.client.get('/api/escuelas/1')
+        escuela = models.Escuela.objects.all()[0]
+        response = self.client.get('/api/escuelas/{0}'.format(escuela.id))
         self.assertEqual(response.data['cue'], '88008800')
         self.assertEqual(response.data['nombre'], 'Escuela de Prueba desde el test')
         self.assertEqual(len(response.data['tipo_de_financiamiento']), 2)
@@ -1301,7 +1290,7 @@ class GeneralesTestCase(APITestCase):
             piso=piso_1,
         )
 
-        response = self.client.get('/api/escuelas/1')
+        response = self.client.get('/api/escuelas/{0}'.format(escuela_1.id))
         self.assertEqual(response.data['numero_de_region'], 1)
 
         escuela_sin_region = models.Escuela.objects.create(
@@ -1454,14 +1443,16 @@ class Permisos(APITestCase):
         # El grupo tiene un solo permiso
         grupo.permissions.add(puede_crear)
 
-        # Se agrega al usuario a ese grupo coordinador
-        user.perfil.group = grupo
 
         # Se asigna una region al perfil de usuario
         region_1 = models.Region.objects.create(numero=1)
         user.perfil.region = region_1
 
         grupo.save()
+
+        # Se agrega al usuario a ese grupo coordinador
+        user.perfil.group = grupo
+
         user.save()
         user.perfil.save()
 
@@ -1487,7 +1478,7 @@ class Permisos(APITestCase):
         self.assertEqual(response.data['permisos']['evento.listar'], False);
         self.assertEqual(response.data['permisos']['evento.administrar'], False);
 
-        response = self.client.get('/api/mi-perfil/1/detalle', format='json')
+        response = self.client.get('/api/mi-perfil/{0}/detalle'.format(grupo.id), format='json')
 
         # En la vista detalle del grupo ocurre lo mismo, se ven 3 permisos pero este grupo
         # solo puede crear eventos.
