@@ -6,6 +6,7 @@ media_archivos_locales/
 dump.db
 
 staticfiles
+dump.rdb
 
 .DS_Store
 
