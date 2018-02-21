@@ -30,9 +30,12 @@ class UserSerializer(serializers.ModelSerializer):
 
 class ContactoSerializer(CustomSerializer):
 
+    escuela = ResourceRelatedField(queryset=models.Escuela.objects)
+    cargo = ResourceRelatedField(queryset=models.CargoEscolar.objects)
+
     class Meta:
         model = models.Contacto
-        fields = '__all__'
+        fields = ('nombre', 'telefono_particular', 'telefono_celular', 'horario', 'email', 'escuela', 'cargo')
 
 class EventoSerializer(CustomSerializer):
 

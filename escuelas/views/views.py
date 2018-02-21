@@ -1116,6 +1116,8 @@ class PaqueteViewSet(viewsets.ModelViewSet):
 
                 if paquete.escuela.piso:
                     serie_servidor = paquete.escuela.piso.serie
+                    if paquete.escuela.piso.llave:
+                        llave_servidor = paquete.escuela.piso.llave
                 else:
                     serie_servidor = "Sin Servidor"
             else:
@@ -1133,6 +1135,7 @@ class PaqueteViewSet(viewsets.ModelViewSet):
             pedido = fecha_pedido.strftime("%Y-%m-%d")
             estado = paquete.estado.nombre
 
+
             row_num += 1
             ws.write(row_num, 0, cue, font_style)
             ws.write(row_num, 1, escuela, font_style)
@@ -1144,6 +1147,7 @@ class PaqueteViewSet(viewsets.ModelViewSet):
             ws.write(row_num, 7, ne, font_style)
             ws.write(row_num, 8, pedido, font_style)
             ws.write(row_num, 9, estado, font_style)
+            ws.write(row_num, 10, str(llave_servidor), font_style)
 
             # Si se pidió exportar los paquetes Pendientes, y el estado del paquete era Pendiente, cambiarlo por EducAr
             # Esto es para evitar que al exportar Todos, se actualicen los paquetes.

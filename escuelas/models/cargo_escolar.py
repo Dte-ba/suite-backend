@@ -14,4 +14,4 @@ class CargoEscolar(models.Model):
         verbose_name_plural = 'cargosEscolares'
 
     class JSONAPIMeta:
-        resource_name = "cargosEscolares"
+        resource_name = "cargos-escolares"
