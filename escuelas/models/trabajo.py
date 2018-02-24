@@ -8,6 +8,7 @@ class Trabajo(models.Model):
     fecha = models.DateTimeField(auto_now=True)
     trabajo_id = models.CharField(max_length=128)
     nombre = models.CharField(max_length=256)
+    error = models.CharField(max_length=256, default=u"")
     detalle = models.TextField(max_length=2048, default=u"", blank=True, null=True)
     archivo = models.FileField(default=None, blank=True, null=True)
     resultado = models.TextField(max_length=512, default=None, blank=True, null=True)
@@ -27,3 +28,15 @@ class Trabajo(models.Model):
             return Trabajo.objects.get(trabajo_id=trabajo_id)
         except ObjectDoesNotExist:
             return None
+
+    @classmethod
+    def obtener_trabajos_serializados(kls):
+        trabajos = Trabajo.objects.all()
+        return [{
+            "type": 'trabajos',
+            "id": t.id,
+            "attributes": {
+                "nombre": t.nombre,
+                "trabajo_id": t.trabajo_id
+            }
+        } for t in trabajos]

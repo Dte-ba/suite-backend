@@ -8,12 +8,13 @@ def sumar(a, b):
 
     for x in range(10):
         estado = "trabajando %d/10 ..." %(x)
-        #print(estado)
         trabajo.actualizar_paso(x, 10, estado)
-        time.sleep(1)
+        time.sleep(0.1)
 
     resultado = a + b
     trabajo.resultado = str(resultado)
+    trabajo.actualizar_paso(10, 10, "finalizado")
     trabajo.save()
+    time.sleep(1)
 
     return resultado
