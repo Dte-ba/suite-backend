@@ -176,8 +176,8 @@ class EscuelaViewSet(viewsets.ModelViewSet):
         validaciones = escuela.validaciones.filter(filtro)
         # validacion_2017 = escuela.filter(validaciones__estado__nombre="Aprobada")
 
-        print(escuela)
-        print(validaciones.count())
+        #print(escuela)
+        #print(validaciones.count())
         estadisticas = {
             "validaciones": validaciones.count()
         }
@@ -1111,7 +1111,7 @@ class PaqueteViewSet(viewsets.ModelViewSet):
                     region = paquete.escuela.localidad.distrito.region.numero
                     distrito = paquete.escuela.localidad.distrito.nombre
                 else:
-                    region = "Sin Region"
+                    region = "Sin Región"
                     distrito = "Sin Distrito"
 
                 if paquete.escuela.piso:
@@ -1123,7 +1123,7 @@ class PaqueteViewSet(viewsets.ModelViewSet):
             else:
                 cue = "Sin CUE"
                 escuela = "Sin Escuela"
-                region = "Sin Region"
+                region = "Sin Región"
                 distrito = "Sin Distrito"
                 serie_servidor = "Sin Servidor"
 
