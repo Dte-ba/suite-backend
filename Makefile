@@ -56,10 +56,11 @@ iniciar:
 migrar:
 	@pipenv run "${BIN_MANAGE} migrate --noinput"
 
-test:
+test: migrar
 	@clear;
 	@echo "${G}Ejecutando tests ...${N}"
-	@pipenv run "${BIN_MANAGE_RELATIVO} test -v 2"
+	dropdb --if-exists suite-test -e; createdb suite-test
+	@pipenv run "${BIN_MANAGE_RELATIVO} test" # -v 2"
 
 
 test_continuos: test_live

@@ -1,15 +1,19 @@
 # coding: utf-8
 from django_rq import job
+import tempfile
 import django
 import time
 import utils
+import os
 import re
 import json
+import tempfile
+import shutil
+
 
 from easy_pdf.rendering import render_to_pdf
 from django.template import loader
-from escuelas.models import Perfil
-from escuelas.serializers import EventoSerializer, PerfilSerializer
+from escuelas import models
 
 
 FORMATO_FECHA = "\d{4}-\d{2}-\d{2}"
@@ -18,6 +22,60 @@ def formatear_fecha(fecha_como_string):
     import datetime
     return datetime.datetime.strptime(fecha_como_string, "%Y-%m-%d").strftime("%d/%m/%Y")
 
+@job
+def generar_informe_de_region(numero_de_region, desde, hasta):
+    trabajo = utils.crear_modelo_trabajo("Informe de region {0} completo desde {1} hasta {2}".format(numero_de_region, desde, hasta))
+
+    directorio_temporal = tempfile.mkdtemp()
+    directorio_del_archivo_zip = tempfile.mkdtemp()
+
+    region = models.Region.objects.get(numero=numero_de_region)
+    cantidad_de_pasos = region.perfiles.count() + 2
+    trabajo.actualizar_paso(1, cantidad_de_pasos, "Solicitando perfiles")
+
+    # Genera un archivo pdf por cada perfil.
+    for (numero, perfil) in enumerate(region.perfiles.all()):
+        trabajo.actualizar_paso(1 + numero, cantidad_de_pasos, "Obteniendo informe de {0} {1}".format(perfil.apellido, perfil.nombre))
+        nombre_del_archivo = u"informe_de_{0}".format(perfil.nombre)
+        ruta = os.path.join(directorio_temporal, obtener_nombre_de_archivo_informe(perfil))
+        crear_informe_en_archivo_pdf(ruta, perfil, desde, hasta)
+
+    trabajo.actualizar_paso(cantidad_de_pasos, cantidad_de_pasos, "Generando archivo .zip para descargar")
+
+    # Genera un archivo .zip con todos los informes
+    nombre_del_archivo_zip = u'informes_region_{0}'.format(numero_de_region)
+    ruta_del_archivo_zip = os.path.join(directorio_del_archivo_zip, nombre_del_archivo_zip)
+    shutil.make_archive(ruta_del_archivo_zip, 'zip', directorio_temporal)
+
+    # Guarda el .zip como un archivo django para preservarlo en el trabajo.
+    archivo = open(ruta_del_archivo_zip + ".zip")
+    trabajo.archivo.save("temporal", django.core.files.base.File(archivo))
+    archivo.close()
+    trabajo.save()
+
+    # Elimina los directorios temporales (y el .zip temporal)
+    shutil.rmtree(directorio_temporal)
+    shutil.rmtree(directorio_del_archivo_zip)
+    return trabajo
+
+def crear_informe_en_archivo_pdf(ruta, perfil, desde, hasta):
+    eventos = perfil.obtener_eventos_por_fecha(desde, hasta)
+    template = loader.get_template('informe.html')
+    contexto = {
+        "perfil": perfil,
+        "eventos": eventos,
+        "desde": formatear_fecha(desde),
+        "hasta": formatear_fecha(hasta),
+    }
+
+    contenido = render_to_pdf("informe.html", contexto)
+
+    archivo2 = open(ruta, "w")
+    archivo2.write(contenido)
+    archivo2.close()
+
+def obtener_nombre_de_archivo_informe(perfil):
+     return u'informe_region_{0}_{1}_{2}_{3}.pdf'.format(perfil.region.numero, perfil.cargo.nombre, perfil.apellido, perfil.nombre)
 
 @job
 def generar_informe_de_perfil(perfil_id, desde, hasta):
@@ -35,27 +93,13 @@ def generar_informe_de_perfil(perfil_id, desde, hasta):
 
     trabajo.actualizar_paso(1, 4, "Solicitando datos desde {0} hasta {1}".format(desde, hasta))
 
-
-    perfil = Perfil.objects.get(id=perfil_id)
-    perfil_serializado = {
-        "nombre": perfil.nombre,
-        "apellido": perfil.apellido,
-        "dni": perfil.dni,
-        "cargo": {
-            "nombre": perfil.cargo.nombre
-        },
-        "region": {
-            "numero": perfil.region.numero
-        }
-    }
-
+    perfil = models.Perfil.objects.get(id=perfil_id)
     eventos = perfil.obtener_eventos_por_fecha(desde, hasta)
-    eventos_serializados = EventoSerializer(eventos, many=True).data
 
-    trabajo.actualizar_paso(1, 4, "Procesando {0} eventos".format(len(eventos_serializados)))
+    trabajo.actualizar_paso(1, 4, "Procesando {0} eventos".format(len(eventos)))
 
     trabajo.actualizar_paso(2, 4, "Generando archivo")
-    trabajo.resultado = json.dumps({'perfil': perfil_serializado, 'cantidad_de_eventos': len(eventos_serializados)})
+    trabajo.resultado = json.dumps({'perfil_id': perfil_id, 'cantidad_de_eventos': len(eventos)})
 
     template = loader.get_template('informe.html')
     contexto = {
@@ -66,7 +110,8 @@ def generar_informe_de_perfil(perfil_id, desde, hasta):
     }
 
     contenido = render_to_pdf("informe.html", contexto)
-    trabajo.archivo.save('informe_region_{0}_{1}_{2}_{3}.pdf'.format(perfil.region.numero, perfil.cargo.nombre, perfil.apellido, perfil.nombre), django.core.files.base.ContentFile(contenido))
+    archivo =  django.core.files.base.ContentFile(contenido)
+    trabajo.archivo.save(obtener_nombre_de_archivo_informe(perfil), archivo)
 
     trabajo.actualizar_paso(4, 4, "Finalizando")
     trabajo.save()
