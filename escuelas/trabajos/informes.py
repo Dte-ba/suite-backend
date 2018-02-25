@@ -49,7 +49,7 @@ def generar_informe_de_region(numero_de_region, desde, hasta):
 
     # Guarda el .zip como un archivo django para preservarlo en el trabajo.
     archivo = open(ruta_del_archivo_zip + ".zip")
-    trabajo.archivo.save("temporal", django.core.files.base.File(archivo))
+    trabajo.archivo.save(u"informe_de_la_region_{0}.zip".format(region.numero), django.core.files.base.File(archivo))
     archivo.close()
     trabajo.resultado = json.dumps({'region': region.numero})
     trabajo.save()

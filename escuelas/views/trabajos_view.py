@@ -44,9 +44,9 @@ class TrabajosViewSet(viewsets.ViewSet):
     def informe_de_perfil_por_region(self, request):
         desde = request.query_params['desde']
         hasta = request.query_params['hasta']
-        region_id = request.query_params['region_id']
+        region = request.query_params['region']
 
-        job = trabajos.informes.generar_informe_de_region.delay(region_id, desde, hasta)
+        job = trabajos.informes.generar_informe_de_region.delay(region, desde, hasta)
 
         return Response({
             'trabajo_id': job.id
