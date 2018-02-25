@@ -35,12 +35,12 @@ def generar_informe_de_region(numero_de_region, desde, hasta):
 
     # Genera un archivo pdf por cada perfil.
     for (numero, perfil) in enumerate(region.perfiles.all()):
-        trabajo.actualizar_paso(1 + numero, cantidad_de_pasos, "Obteniendo informe de {0} {1}".format(perfil.apellido, perfil.nombre))
+        trabajo.actualizar_paso(1 + numero, cantidad_de_pasos, u"Obteniendo informe de {0} {1}".format(perfil.apellido, perfil.nombre))
         nombre_del_archivo = u"informe_de_{0}".format(perfil.nombre)
         ruta = os.path.join(directorio_temporal, obtener_nombre_de_archivo_informe(perfil))
         crear_informe_en_archivo_pdf(ruta, perfil, desde, hasta)
 
-    trabajo.actualizar_paso(cantidad_de_pasos, cantidad_de_pasos, "Generando archivo .zip para descargar")
+    trabajo.actualizar_paso(cantidad_de_pasos, cantidad_de_pasos, u"Generando archivo .zip para descargar")
 
     # Genera un archivo .zip con todos los informes
     nombre_del_archivo_zip = u'informes_region_{0}'.format(numero_de_region)
@@ -51,6 +51,7 @@ def generar_informe_de_region(numero_de_region, desde, hasta):
     archivo = open(ruta_del_archivo_zip + ".zip")
     trabajo.archivo.save("temporal", django.core.files.base.File(archivo))
     archivo.close()
+    trabajo.resultado = json.dumps({'region': region.numero})
     trabajo.save()
 
     # Elimina los directorios temporales (y el .zip temporal)

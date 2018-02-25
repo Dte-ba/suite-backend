@@ -142,7 +142,6 @@ class TrabajoAdmin(CustomModelAdmin):
         'fecha',
         'trabajo_id',
         'nombre',
-        'detalle',
         'archivo',
         'resultado',
         'progreso',

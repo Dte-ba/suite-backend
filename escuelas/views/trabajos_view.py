@@ -40,6 +40,18 @@ class TrabajosViewSet(viewsets.ViewSet):
             'trabajo_id': job.id
         })
 
+    @list_route(methods=['get'])
+    def informe_de_perfil_por_region(self, request):
+        desde = request.query_params['desde']
+        hasta = request.query_params['hasta']
+        region_id = request.query_params['region_id']
+
+        job = trabajos.informes.generar_informe_de_region.delay(region_id, desde, hasta)
+
+        return Response({
+            'trabajo_id': job.id
+        })
+
     @detail_route(methods=['get'])
     def consultar(self, request, pk=None):
 
