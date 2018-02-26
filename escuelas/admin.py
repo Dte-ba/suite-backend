@@ -136,6 +136,18 @@ class PaqueteAdmin(CustomModelAdmin):
     )
     search_fields = ('legacy_id', 'estado__nombre', 'escuela__cue', 'id_hardware')
 
+class TrabajoAdmin(CustomModelAdmin):
+    model = models.Trabajo
+    list_display = (
+        'fecha',
+        'trabajo_id',
+        'nombre',
+        'archivo',
+        'resultado',
+        'progreso',
+    )
+    search_fields = ('trabajo_id', 'nombre')
+
 admin.site.register(Permission)
 admin.site.register(models.Contacto)
 admin.site.register(models.Escuela, EscuelaAdmin)
@@ -171,3 +183,4 @@ admin.site.register(models.Piso, PisoAdmin)
 admin.site.register(models.Region, RegionAdmin)
 admin.site.register(models.Distrito, DistritoAdmin)
 admin.site.register(models.Paquete, PaqueteAdmin)
+admin.site.register(models.Trabajo, TrabajoAdmin)

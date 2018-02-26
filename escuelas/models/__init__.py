@@ -28,3 +28,4 @@ from comentario_de_validacion import ComentarioDeValidacion
 from estado_de_paquete import EstadoDePaquete
 from paquete import Paquete
 from modalidad import Modalidad
+from trabajo import Trabajo

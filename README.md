@@ -1,9 +1,5 @@
 # SUITE 2 - API Backend
 
-
-
-
-
 [![CircleCI](https://circleci.com/gh/Dte-ba/suite-backend.svg?style=svg)](https://circleci.com/gh/Dte-ba/suite-backend)
 
 ## ¿Cómo iniciar la aplicación?
@@ -41,7 +37,7 @@ Para iniciar el servidor en modo desarrollo hay que
 ejecutar el siguiente comando:
 
 ```
-make serve
+make ejecutar_produccion
 ```
 
 y luego abrir la dirección:
@@ -52,6 +48,15 @@ o bien, la siguiente dirección para abrir la interfaz de administración:
 
 - http://127.0.0.1:8000/admin
 
+
+## Cómo iniciar workers
+
+Las tareas que demoran mucho tiempo, como las exportaciones o generación
+de informes, se hacen mediantes tareas que requieren algunos pasos adicionales:
+
+1 - Tenes que tener instalador redis y lanzarlo con redis-server.
+2 - Ejecutar el comando `make ejecutar_worker`.
+3 - Opcionalmente, se puede ejecutar el comando `make monitor` para inspeccionar el estado del las tareas.
 
 
 ## Cómo crear un nuevo modelo de base de datos
@@ -435,7 +440,7 @@ dato postgres:
 - https://github.com/dokku/dokku-postgres
 
 
-En este punto, tu vps con dokku debería tener un dominio. 
+En este punto, tu vps con dokku debería tener un dominio.
 
 Aquí usaremos el dominio dtelab.com.ar porque es el que estamos usando para desarrollo:
 
@@ -491,5 +496,3 @@ de la configuración del entorno:
 
 	dokku run python manage.py migrate --settings=suite.desarrollo_settings
 	dokku run python manage.py createsuperuser --settings=suite.desarrollo_settings
-
-

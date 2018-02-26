@@ -33,12 +33,12 @@ comandos:
 	@echo ""
 	@echo "    ${G}generar_estaticos${N}   Genera los archivos estáticos."
 	@echo "    ${G}migrar${N}              Ejecuta las migraciones sobre la base de datos."
-	@echo "    ${G}grafico${N}             Genera un grafico del modelo de datos en .PNG"
 	@echo "    ${G}test${N}                Ejecuta los tests."
 	@echo "    ${G}test_continuos${N}      Ejecuta los tests en forma contínua."
 	@echo "    ${G}ejecutar${N}            Ejecuta el servidor en modo desarrollo."
 	@echo "    ${G}ejecutar_produccion${N} Ejecuta el servidor usando postgres."
-	@echo "    ${G}ayuda${N}               Muestra una listado de todos los comandos django."
+	@echo "    ${G}ejecutar_worker${N}     Ejecuta el servidor para tareas con redis queue."
+	@echo "    ${G}monitor${N}             Muestra los trabajos del worker."
 	@echo ""
 	@echo "  ${Y}Para gestionar datos${N}"
 	@echo ""
@@ -50,58 +50,43 @@ comandos:
 	@echo ""
 
 
-dependencias: #_esta_dentro_de_un_entorno_virtual
-	@echo "${G}actualizando dependencias pip ...${N}"
-	@pip install -r requirements.txt | sed '/Requirement\ \w*/d'
+iniciar:
+	@pipenv install
 
-#_esta_dentro_de_un_entorno_virtual:
-#	@python utils/esta_dentro_de_entorno_virtual.py
+migrar:
+	@pipenv run "${BIN_MANAGE} migrate --noinput"
 
-iniciar: dependencias
-
-migrar: dependencias
-	DATABASE_URL=${DB_URL} ${BIN_MANAGE} migrate --noinput
-
-test: dependencias
+test: migrar
 	@clear;
 	@echo "${G}Ejecutando tests ...${N}"
-	@${BIN_MANAGE_RELATIVO} test
+	dropdb --if-exists suite-test -e; createdb suite-test
+	@pipenv run "${BIN_MANAGE_RELATIVO} test" # -v 2"
 
 
 test_continuos: test_live
 
-test_live: dependencias
+test_live:
 	@make test; watchmedo shell-command --patterns="*.py" --recursive --command='make test' .
 
-ejecutar: migrar serve
+ejecutar:
+	@pipenv run "${BIN_MANAGE_RELATIVO} runserver"
 
-ejecutar_produccion: ejecutar
+ejecutar_produccion: migrar ejecutar
 
-serve: dependencias
-	DATABASE_URL=${DB_URL} ${BIN_MANAGE} runserver
+ejecutar_worker:
+	@pipenv run "python manage.py rqworker default"
 
-s: serve
-server: serve
+monitor:
+	@pipenv run "python manage.py rqstats --interval=1"
 
-ayuda:
-	${BIN_MANAGE}
-
-shell: dependencias
-	DATABASE_URL=${DB_URL} ${BIN_MANAGE} shell
+shell:
+	@pipenv run "${BIN_MANAGE} shell"
 
 crear_migraciones:
-	DATABASE_URL=${DB_URL} ${BIN_MANAGE} makemigrations
+	@pipenv run "${BIN_MANAGE} makemigrations"
 
 crear_usuario_admin:
-	DATABASE_URL=${DB_URL} ${BIN_MANAGE} createsuperuser
-
-_esta_instalado_graphviz:
-	@python utils/esta_instalado_graphviz.py
-
-grafico: _esta_instalado_graphviz
-	@echo "Graficando modelo de base de datos ..."
-	@${BIN_MANAGE} graph_models escuelas --no-color -g -o grafico_db.png
-	@echo "Se ha creado el archivo grafico_db.png"
+	@pipenv run "${BIN_MANAGE} createsuperuser"
 
 generar_fixture_desde_base_de_datos:
 	@echo ""
@@ -116,20 +101,20 @@ filtro=""
 depuracion="0"
 
 cargar_datos:
-	DATABASE_URL=${DB_URL} python manage.py cargar_datos --filtro $(filtro) --depuracion $(depuracion) --perfil_id $(perfil_id)
+	@pipenv run "python manage.py cargar_datos --filtro $(filtro) --depuracion $(depuracion) --perfil_id $(perfil_id)"
 
 cargar_usuarios_demo:
-	python scripts/cargar_usuarios_demo.py
+	@pipenv run "python scripts/cargar_usuarios_demo.py"
 
 limpiar_registros_duplicados:
-	python scripts/limpiar_registros_duplicados.py
+	@pipenv run "python scripts/limpiar_registros_duplicados.py"
 
 realizar_backup_desde_produccion:
 	@echo "${G}Creando el archivo ${DB_NOMBRE_DEL_DUMP}${N}"
 	${BIN_DOKKU} postgres:export ${DB_NAME} > ${DB_NOMBRE_DEL_DUMP}
 
 reiniciar_contraseñas:
-	DATABASE_URL=${DB_URL} python scripts/reiniciar_contraseñas.py
+	@pipenv run "python scripts/reiniciar_contraseñas.py"
 
 cargar_ultimo_dump_localmente:
 	@echo "${G}Se cargará el dump mas reciente: ${DB_DUMP_MAS_RECIENTE}${N}"

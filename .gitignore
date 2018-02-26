@@ -3,8 +3,11 @@ __pycache__/
 *.py[cod]
 *$py.class
 media_archivos_locales/
+dump.db
 
+.idea
 staticfiles
+dump.rdb
 
 .DS_Store
 
@@ -81,7 +84,6 @@ target/
 celerybeat-schedule
 
 # dotenv
-.env
 
 # virtualenv
 venv/
