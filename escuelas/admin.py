@@ -149,7 +149,7 @@ class TrabajoAdmin(CustomModelAdmin):
     search_fields = ('trabajo_id', 'nombre')
 
 admin.site.register(Permission)
-admin.site.register(models.Contacto)
+admin.site.register(models.Contacto, ContactoAdmin)
 admin.site.register(models.Escuela, EscuelaAdmin)
 admin.site.register(models.Evento, EventoAdmin)
 admin.site.register(models.Perfil, PerfilAdmin)
