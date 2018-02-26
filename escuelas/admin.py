@@ -148,6 +148,20 @@ class TrabajoAdmin(CustomModelAdmin):
     )
     search_fields = ('trabajo_id', 'nombre')
 
+
+class ContactoAdmin(CustomModelAdmin):
+    model = models.Contacto
+    list_display = (
+        'nombre',
+        'escuela',
+        'cargo',
+        'telefono_particular',
+        'telefono_celular',
+        'email',
+        'horario'
+    )
+    search_fields = ('nombre', 'cargo__nombre', 'escuela__nombre', 'email')
+
 admin.site.register(Permission)
 admin.site.register(models.Contacto, ContactoAdmin)
 admin.site.register(models.Escuela, EscuelaAdmin)
