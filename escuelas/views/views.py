@@ -1177,6 +1177,13 @@ class PaqueteViewSet(viewsets.ModelViewSet):
             marca_de_arranque = unicode(paquete[2])
             tpm_data = unicode(paquete[3])
 
+            # chequeamos que no exista un pedido pendiente con los mismos datos
+            objeto_estado = models.EstadoDePaquete.objects.get(nombre="Pendiente")
+            objeto_paquete = models.Paquete.objects.filter(ne=ne, id_hardware=id_hardware, marca_de_arranque=marca_de_arranque, estado=objeto_estado)
+
+            if objeto_paquete:
+                errores.append(u"Error en la linea %d. Ya existe una solicitud de paquete con ese ID de Hardware y esa Marca de arranque." %(indice + 1))
+
             if not ne and not id_hardware and not marca_de_arranque and not tpm_data:
                 continue
 
