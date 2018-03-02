@@ -34,7 +34,7 @@ def generar_informe_de_region(numero_de_region, desde, hasta):
     trabajo.actualizar_paso(1, cantidad_de_pasos, "Solicitando perfiles")
 
     # Genera un archivo pdf por cada perfil.
-    for (numero, perfil) in enumerate(region.perfiles.all()):
+    for (numero, perfil) in enumerate(region.perfiles.filter(fecha_de_renuncia=None)):
         trabajo.actualizar_paso(1 + numero, cantidad_de_pasos, u"Obteniendo informe de {0} {1}".format(perfil.apellido, perfil.nombre))
         nombre_del_archivo = u"informe_de_{0}".format(perfil.nombre)
         ruta = os.path.join(directorio_temporal, obtener_nombre_de_archivo_informe(perfil))
