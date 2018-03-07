@@ -1055,12 +1055,20 @@ class PaqueteViewSet(viewsets.ModelViewSet):
 
     @list_route(methods=['get'])
     def estadistica(self, request):
+
+        # inicio = self.request.query_params.get('inicio', None)
+        # fin = self.request.query_params.get('fin', None)
+        inicio = "2018-01-01"
+        fin = "2018-12-31"
+
+        paquetes = models.Paquete.objects.filter(fecha_pedido__range=(inicio, fin))
+
         estadisticas = {
-            "total": models.Paquete.objects.all().count(),
-            "pendientes": models.Paquete.objects.filter(estado__nombre="Pendiente").count(),
-            "objetados": models.Paquete.objects.filter(estado__nombre="Objetado").count(),
-            "enviados": models.Paquete.objects.filter(estado__nombre="EducAr").count(),
-            "devueltos": models.Paquete.objects.filter(estado__nombre="Devuelto").count(),
+            "total": paquetes.count(),
+            "pendientes": paquetes.filter(estado__nombre="Pendiente").count(),
+            "objetados": paquetes.filter(estado__nombre="Objetado").count(),
+            "enviados": paquetes.filter(estado__nombre="EducAr").count(),
+            "devueltos": paquetes.filter(estado__nombre="Devuelto").count(),
         }
         return Response(estadisticas)
 
