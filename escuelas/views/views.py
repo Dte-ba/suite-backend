@@ -1151,10 +1151,12 @@ class PaqueteViewSet(viewsets.ModelViewSet):
 
             # Si se pidió exportar los paquetes Pendientes, y el estado del paquete era Pendiente, cambiarlo por EducAr
             # Esto es para evitar que al exportar Todos, se actualicen los paquetes.
+            # Se guarda la fecha en que se hizo el pedido
             if estadoPedido == "Pendiente":
                 if paquete.estado.nombre == "Pendiente":
                     estado_enviado = models.EstadoDePaquete.objects.get(nombre="EducAr")
                     paquete.estado = estado_enviado
+                    paquete.fecha_envio = datetime.datetime.now().date()
                     paquete.save()
 
 
