@@ -39,7 +39,7 @@ jobs:
     steps:
       - checkout
       - run: git remote add dokku2 dokku@dtelab.com.ar:suite2-backend
-      - run: git push dokku2 produccion:master
+      - run: git push dokku2 master:master
 
 workflows:
   version: 2
