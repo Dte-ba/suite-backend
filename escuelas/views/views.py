@@ -28,8 +28,8 @@ import datetime
 import subprocess
 import json
 
-from rest_framework_json_api.pagination import PageNumberPagination
 from django.conf import settings
+from rest_framework_json_api.pagination import PageNumberPagination
 from django.contrib.auth import get_user_model
 from django.utils.timezone import now
 from django.views.generic import DetailView
@@ -673,8 +673,10 @@ class MiPerfilViewSet(viewsets.ViewSet):
             'grupos': perfil.obtenerListaDeGrupos(),
             'idPerfil': perfil.id,
             'region': perfil.region.numero,
-            'idRegion': perfil.region.id
+            'idRegion': perfil.region.id,
+            'version': settings.VERSION_NUMBER
         }
+        
         return Response(data)
 
 
