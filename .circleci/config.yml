@@ -24,19 +24,31 @@ jobs:
       - run:
           name: Ejecutando test
           command: pipenv run "python manage.py test -v 2"
----
+  deploy:
+    docker:
+      - image: circleci/python:2.7.14
+        environment:
+          DATABASE_URL: postgresql://root@localhost/circle_test
+          REDIS_URL: redis://localhost:6379
+      - image: circleci/postgres:9.6.2
+        environment:
+          POSTGRES_USER: root
+          POSTGRES_DB: circle_test
+          POSTGRES_PASSWORD: ""
+      - image: redis:2.8.19
+    steps:
+      - checkout
+      - run: git remote add dokku2 dokku@dtelab.com.ar:suite2-backend
+      - run: git push dokku2 produccion:master
 
-test:
-  override:
-    - coverage run manage.py test
-deployment:
-  production:
-    branch: master
-    commands:
-      - git remote add dokku dokku@enjambrelab.com.ar:suite-backend
-      - git push dokku master:master
-  production_dtelab:
-    branch: produccion
-    commands:
-      - git remote add dokku2 dokku@dtelab.com.ar:suite2-backend
-      - git push dokku2 produccion:master
+workflows:
+  version: 2
+  compilar-y-subir:
+    jobs:
+      - build
+      - deploy:
+          filters:
+            tags:
+              only: /^v\d+.\d+.\d+/
+            branches:
+              ignore: /.*/
