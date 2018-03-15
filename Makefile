@@ -123,6 +123,6 @@ cargar_ultimo_dump_localmente:
 	pg_restore --no-acl --no-owner -d suite ${DB_DUMP_MAS_RECIENTE}
 
 version:
-	pipenv run bumpversion patch
+	pipenv run bumpversion patch --verbose
 	git push
 	git push --tags
