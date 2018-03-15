@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "9e006f34f56cfd5335ede329aaf2c73199206ee79e3c676fc2fb93e1ace3fd85"
+            "sha256": "b35c15fda2a4037762d4c631e5c58dc0d78f85d03a7983662e9f6965bc02ea73"
         },
         "host-environment-markers": {
             "implementation_name": "cpython",
@@ -44,6 +44,13 @@
             ],
             "markers": "python_version == '2.7'",
             "version": "==1.0.0"
+        },
+        "bumpversion": {
+            "hashes": [
+                "sha256:6753d9ff3552013e2130f7bc03c1007e24473b4835952679653fb132367bdd57",
+                "sha256:6744c873dd7aafc24453d8b6a1a0d6d109faf63cd0cd19cb78fd46e74932c77e"
+            ],
+            "version": "==0.5.3"
         },
         "click": {
             "hashes": [
@@ -199,7 +206,7 @@
                 "sha256:db3e43032d23787d3e9aec8c7ef1e0d2c3c589d5f303477661ebda2ca6d4bfba",
                 "sha256:d32550b75a818b289bd4c1f96b60c89957811da205afcceab75bc8b4857ea5b3"
             ],
-            "markers": "python_version == '2.7' or python_version == '3.3'",
+            "markers": "python_version in '2.6 2.7 3.2 3.3'",
             "version": "==2.3.0"
         },
         "pexpect": {

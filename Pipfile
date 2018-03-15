@@ -30,6 +30,7 @@ xlwt = "==1.3.0"
 "psycopg2-binary" = "*"
 django-rq = "*"
 gunicorn = "*"
+bumpversion = "*"
 
 
 [requires]
