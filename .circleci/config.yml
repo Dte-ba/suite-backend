@@ -38,9 +38,8 @@ jobs:
       - image: redis:2.8.19
     steps:
       - checkout
-      - run: git remote add dokku2 dokku@dtelab.com.ar:suite2-backend
-      - run: git push dokku2 master:master
-
+      - run: git remote add dokku dokku@enjambrelab.com.ar:suite-backend
+      - run: git push dokku master:master
 workflows:
   version: 2
   compilar-y-subir:
