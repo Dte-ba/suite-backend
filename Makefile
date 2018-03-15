@@ -39,6 +39,7 @@ comandos:
 	@echo "    ${G}ejecutar_produccion${N} Ejecuta el servidor usando postgres."
 	@echo "    ${G}ejecutar_worker${N}     Ejecuta el servidor para tareas con redis queue."
 	@echo "    ${G}monitor${N}             Muestra los trabajos del worker."
+	@echo "    ${G}version${N}             Ingrementa la versión y realiza un deploy en circle.ci"
 	@echo ""
 	@echo "  ${Y}Para gestionar datos${N}"
 	@echo ""
@@ -120,3 +121,6 @@ cargar_ultimo_dump_localmente:
 	@echo "${G}Se cargará el dump mas reciente: ${DB_DUMP_MAS_RECIENTE}${N}"
 	dropdb --if-exists suite -e; createdb suite
 	pg_restore --no-acl --no-owner -d suite ${DB_DUMP_MAS_RECIENTE}
+
+version:
+	pipenv run bumpversion patch
