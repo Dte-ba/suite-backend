@@ -124,3 +124,5 @@ cargar_ultimo_dump_localmente:
 
 version:
 	pipenv run bumpversion patch
+	git push
+	git push --tags
