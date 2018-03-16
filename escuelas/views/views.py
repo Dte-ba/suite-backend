@@ -38,10 +38,8 @@ import xlwt
 import pprint
 import re
 
-
 import tempfile
 import shutil
-
 #
 # class LargeResultsSetPagination(pagination.PageNumberPagination):
 #     page_size = 1000
@@ -680,7 +678,7 @@ class MiPerfilViewSet(viewsets.ViewSet):
             'idRegion': perfil.region.id,
             'version': settings.VERSION_NUMBER
         }
-        
+
         return Response(data)
 
 
@@ -1119,8 +1117,8 @@ class PaqueteViewSet(viewsets.ModelViewSet):
 
         lista_de_llaves = []
 
-        directorio_temporal = tempfile.mkdtemp()
-        directorio_del_archivo_zip = tempfile.mkdtemp()
+        # directorio_temporal = tempfile.mktemp()
+        # directorio_del_archivo_zip = tempfile.mktemp()
 
         for paquete in paquetes:
             if paquete.escuela:
@@ -1137,9 +1135,6 @@ class PaqueteViewSet(viewsets.ModelViewSet):
                     serie_servidor = paquete.escuela.piso.serie
                     if paquete.escuela.piso.llave:
                         llave_servidor = paquete.escuela.piso.llave
-                        if llave_servidor not in lista_de_llaves:
-                            print(str(llave_servidor) + " no está en la lista, se agrega.")
-                            lista_de_llaves.append(llave_servidor)
                 else:
                     serie_servidor = "Sin Servidor"
             else:
@@ -1171,9 +1166,6 @@ class PaqueteViewSet(viewsets.ModelViewSet):
             ws.write(row_num, 9, estado, font_style)
             ws.write(row_num, 10, str(llave_servidor), font_style)
 
-
-
-
             # Si se pidió exportar los paquetes Pendientes, y el estado del paquete era Pendiente, cambiarlo por EducAr
             # Esto es para evitar que al exportar Todos, se actualicen los paquetes.
             # Se guarda la fecha en que se hizo el pedido
@@ -1184,16 +1176,14 @@ class PaqueteViewSet(viewsets.ModelViewSet):
                     paquete.fecha_envio = datetime.datetime.now().date()
                     paquete.save()
 
-
         # Genera un archivo .zip con todas las llaves
-        nombre_del_archivo_zip = u'llaves'
-        ruta_del_archivo_zip = os.path.join(directorio_del_archivo_zip, nombre_del_archivo_zip)
-        shutil.make_archive(ruta_del_archivo_zip, 'zip', directorio_temporal)
+        # nombre_del_archivo_zip = u'llaves'
+        # ruta_del_archivo_zip = os.path.join(directorio_del_archivo_zip, nombre_del_archivo_zip)
+        # shutil.make_archive(ruta_del_archivo_zip, 'zip', directorio_temporal)
 
         for llave in lista_de_llaves:
             #### Escribir código que arme el zip con las llaves ###
             print("Agregando " + str(llave) + " al archivo zip")
-
 
         wb.save(response)
         return(response)
@@ -1226,6 +1216,9 @@ class PaqueteViewSet(viewsets.ModelViewSet):
 
             if not re.match(r'^[a-fA-F0-9]{20}$', ne):
                 errores.append(u"Error en la linea %d. El campo NE tiene un valor inválido: '%s'. Tiene que ser un valor hexadecimal de 20 dígitos." %(indice + 1, ne))
+
+            if ne == "D581B038CF8F4A8D7670":
+                errores.append(u"Error en la linea %d. El campo NE tiene un valor inválido: '%s'. El NE ingresado corresponde al servidor remoto para netbooks 2017 y no puede solicitarse por medio de SUITE." %(indice + 1, ne))
 
             if not re.match(r'^[a-fA-F0-9]{12}$', id_hardware):
                 errores.append(u"Error en la linea %d. El campo ID Hardware tiene un valor inválido: '%s'. Tiene que ser un valor hexadecimal de 12 dígitos." %(indice + 1, id_hardware))
