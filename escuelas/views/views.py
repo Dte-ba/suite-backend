@@ -124,6 +124,7 @@ class EscuelaViewSet(viewsets.ModelViewSet):
 
         filtro_conformada = self.request.query_params.get('conformada')
         filtro_region = self.request.query_params.get('localidad__distrito__region__numero')
+        filtro_programa = self.request.query_params.get('programa')
 
         if filtro_region:
             filtro = Q(localidad__distrito__region__numero=filtro_region) | Q(cue=60000000)
@@ -137,6 +138,10 @@ class EscuelaViewSet(viewsets.ModelViewSet):
                 filtro_conformada = False
 
             filtro = Q(conformada=filtro_conformada)
+            queryset = queryset.filter(filtro)
+
+        if filtro_programa:
+            filtro = Q(programas__nombre=filtro_programa)
             queryset = queryset.filter(filtro)
 
 
