@@ -38,6 +38,10 @@ import xlwt
 import pprint
 import re
 
+
+import tempfile
+import shutil
+
 #
 # class LargeResultsSetPagination(pagination.PageNumberPagination):
 #     page_size = 1000
@@ -1113,6 +1117,11 @@ class PaqueteViewSet(viewsets.ModelViewSet):
 
         row_num = 0
 
+        lista_de_llaves = []
+
+        directorio_temporal = tempfile.mkdtemp()
+        directorio_del_archivo_zip = tempfile.mkdtemp()
+
         for paquete in paquetes:
             if paquete.escuela:
                 cue = paquete.escuela.cue
@@ -1128,6 +1137,9 @@ class PaqueteViewSet(viewsets.ModelViewSet):
                     serie_servidor = paquete.escuela.piso.serie
                     if paquete.escuela.piso.llave:
                         llave_servidor = paquete.escuela.piso.llave
+                        if llave_servidor not in lista_de_llaves:
+                            print(str(llave_servidor) + " no está en la lista, se agrega.")
+                            lista_de_llaves.append(llave_servidor)
                 else:
                     serie_servidor = "Sin Servidor"
             else:
@@ -1159,6 +1171,9 @@ class PaqueteViewSet(viewsets.ModelViewSet):
             ws.write(row_num, 9, estado, font_style)
             ws.write(row_num, 10, str(llave_servidor), font_style)
 
+
+
+
             # Si se pidió exportar los paquetes Pendientes, y el estado del paquete era Pendiente, cambiarlo por EducAr
             # Esto es para evitar que al exportar Todos, se actualicen los paquetes.
             # Se guarda la fecha en que se hizo el pedido
@@ -1168,6 +1183,16 @@ class PaqueteViewSet(viewsets.ModelViewSet):
                     paquete.estado = estado_enviado
                     paquete.fecha_envio = datetime.datetime.now().date()
                     paquete.save()
+
+
+        # Genera un archivo .zip con todas las llaves
+        nombre_del_archivo_zip = u'llaves'
+        ruta_del_archivo_zip = os.path.join(directorio_del_archivo_zip, nombre_del_archivo_zip)
+        shutil.make_archive(ruta_del_archivo_zip, 'zip', directorio_temporal)
+
+        for llave in lista_de_llaves:
+            #### Escribir código que arme el zip con las llaves ###
+            print("Agregando " + str(llave) + " al archivo zip")
 
 
         wb.save(response)
