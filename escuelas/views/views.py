@@ -1202,12 +1202,16 @@ class PaqueteViewSet(viewsets.ModelViewSet):
         """
         errores = []
         filas_correctas = 0
+        listado_de_id_hardware = []
 
         for indice, paquete in enumerate(filas):
             ne = unicode(paquete[0])
             id_hardware = unicode(paquete[1])
             marca_de_arranque = unicode(paquete[2])
             tpm_data = unicode(paquete[3])
+
+            if id_hardware in listado_de_id_hardware:
+                errores.append(u"Error en la linea %d. Ya hay un pedido con ese ID de Hardware: '%s'. No se puede solicitar mas de uno por ID, aunque tengan distinta marca de arranque." %(indice + 1, id_hardware))
 
             # chequeamos que no exista un pedido pendiente con los mismos datos
             objeto_estado = models.EstadoDePaquete.objects.get(nombre="Pendiente")
@@ -1235,6 +1239,8 @@ class PaqueteViewSet(viewsets.ModelViewSet):
                 errores.append(u"Error en la linea %d. El campo TPMData tiene un valor inválido: '%s'. Tiene que ser un texto con valor 'si', 'no' o ningún valor." %(indice + 1, tpm_data))
 
             filas_correctas += 1
+            listado_de_id_hardware.append(id_hardware)
+
 
         if filas_correctas < 1:
             errores.append("No ha especificado ninguna fila.")
