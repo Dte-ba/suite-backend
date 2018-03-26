@@ -4,21 +4,20 @@
 
 ## ¿Cómo iniciar la aplicación?
 
-El primer paso es crear un entorno virtual y activarlo :
+El primer paso es instalar algunas dependencias del sistema:
 
 ```
-virtualenv venv --no-site-packages
-. venv/bin/activate
+sudo pip install pipenv
+sudo pip install bumpversion
 ```
 
-instalar las dependencias especificadas en el archivo
-requirements.txt:
+Luego, para iniciar le proyecto:
 
 ```
 make iniciar
 ```
 
-Luego, hay que preparar la base de datos de desarrollo:
+También hay que preparar la base de datos de desarrollo:
 
 ```
 make migrar
@@ -31,13 +30,39 @@ acceder al administrador de django:
 make crear_usuario_admin
 ```
 
+## Cómo cargar datos productivos
+
+Hay tres comandos para replicar los datos del entorno de producción:
+
+El siguiente comando descarga un dump de la base de datos a un directorio compartido de Dropbox:
+
+```
+make realizar_backup_desde_produccion
+```
+
+El siguiente comando sube a un postgress local la versión más reciente del dump desde producción:
+
+(tener en cuenta que no debería estar corriendo el servidor de django, porque el comando necesita que nadie esté con una conexión abierta a la base de datos)
+
+```
+make cargar_ultimo_dump_localmente
+```
+
+Por último, como se cargan los datos reales de producción. Cada usuario va a tener su propia contraseña y no podemos conocerla. Así que se recomienda ejecutar un comando más para sobre-escribir la contraseña de todos los usuarios para poder acceder fácilmente:
+
+```
+make reiniciar_contraseñas
+```
+
+Con ese último comando, se puede iniciar el servidor y acceder como cualquier usuario registrado usando como contraseña `asdasd123`.
+
 ## Cómo iniciar el servidor
 
 Para iniciar el servidor en modo desarrollo hay que
 ejecutar el siguiente comando:
 
 ```
-make ejecutar_produccion
+make ejecutar
 ```
 
 y luego abrir la dirección:
@@ -450,14 +475,14 @@ Para iniciar la instalación de la aplicación en dokku tenemos que escribir:
 	git remote add desarrollo dokku@dtelab.com.ar:testing-suite-backend
 	git push desarrollo master
 
-
+La instancia de la aplicación quedará como un destino remoto de nuestro
 La instancia de la aplicación quedará como un destino remoto de nuestro
 repositorio, así que cada vez que busquemos hacer un deploy tenemos
 que ejecutar el comando:
 
 	git push desarrollo master
 
-
+Donde "desarrollo" es el nombre que le damos a la instancia, que podría
 Donde "desarrollo" es el nombre que le damos a la instancia, que podría
 ser cualquier otra cosa. Incluso podríamos tener una instancia "produccion",
 "pruebas" etc...
@@ -466,7 +491,7 @@ ser cualquier otra cosa. Incluso podríamos tener una instancia "produccion",
 	dokku postgres:create testing-suite-backend
 	dokku postgres:info testing-suite-backend
 
-
+Por último, hay que vincular la nueva base de datos con la aplicación:
 Por último, hay que vincular la nueva base de datos con la aplicación:
 
 	dokku postgres:link testing-suite-backend suite-backend-desarrollo
