@@ -45,43 +45,6 @@ class GeneralesTestCase(APITestCase):
         response = self.client.get('/')
         self.assertEqual(response.status_code, 200)
 
-    def test_puede_crear_paquete_de_provision(self):
-        # Prepara el usuario para chequear contra la api
-        user = User.objects.create_user(username='test', password='123')
-        self.client.force_authenticate(user=user)
-
-        # Se genera un grupo
-        grupo = Group.objects.create(name="Administrador")
-
-        # Se genera un usuario demo
-        user_2 = User.objects.create_user(username='demo', password='123')
-        user_2.perfil.group = grupo
-        user_2.perfil.save()
-
-        # Se genera 1 escuela
-        region_1 = models.Region.objects.create(numero=1)
-        distrito_1 = models.Distrito.objects.create(nombre="distrito1", region=region_1)
-        localidad_1 = models.Localidad.objects.create(nombre="localidad1", distrito=distrito_1)
-        escuela_1 = models.Escuela.objects.create(cue="1", nombre="Escuela 1", localidad=localidad_1)
-
-        # Se crea un estado de paquete
-        estado = models.EstadoDePaquete.objects.create(nombre="Pendiente")
-
-        # Se crea un pedido de paquete
-        paquete_1 = models.Paquete.objects.create(
-            escuela=escuela_1,
-            fecha_pedido="2017-11-09",
-            ne="ee183ce07cfbd86bf819",
-            id_hardware="240a64647f8c",
-            marca_de_arranque="6",
-            estado=estado
-        )
-
-        # Se pide la lista de paquetes
-        response = self.client.get('/api/paquetes', format='json')
-
-        # Tiene que existir un paquete
-        self.assertEqual(models.Paquete.objects.all().count(), 1)
 
     def test_puede_crear_validacion_desde_api(self):
         # Prepara el usuario para chequear contra la api

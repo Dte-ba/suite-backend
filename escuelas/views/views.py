@@ -1082,6 +1082,16 @@ class PaqueteViewSet(viewsets.ModelViewSet):
         return Response(estadisticas)
 
     @list_route(methods=['get'])
+    def export_raw(self, request):
+        inicio = self.request.query_params.get('inicio', None)
+        fin = self.request.query_params.get('fin', None)
+        estadoPedido = self.request.query_params.get('estado', None)
+
+        data = models.Paquete.obtener_paquetes_para_exportar(inicio, fin, estadoPedido)
+        data['llaves'] = [str(llave) for llave in data['llaves']]
+        return Response(data)
+
+    @list_route(methods=['get'])
     def export(self, request):
 
         inicio = self.request.query_params.get('inicio', None)

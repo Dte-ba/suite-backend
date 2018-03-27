@@ -41,6 +41,18 @@ class TrabajosViewSet(viewsets.ViewSet):
         })
 
     @list_route(methods=['get'])
+    def exportar_paquetes(self, request):
+        inicio = request.query_params['inicio']
+        fin = request.query_params['fin']
+        estado = request.query_params['estado']
+
+        trabajo = trabajos.paquetes.exportar_paquetes.delay(inicio, fin, estado)
+
+        return Response({
+            'trabajo_id': trabajo.id
+        })
+
+    @list_route(methods=['get'])
     def informe_de_perfil_por_region(self, request):
         desde = request.query_params['desde']
         hasta = request.query_params['hasta']

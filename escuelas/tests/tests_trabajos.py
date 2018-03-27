@@ -58,8 +58,6 @@ class TrabajosTests(APITestCase):
         response = self.client.get('/api/trabajos/informe_de_perfil?perfil_id=%d&desde=2017-01-01&hasta=2018-01-01&formato=pdf' %(perfil_id))
         self.assertTrue(response.data['trabajo_id'])
 
-        print(response.data)
-
     def crear_perfil_con_eventos(self):
         grupo = Group.objects.create(name="Administrador")
 
