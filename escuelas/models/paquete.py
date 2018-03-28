@@ -17,6 +17,8 @@ class Paquete(models.Model):
     id_devolucion = models.IntegerField(default=None, blank=True, null=True) # ID que se relaciona con la tabla devoluciones (legacy)
     leido = models.BooleanField(default=False)
     tpmdata = models.BooleanField(default=False)
+    ma_hexa = models.CharField(max_length=512, default=None, blank=True, null=True)
+
 
     def __unicode__(self):
         return str(self.legacy_id)

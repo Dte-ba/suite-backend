@@ -290,7 +290,8 @@ class PaqueteSerializer(CustomSerializer):
             'fecha_devolucion',
             'id_devolucion',
             'leido',
-            'tpmdata'
+            'tpmdata',
+            'ma_hexa'
         )
 
 class PermissionSerializer(CustomSerializer):

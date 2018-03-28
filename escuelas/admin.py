@@ -124,6 +124,7 @@ class PaqueteAdmin(CustomModelAdmin):
         'ne',
         'id_hardware',
         'marca_de_arranque',
+        'ma_hexa',
         'comentario',
         'carpeta_paquete',
         'fecha_envio',

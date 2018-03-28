@@ -183,8 +183,6 @@ class EscuelaViewSet(viewsets.ModelViewSet):
         validaciones = escuela.validaciones.filter(filtro)
         # validacion_2017 = escuela.filter(validaciones__estado__nombre="Aprobada")
 
-        #print(escuela)
-        #print(validaciones.count())
         estadisticas = {
             "validaciones": validaciones.count()
         }
@@ -1238,6 +1236,15 @@ class PaqueteViewSet(viewsets.ModelViewSet):
             if not re.match(r'^si$|^no$|^$', tpm_data, re.IGNORECASE):
                 errores.append(u"Error en la linea %d. El campo TPMData tiene un valor inválido: '%s'. Tiene que ser un texto con valor 'si', 'no' o ningún valor." %(indice + 1, tpm_data))
 
+            if tpm_data in ['no', 'NO', 'No'] or tpm_data == "":
+                tpm_data = False
+            else:
+                tpm_data = True
+                try:
+                    float(marca_de_arranque)
+                except ValueError:
+                    errores.append(u"Error en la linea %d. Se especificó el uso de TPMData pero la marca de arranque ingresada es hexadecimal." %(indice + 1))
+
             filas_correctas += 1
             listado_de_id_hardware.append(id_hardware)
 
@@ -1295,8 +1302,16 @@ class PaqueteViewSet(viewsets.ModelViewSet):
 
                 if tpmdata in ['no', 'NO', 'No'] or tpmdata == "":
                     tpmdata = False
+                    # El valor de marca_de_arranque es hexadecimal
+                    ma_hexa = marca_de_arranque
                 else:
                     tpmdata = True
+                    # El valor de marca_de_arranque es decimal, lo convertimos a hexa
+                    try: # Si es decimal, no puede contener letras, debe ser un número
+                        float(marca_de_arranque)
+                        ma_hexa = hex(int(marca_de_arranque))[2:]
+                    except ValueError:
+                        pass
 
                 # si la linea de handsontable define las tres columnas, se intenta
                 # generar un paquete con esos datos
@@ -1308,7 +1323,8 @@ class PaqueteViewSet(viewsets.ModelViewSet):
                         id_hardware=id_hardware,
                         marca_de_arranque=marca_de_arranque,
                         estado=estadoPendiente,
-                        tpmdata=tpmdata
+                        tpmdata=tpmdata,
+                        ma_hexa=ma_hexa
                     )
                     cantidad_de_paquetes_creados += 1
 
