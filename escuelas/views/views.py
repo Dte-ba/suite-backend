@@ -1083,6 +1083,7 @@ class PaqueteViewSet(viewsets.ModelViewSet):
 
     @list_route(methods=['get'])
     def export_raw(self, request):
+        # NOTA: solo se usa internamente en los tests de paquetes.
         inicio = self.request.query_params.get('inicio', None)
         fin = self.request.query_params.get('fin', None)
         estadoPedido = self.request.query_params.get('estado', None)
@@ -1090,118 +1091,6 @@ class PaqueteViewSet(viewsets.ModelViewSet):
         data = models.Paquete.obtener_paquetes_para_exportar(inicio, fin, estadoPedido)
         data['llaves'] = [str(llave) for llave in data['llaves']]
         return Response(data)
-
-    @list_route(methods=['get'])
-    def export(self, request):
-
-        inicio = self.request.query_params.get('inicio', None)
-        fin = self.request.query_params.get('fin', None)
-        estadoPedido = self.request.query_params.get('estado', None)
-
-        paquetes = models.Paquete.objects.filter(fecha_pedido__range=(inicio, fin))
-
-        if estadoPedido != "Todos":
-            objeto_estado = models.EstadoDePaquete.objects.get(nombre=estadoPedido)
-            paquetes = paquetes.filter(estado=objeto_estado)
-
-        response = HttpResponse()
-        response['Content-Disposition'] = 'attachment; filename="paquetes-export.xls"'
-        response['Content-Type'] = 'application/vnd.ms-excel'
-
-        wb = xlwt.Workbook(encoding='utf-8')
-        ws = wb.add_sheet('Paquetees')
-
-        font_style = xlwt.XFStyle()
-        font_style.font.bold = True
-
-        columns = ['CUE', 'Escuela', 'Región', 'Distrito', 'Nro Serie Servidor', 'ID Hardware', 'Marca de Arranque', 'NE', 'Pedido', 'Estado']
-        col_num = 2 # 0 y 1 son obligatorias
-
-        # Escribir los headers
-        for col_num in range(len(columns)):
-            ws.write(0, col_num, columns[col_num], font_style)
-
-        ws.col(0).width = 256 * 12
-        ws.col(1).width = 256 * 12
-        ws.col(2).width = 256 * 18
-        ws.col(3).width = 256 * 30
-
-        font_style = xlwt.XFStyle()
-
-        row_num = 0
-
-        lista_de_llaves = []
-
-        # directorio_temporal = tempfile.mktemp()
-        # directorio_del_archivo_zip = tempfile.mktemp()
-
-        for paquete in paquetes:
-            if paquete.escuela:
-                cue = paquete.escuela.cue
-                escuela = paquete.escuela.nombre
-                if paquete.escuela.localidad:
-                    region = paquete.escuela.localidad.distrito.region.numero
-                    distrito = paquete.escuela.localidad.distrito.nombre
-                else:
-                    region = "Sin Región"
-                    distrito = "Sin Distrito"
-
-                if paquete.escuela.piso:
-                    serie_servidor = paquete.escuela.piso.serie
-                    if paquete.escuela.piso.llave:
-                        llave_servidor = paquete.escuela.piso.llave
-                else:
-                    serie_servidor = "Sin Servidor"
-            else:
-                cue = "Sin CUE"
-                escuela = "Sin Escuela"
-                region = "Sin Región"
-                distrito = "Sin Distrito"
-                serie_servidor = "Sin Servidor"
-
-
-            id_hardware = paquete.id_hardware
-            marca_de_arranque = paquete.marca_de_arranque
-            ne = paquete.ne
-            fecha_pedido = paquete.fecha_pedido
-            pedido = fecha_pedido.strftime("%Y-%m-%d")
-            estado = paquete.estado.nombre
-
-
-            row_num += 1
-            ws.write(row_num, 0, cue, font_style)
-            ws.write(row_num, 1, escuela, font_style)
-            ws.write(row_num, 2, region, font_style)
-            ws.write(row_num, 3, distrito, font_style)
-            ws.write(row_num, 4, serie_servidor, font_style)
-            ws.write(row_num, 5, id_hardware, font_style)
-            ws.write(row_num, 6, marca_de_arranque, font_style)
-            ws.write(row_num, 7, ne, font_style)
-            ws.write(row_num, 8, pedido, font_style)
-            ws.write(row_num, 9, estado, font_style)
-            ws.write(row_num, 10, str(llave_servidor), font_style)
-
-            # Si se pidió exportar los paquetes Pendientes, y el estado del paquete era Pendiente, cambiarlo por EducAr
-            # Esto es para evitar que al exportar Todos, se actualicen los paquetes.
-            # Se guarda la fecha en que se hizo el pedido
-            if estadoPedido == "Pendiente":
-                if paquete.estado.nombre == "Pendiente":
-                    estado_enviado = models.EstadoDePaquete.objects.get(nombre="EducAr")
-                    paquete.estado = estado_enviado
-                    paquete.fecha_envio = datetime.datetime.now().date()
-                    paquete.save()
-
-        # Genera un archivo .zip con todas las llaves
-        # nombre_del_archivo_zip = u'llaves'
-        # ruta_del_archivo_zip = os.path.join(directorio_del_archivo_zip, nombre_del_archivo_zip)
-        # shutil.make_archive(ruta_del_archivo_zip, 'zip', directorio_temporal)
-
-        for llave in lista_de_llaves:
-            #### Escribir código que arme el zip con las llaves ###
-            print("Agregando " + str(llave) + " al archivo zip")
-
-        wb.save(response)
-        return(response)
 
     def _detectar_errores_en_importacion_masiva_de_paquetes(self, filas):
         """Retorna una lista de errores y evaluaciones sobre las
