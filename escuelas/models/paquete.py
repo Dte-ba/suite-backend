@@ -1,4 +1,6 @@
 # coding: utf-8
+import datetime
+from escuelas.models import EstadoDePaquete
 from django.db import models
 
 class Paquete(models.Model):
@@ -20,9 +22,6 @@ class Paquete(models.Model):
     ma_hexa = models.CharField(max_length=512, default=None, blank=True, null=True)
 
 
-    def __unicode__(self):
-        return str(self.legacy_id)
-
     class Meta:
         db_table = 'paquetes'
         verbose_name_plural = "paquetes"
@@ -30,3 +29,88 @@ class Paquete(models.Model):
 
     class JSONAPIMeta:
         resource_name = 'paquetes'
+
+    @classmethod
+    def marcar_paquetes_pendientes_como_enviados_a_educar(cls, inicio, fin):
+        estado_pendiente = EstadoDePaquete.objects.get(nombre="Pendiente")
+        estado_enviado = EstadoDePaquete.objects.get(nombre="EducAr")
+
+        paquetes = Paquete.objects.filter(fecha_pedido__range=(inicio, fin)).filter(estado=estado_pendiente)
+
+        for paquete in paquetes:
+            paquete.estado = estado_enviado
+            paquete.fecha_envio = datetime.datetime.now().date()
+            paquete.save()
+
+    @classmethod
+    def obtener_paquetes_para_exportar(cls, inicio, fin, estadoPedido):
+        paquetes = Paquete.objects.filter(fecha_pedido__range=(inicio, fin))
+
+        if estadoPedido != "Todos":
+            objeto_estado = EstadoDePaquete.objects.get(nombre=estadoPedido)
+            paquetes = paquetes.filter(estado=objeto_estado)
+
+        llaves = set()
+        tabla = []
+
+        for paquete in paquetes:
+            serie_servidor = "Sin Servidor"
+            llave_servidor = ""
+
+            if paquete.escuela:
+                cue = paquete.escuela.cue
+                escuela = paquete.escuela.nombre
+
+                if paquete.escuela.localidad:
+                    region = paquete.escuela.localidad.distrito.region.numero
+                    distrito = paquete.escuela.localidad.distrito.nombre
+                else:
+                    region = "Sin Región"
+                    distrito = "Sin Distrito"
+
+                if paquete.escuela.piso:
+                    serie_servidor = paquete.escuela.piso.serie
+
+                    if paquete.escuela.piso.llave:
+                        llave_servidor = paquete.escuela.piso.llave
+                else:
+                    serie_servidor = "Sin Servidor"
+            else:
+                cue = "Sin CUE"
+                escuela = "Sin Escuela"
+                region = "Sin Región"
+                distrito = "Sin Distrito"
+
+            if llave_servidor:
+                llaves.add(llave_servidor)
+
+            id_hardware = paquete.id_hardware
+            marca_de_arranque = paquete.marca_de_arranque
+            ne = paquete.ne
+            fecha_pedido = paquete.fecha_pedido
+            pedido = fecha_pedido.strftime("%Y-%m-%d")
+            estado = paquete.estado.nombre
+
+            tabla.append({
+                "cue": cue,
+                "escuela": escuela,
+                "region": region,
+                "distrito": distrito,
+                "serie_servidor": serie_servidor,
+                "id_hardware": id_hardware,
+                "marca_de_arranque": marca_de_arranque,
+                "ne": ne,
+                "pedido": pedido,
+                "estado": estado,
+                "llave_servidor": str(llave_servidor),
+            })
+
+        data = {
+            "inicio": inicio,
+            "fin": fin,
+            "estadoPedido": estadoPedido,
+            "llaves": list(llaves),
+            "tabla": tabla
+        }
+
+        return data
