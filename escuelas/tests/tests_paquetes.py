@@ -71,6 +71,7 @@ class TrabajosPaquetes(APITestCase):
 
     def _crear_paquetes_pendientes(self, escuela_1, escuela_2):
         estado_pendiente = models.EstadoDePaquete.objects.create(nombre="Pendiente")
+        estado_educar = models.EstadoDePaquete.objects.create(nombre="EducAr")
 
         paquete_1 = models.Paquete.objects.create(
             escuela=escuela_1,

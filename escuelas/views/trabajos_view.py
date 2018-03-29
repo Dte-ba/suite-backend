@@ -66,7 +66,6 @@ class TrabajosViewSet(viewsets.ViewSet):
 
     @detail_route(methods=['get'])
     def consultar(self, request, pk=None):
-
         try:
             trabajo = Trabajo.objects.get(trabajo_id=pk)
             url = ""
@@ -79,6 +78,7 @@ class TrabajosViewSet(viewsets.ViewSet):
                 'progreso': trabajo.progreso,
                 'resultado': trabajo.resultado,
                 'archivo': url,
+                'error': trabajo.error,
                 'detalle': trabajo.detalle.split("\n")
             })
         except ObjectDoesNotExist:

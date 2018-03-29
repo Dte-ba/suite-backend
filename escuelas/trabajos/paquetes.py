@@ -9,93 +9,111 @@ import re
 import json
 import tempfile
 import shutil
+import xlwt
 
-
-from easy_pdf.rendering import render_to_pdf
-from django.template import loader
 from escuelas import models
 
-
-FORMATO_FECHA = "\d{4}-\d{2}-\d{2}"
-
-def formatear_fecha(fecha_como_string):
-    import datetime
-    return datetime.datetime.strptime(fecha_como_string, "%Y-%m-%d").strftime("%d/%m/%Y")
 
 @job
 def exportar_paquetes(inicio, fin, estadoPedido):
     trabajo = utils.crear_modelo_trabajo("Exportación de paquetes de estado {0} completo desde {1} hasta {2}".format(estadoPedido, inicio, fin))
 
-    directorio_temporal = tempfile.mkdtemp()
-    directorio_del_archivo_zip = tempfile.mkdtemp()
+    try:
+        directorio_temporal = tempfile.mkdtemp()
+        directorio_del_archivo_zip = tempfile.mkdtemp()
 
-    trabajo.actualizar_paso(1, 3, "Solicitando paquetes")
+        trabajo.actualizar_paso(1, 3, 'Solicitando paquetes de estado "{0}" desde {1} hasta {2}'.format(estadoPedido, inicio, fin))
 
-    data = models.Paquete.obtener_paquetes_para_exportar(inicio, fin, estadoPedido)
-    llaves = data['llaves']
-    data['llaves'] = [str(llave) for llave in data['llaves']]
+        data = models.Paquete.obtener_paquetes_para_exportar(inicio, fin, estadoPedido)
 
-    # copia las llaves al directorio temporal que se comprimirá
-    for llave in llaves:
-        trabajo.actualizar_paso(1, 3, "Copiando llave {0}".format(llave.name))
-        shutil.copy(llave.path, directorio_temporal)
+        trabajo.actualizar_paso(1, 3, "Se van a exportar {0} paquetes".format(len(data['tabla'])))
+        trabajo.actualizar_paso(1, 3, "Para solicitar estos paquetes se van a exportar {0} llaves".format(len(data['llaves'])))
 
-    # Genera un archivo .zip del directorio temporal con todas las llaves
-    nombre_del_archivo_zip = u'exportacion_de_paquetes_desde_{0}_hasta_{1}'.format(inicio, fin)
-    ruta_del_archivo_zip = os.path.join(directorio_del_archivo_zip, nombre_del_archivo_zip)
-    shutil.make_archive(ruta_del_archivo_zip, 'zip', directorio_temporal)
+        trabajo.actualizar_paso(1, 3, "Creando estructura para el archivo .zip")
 
-    # Guarda el .zip como un archivo django para preservarlo en el trabajo.
-    archivo = open(ruta_del_archivo_zip + ".zip")
-    trabajo.archivo.save(u"exportacion_de_paquetes_{0}_hasta_{1}".format(inicio, fin), django.core.files.base.File(archivo))
-    archivo.close()
+        llaves = data['llaves']
+        data['llaves'] = [str(llave) for llave in data['llaves']]
 
-    trabajo.resultado = json.dumps({'data': data})
-    trabajo.save()
+        # copia las llaves al directorio temporal que se comprimirá
+        for llave in llaves:
+            trabajo.actualizar_paso(1, 3, "Copiando llave {0}".format(llave.name))
+            shutil.copy(llave.path, directorio_temporal)
 
-    trabajo.actualizar_paso(2, 3, "Generando archivos comprimido")
+        crear_listado_excel_de_paquetes(data['tabla'], directorio_temporal)
 
-    trabajo.actualizar_paso(3, 3, "Finalizado")
+        # Genera un archivo .zip del directorio temporal con todas las llaves
+        nombre_del_archivo_zip = u'exportacion_de_paquetes_desde_{0}_hasta_{1}'.format(inicio, fin)
+        ruta_del_archivo_zip = os.path.join(directorio_del_archivo_zip, nombre_del_archivo_zip)
+        shutil.make_archive(ruta_del_archivo_zip, 'zip', directorio_temporal)
 
+        # Guarda el .zip como un archivo django para preservarlo en el trabajo.
+        archivo = open(ruta_del_archivo_zip + ".zip")
+        trabajo.archivo.save(u"exportacion_de_paquetes_{0}_hasta_{1}".format(inicio, fin), django.core.files.base.File(archivo))
+        archivo.close()
 
-    # Elimina los directorios temporales (y el .zip temporal)
-    shutil.rmtree(directorio_temporal)
-    shutil.rmtree(directorio_del_archivo_zip)
+        trabajo.resultado = json.dumps({'data': data})
+        trabajo.save()
+
+        trabajo.actualizar_paso(2, 3, "Generando archivo comprimido")
+
+        # Si se pidió exportar los paquetes Pendientes, y el estado del paquete era Pendiente, cambiarlo por EducAr
+        # Esto es para evitar que al exportar Todos, se actualicen los paquetes.
+        # Se guarda la fecha en que se hizo el pedido
+        if estadoPedido == "Pendiente":
+            trabajo.actualizar_paso(2, 3, "Cambiando paquetes desde el estado Pendiente a EducAr")
+            models.Paquete.marcar_paquetes_pendientes_como_enviados_a_educar(inicio, fin)
+        else:
+            trabajo.actualizar_paso(2, 3, "No se cambiara el estado de ningun paquete")
+
+        trabajo.actualizar_paso(3, 3, "Finalizado")
+
+        # Elimina los directorios temporales (y el .zip temporal)
+        shutil.rmtree(directorio_temporal)
+        shutil.rmtree(directorio_del_archivo_zip)
+    except Exception as e:
+        trabajo.error = str(e)
+        trabajo.save()
+        raise Exception(e)
+
     return trabajo
 
+def crear_listado_excel_de_paquetes(datos, directorio_destino):
+    wb = xlwt.Workbook(encoding='utf-8')
+    ws = wb.add_sheet('Paquetees')
 
-def ____________tmp_____________generar_informe_de_region(numero_de_region, desde, hasta):
-    trabajo = utils.crear_modelo_trabajo("Informe de region {0} completo desde {1} hasta {2}".format(numero_de_region, desde, hasta))
+    font_style = xlwt.XFStyle()
+    font_style.font.bold = True
 
-    directorio_temporal = tempfile.mkdtemp()
-    directorio_del_archivo_zip = tempfile.mkdtemp()
+    columns = ['CUE', 'Escuela', 'Región', 'Distrito', 'Nro Serie Servidor', 'ID Hardware', 'Marca de Arranque', 'NE', 'Pedido', 'Estado']
+    col_num = 2 # 0 y 1 son obligatorias
 
-    region = models.Region.objects.get(numero=numero_de_region)
-    cantidad_de_pasos = region.perfiles.count() + 2
-    trabajo.actualizar_paso(1, cantidad_de_pasos, "Solicitando perfiles")
+    # Escribir los headers
+    for col_num in range(len(columns)):
+        ws.write(0, col_num, columns[col_num], font_style)
 
-    # Genera un archivo pdf por cada perfil.
-    for (numero, perfil) in enumerate(region.perfiles.filter(fecha_de_renuncia=None)):
-        trabajo.actualizar_paso(1 + numero, cantidad_de_pasos, u"Obteniendo informe de {0} {1}".format(perfil.apellido, perfil.nombre))
-        nombre_del_archivo = u"informe_de_{0}".format(perfil.nombre)
-        ruta = os.path.join(directorio_temporal, obtener_nombre_de_archivo_informe(perfil))
-        crear_informe_en_archivo_pdf(ruta, perfil, desde, hasta)
+    ws.col(0).width = 256 * 12
+    ws.col(1).width = 256 * 12
+    ws.col(2).width = 256 * 18
+    ws.col(3).width = 256 * 30
 
-    trabajo.actualizar_paso(cantidad_de_pasos, cantidad_de_pasos, u"Generando archivo .zip para descargar")
+    font_style = xlwt.XFStyle()
 
-    # Genera un archivo .zip con todos los informes
-    nombre_del_archivo_zip = u'informes_region_{0}'.format(numero_de_region)
-    ruta_del_archivo_zip = os.path.join(directorio_del_archivo_zip, nombre_del_archivo_zip)
-    shutil.make_archive(ruta_del_archivo_zip, 'zip', directorio_temporal)
+    row_num = 0
 
-    # Guarda el .zip como un archivo django para preservarlo en el trabajo.
-    archivo = open(ruta_del_archivo_zip + ".zip")
-    trabajo.archivo.save(u"informe_de_la_region_{0}.zip".format(region.numero), django.core.files.base.File(archivo))
-    archivo.close()
-    trabajo.resultado = json.dumps({'region': region.numero})
-    trabajo.save()
+    for fila in datos:
+        row_num += 1
+        ws.write(row_num, 0, fila["cue"], font_style)
+        ws.write(row_num, 1, fila["escuela"], font_style)
+        ws.write(row_num, 2, fila["region"], font_style)
+        ws.write(row_num, 3, fila["distrito"], font_style)
+        ws.write(row_num, 4, fila["serie_servidor"], font_style)
+        ws.write(row_num, 5, fila["id_hardware"], font_style)
+        ws.write(row_num, 6, fila["marca_de_arranque"], font_style)
+        ws.write(row_num, 7, fila["ne"], font_style)
+        ws.write(row_num, 8, fila["pedido"], font_style)
+        ws.write(row_num, 9, fila["estado"], font_style)
+        ws.write(row_num, 10, fila["llave_servidor"], font_style)
 
-    # Elimina los directorios temporales (y el .zip temporal)
-    shutil.rmtree(directorio_temporal)
-    shutil.rmtree(directorio_del_archivo_zip)
-    return trabajo
+    ruta_para_el_archivo = os.path.join(directorio_destino, "listado_de_paquetes.xls")
+
+    wb.save(ruta_para_el_archivo)

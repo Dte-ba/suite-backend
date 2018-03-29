@@ -1,4 +1,5 @@
 # coding: utf-8
+import datetime
 from escuelas.models import EstadoDePaquete
 from django.db import models
 
@@ -19,9 +20,6 @@ class Paquete(models.Model):
     leido = models.BooleanField(default=False)
     tpmdata = models.BooleanField(default=False)
 
-    def __unicode__(self):
-        return str(self.legacy_id)
-
     class Meta:
         db_table = 'paquetes'
         verbose_name_plural = "paquetes"
@@ -30,6 +28,17 @@ class Paquete(models.Model):
     class JSONAPIMeta:
         resource_name = 'paquetes'
 
+    @classmethod
+    def marcar_paquetes_pendientes_como_enviados_a_educar(cls, inicio, fin):
+        estado_pendiente = EstadoDePaquete.objects.get(nombre="Pendiente")
+        estado_enviado = EstadoDePaquete.objects.get(nombre="EducAr")
+
+        paquetes = Paquete.objects.filter(fecha_pedido__range=(inicio, fin)).filter(estado=estado_pendiente)
+
+        for paquete in paquetes:
+            paquete.estado = estado_enviado
+            paquete.fecha_envio = datetime.datetime.now().date()
+            paquete.save()
 
     @classmethod
     def obtener_paquetes_para_exportar(cls, inicio, fin, estadoPedido):
