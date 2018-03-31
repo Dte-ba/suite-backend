@@ -149,6 +149,13 @@ class TrabajoAdmin(CustomModelAdmin):
     )
     search_fields = ('trabajo_id', 'nombre')
 
+class DistribucionDePaqueteAdmin(CustomModelAdmin):
+    model = models.DistribucionDePaquete
+    list_display = (
+        'fecha',
+        'archivo',
+    )
+
 
 class ContactoAdmin(CustomModelAdmin):
     model = models.Contacto
@@ -199,3 +206,4 @@ admin.site.register(models.Region, RegionAdmin)
 admin.site.register(models.Distrito, DistritoAdmin)
 admin.site.register(models.Paquete, PaqueteAdmin)
 admin.site.register(models.Trabajo, TrabajoAdmin)
+admin.site.register(models.DistribucionDePaquete, DistribucionDePaqueteAdmin)

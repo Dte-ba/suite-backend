@@ -8,6 +8,7 @@ from django.contrib.auth.models import Permission
 from django.contrib.contenttypes.models import ContentType
 from django.core.files import File
 from rest_framework.test import APITestCase
+from django.core.files.base import ContentFile
 
 from escuelas import models
 from escuelas import serializers
@@ -69,6 +70,86 @@ class TrabajosPaquetes(APITestCase):
         self.assertEqual(len(response.data['tabla']), 3)
         self.assertEqual(len(response.data['llaves']), 2)
 
+    def test_puede_distribuir_paquetes_con_devolucion_de_educar(self):
+        (escuela_1, escuela_2) = self._crear_escuelas_con_llaves()
+        self._crear_paquetes_para_probar_distribucion(escuela_1, escuela_2)
+
+        usuario = User.objects.create_user(username='demo', password='123')
+        usuario.perfil.save()
+
+        archivo_django = self._obtener_archivo_para_distribuir_paquetes()
+
+        distribucion = models.DistribucionDePaquete.objects.create()
+
+        distribucion.archivo.save("PBA1218Varios.zip", archivo_django)
+
+        estado_educar = models.EstadoDePaquete.objects.get(nombre="EducAr")
+        paquetes_con_estado_educar = models.Paquete.objects.filter(estado=estado_educar).count()
+        self.assertEqual(paquetes_con_estado_educar, 4)
+
+        trabajos.distribuir_paquetes.distribuir_paquetes(distribucion)
+
+        pendientes_luego_de_distribuir = models.Paquete.objects.filter(estado=estado_educar).count()
+        self.assertEqual(pendientes_luego_de_distribuir, 1)
+
+        estado_recibido = models.EstadoDePaquete.objects.get(nombre="Devuelto")
+        recibidos = models.Paquete.objects.filter(estado=estado_recibido).count()
+        self.assertEqual(recibidos, 3)
+
+    def _obtener_archivo_para_distribuir_paquetes(self):
+        base = os.path.dirname(__file__)
+        path = os.path.join(base, "fixtures/distribucion_de_paquetes__PBA1218Varios.zip")
+
+        archivo = open(path)
+        archivo_django = ContentFile(archivo.read());
+        archivo.close()
+        return archivo_django
+
+    def _crear_paquetes_para_probar_distribucion(self, escuela_1, escuela_2):
+        estado_pendiente = models.EstadoDePaquete.objects.create(nombre="Pendiente")
+        estado_educar = models.EstadoDePaquete.objects.create(nombre="EducAr")
+        estado_devuelto = models.EstadoDePaquete.objects.create(nombre="Devuelto")
+
+        paquete_1 = models.Paquete.objects.create(
+            escuela=escuela_1,
+            fecha_pedido="2017-11-09",
+            ne="ee183ce07cfbd86bf001",
+            id_hardware="240a64647f81",
+            marca_de_arranque="6",
+            estado=estado_educar,
+            ma_hexa="39bf408"
+        )
+
+        paquete_2 = models.Paquete.objects.create(
+            escuela=escuela_2,
+            fecha_pedido="2017-11-10",
+            ne="ee183ce07cfbd86bf002",
+            id_hardware="240a64647f82",
+            marca_de_arranque="6",
+            estado=estado_educar,
+            ma_hexa="3b34f54"
+        )
+
+        paquete_3 = models.Paquete.objects.create(
+            escuela=escuela_2,
+            fecha_pedido="2017-11-11",
+            ne="ee183ce07cfbd86bf003",
+            id_hardware="240a64647f83",
+            marca_de_arranque="6",
+            estado=estado_educar,
+            ma_hexa="39cbd34"
+        )
+
+        paquete_4 = models.Paquete.objects.create(
+            escuela=escuela_2,
+            fecha_pedido="2017-11-11",
+            ne="ee183ce07cfbd86bf003",
+            id_hardware="240a64647f83",
+            marca_de_arranque="6",
+            estado=estado_educar,
+            ma_hexa="FFFFFFFFFF"
+        )
+
     def _crear_paquetes_pendientes(self, escuela_1, escuela_2):
         estado_pendiente = models.EstadoDePaquete.objects.create(nombre="Pendiente")
         estado_educar = models.EstadoDePaquete.objects.create(nombre="EducAr")
@@ -99,7 +180,6 @@ class TrabajosPaquetes(APITestCase):
             marca_de_arranque="6",
             estado=estado_pendiente
         )
-
 
     def _crear_escuelas_con_llaves(self):
         region_1 = models.Region.objects.create(numero=1)

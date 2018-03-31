@@ -43,6 +43,33 @@ class Paquete(models.Model):
             paquete.save()
 
     @classmethod
+    def cambiar_estado_a_entregado(cls, numero, ruta_a_zip_desde_educar):
+        """Busca un paquete con el número indicado, lo cambia de estado
+        y almacena el archivo .zip señalado."""
+
+        try:
+            paquete = Paquete.objects.get(ma_hexa=numero)
+        except Paquete.DoesNotExist:
+            print("No se encontro el paquete id={0}".format(numero))
+            return False
+
+        if paquete.estado.id is not EstadoDePaquete.objects.get(nombre="EducAr").id:
+            print("El paquete id={0} ma_hexa={1} no se puede cambiar a estado Devuelto, porque tiene un estado diferente a EducAr".format(paquete.id, paquete.ma_hexa))
+            return False
+
+        """
+        TODO: activar especificando dónde guardar el archivo.
+
+        archivo = open(ruta_a_zip_desde_educar)
+        archivo_django = ContentFile(archivo.read());
+        archivo.close()
+        paquete.ruta_archivo.save(archivo_django)
+        """
+
+        paquete.estado = EstadoDePaquete.objects.get(nombre="Devuelto")
+        paquete.save()
+
+    @classmethod
     def obtener_paquetes_para_exportar(cls, inicio, fin, estadoPedido):
         paquetes = Paquete.objects.filter(fecha_pedido__range=(inicio, fin))
 

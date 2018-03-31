@@ -9,6 +9,7 @@ from rest_framework.decorators import detail_route
 from django.core.exceptions import ObjectDoesNotExist
 
 from escuelas.models import Trabajo
+from escuelas.models import DistribucionDePaquete
 from escuelas import trabajos
 
 class TrabajosViewSet(viewsets.ViewSet):
@@ -47,6 +48,18 @@ class TrabajosViewSet(viewsets.ViewSet):
         estado = request.query_params['estado']
 
         trabajo = trabajos.paquetes.exportar_paquetes.delay(inicio, fin, estado)
+
+        return Response({
+            'trabajo_id': trabajo.id
+        })
+
+    @list_route(methods=['get'])
+    def distribuir_paquetes(self, request):
+        id = request.query_params['id']
+
+        paquete = DistribucionDePaquete.objects.get(id=id)
+
+        trabajo = trabajos.distribuir_paquetes.distribuir_paquetes.delay(paquete)
 
         return Response({
             'trabajo_id': trabajo.id

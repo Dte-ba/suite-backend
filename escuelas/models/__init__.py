@@ -29,3 +29,4 @@ from estado_de_paquete import EstadoDePaquete
 from paquete import Paquete
 from modalidad import Modalidad
 from trabajo import Trabajo
+from distribucion_de_paquete import DistribucionDePaquete

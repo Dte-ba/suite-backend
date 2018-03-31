@@ -139,13 +139,18 @@ class PisoSerializer(CustomSerializer):
         fields = '__all__'
         read_only_fields = ['llave']
 
+class DistribucionDePaqueteSerializer(CustomSerializer):
+
+    class Meta:
+        model = models.DistribucionDePaquete
+        fields = ('archivo', 'fecha')
+        read_only_fields = ['archivo']
+
 class MotivoDeConformacionSerializer(CustomSerializer):
 
     class Meta:
         model = models.MotivoDeConformacion
         fields = "__all__"
-
-
 
 class SubEscuelaSerializer(CustomSerializer):
 
