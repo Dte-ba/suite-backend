@@ -46,8 +46,8 @@ class TrabajosPaquetes(APITestCase):
             escuela=escuela_1,
             fecha_pedido="2017-11-09",
             ne="ee183ce07cfbd86bf819",
-            id_hardware="240a64647f8c",
-            marca_de_arranque="6",
+            id_hardware="E81132429EFF",
+            marca_de_arranque="23",        # Corresponde a 17 hexa
             estado=estado
         )
 
@@ -90,11 +90,11 @@ class TrabajosPaquetes(APITestCase):
         trabajos.distribuir_paquetes.distribuir_paquetes(distribucion)
 
         pendientes_luego_de_distribuir = models.Paquete.objects.filter(estado=estado_educar).count()
-        self.assertEqual(pendientes_luego_de_distribuir, 1)
+        self.assertEqual(pendientes_luego_de_distribuir, 3)
 
         estado_recibido = models.EstadoDePaquete.objects.get(nombre="Devuelto")
         recibidos = models.Paquete.objects.filter(estado=estado_recibido).count()
-        self.assertEqual(recibidos, 3)
+        self.assertEqual(recibidos, 1)
 
     def _obtener_archivo_para_distribuir_paquetes(self):
         base = os.path.dirname(__file__)
@@ -123,11 +123,11 @@ class TrabajosPaquetes(APITestCase):
         paquete_2 = models.Paquete.objects.create(
             escuela=escuela_2,
             fecha_pedido="2017-11-10",
-            ne="ee183ce07cfbd86bf002",
-            id_hardware="240a64647f82",
-            marca_de_arranque="6",
+            ne="ee183ce07cfbd86bf819",
+            id_hardware="E81132429EFF",
+            marca_de_arranque="23",        # Corresponde a 17 hexa
             estado=estado_educar,
-            ma_hexa="3b34f54"
+            ma_hexa="17"
         )
 
         paquete_3 = models.Paquete.objects.create(

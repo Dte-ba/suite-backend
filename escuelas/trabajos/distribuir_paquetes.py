@@ -33,26 +33,30 @@ def distribuir_paquetes(distribucion_de_paquete):
         archivo_zip.close()
 
         # Aquí se asume que el archivo tiene un directorio dentro, y ahí todos
-        # los archivos .zip
+        # los archivos .zip (uno por cada cue) y directorios por cada uno de
+        # los cue.
         archivos = glob.glob(os.path.join(directorio_temporal, "*", "*"))
-        archivos_zip = [archivo for archivo in archivos if archivo.lower().endswith('.zip')]
+        directorios = [archivo for archivo in archivos if os.path.isdir(archivo)]
+        archivos_de_paquetes = glob.glob(os.path.join(directorio_temporal, "*", "*", "*"))
+        paquetes_bin = [paquete for paquete in archivos_de_paquetes if paquete.endswith("bin")]
+        paquetes_min = [paquete for paquete in archivos_de_paquetes if paquete.endswith("min")]
 
-        if len(archivos_zip) > 0:
-            trabajo.actualizar_paso(2, 3, "Buscando solicitudes de {0} paquetes devueltos".format(len(archivos_zip)))
+        if len(directorios) > 0:
+            trabajo.actualizar_paso(2, 3, "Buscando solicitudes de {0} cue paquetes devueltos".format(len(paquetes_bin)))
         else:
             raise Exception("No se buscaran solicitudes porque la devolucion parece vacia.")
 
-        for ruta in archivos_zip:
+        for ruta in paquetes_bin:
             nombre = os.path.basename(ruta)
-            numero = nombre.lower().replace('.zip', '')
-            numero_hex = hex(int(numero)).split('x')[1]
+            regex = re.search('tcopp_(.*)_(.*)\.bin', os.path.basename(ruta))
+            print nombre
 
-            estado = models.Paquete.cambiar_estado_a_entregado(numero_hex, ruta)
+            if regex:
+                (id_hardware, marca_de_arranque_hex) = regex.groups()
 
-            if estado:
-                mensaje = "Cambiando el estado del paquete {0} (hex {1})".format(numero, numero_hex)
+                mensaje = models.Paquete.cambiar_estado_a_entregado(id_hardware, marca_de_arranque_hex, ruta)
             else:
-                mensaje = "CUIDADO: no se encontro el paquete {0} (hex {1})".format(numero, numero_hex)
+                mensaje = "CUIDADO: ignorando el archivo {0} porque no coincide con el formato de paquete esperado (tcopp_idhardware_ma.bin)"
 
             archivo_log.write(mensaje + "\n")
             trabajo.actualizar_paso(2, 3, mensaje)

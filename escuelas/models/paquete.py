@@ -1,7 +1,11 @@
 # coding: utf-8
 import datetime
+import os
+import tempfile
+import shutil
 from escuelas.models import EstadoDePaquete
 from django.db import models
+import django
 
 class Paquete(models.Model):
     legacy_id = models.IntegerField(default=None, blank=True, null=True)
@@ -20,7 +24,7 @@ class Paquete(models.Model):
     leido = models.BooleanField(default=False)
     tpmdata = models.BooleanField(default=False)
     ma_hexa = models.CharField(max_length=512, default=None, blank=True, null=True)
-
+    zip_devolucion = models.FileField(upload_to='devoluciones_de_paquetes/', blank=True, null=True)
 
     class Meta:
         db_table = 'paquetes'
@@ -43,31 +47,51 @@ class Paquete(models.Model):
             paquete.save()
 
     @classmethod
-    def cambiar_estado_a_entregado(cls, numero, ruta_a_zip_desde_educar):
+    def cambiar_estado_a_entregado(cls, id_hardware, ma_hexa, ruta_a_bin_desde_educ_ar):
         """Busca un paquete con el número indicado, lo cambia de estado
-        y almacena el archivo .zip señalado."""
+        y almacena el archivo señalado."""
 
         try:
-            paquete = Paquete.objects.get(ma_hexa=numero)
+            paquete = Paquete.objects.get(id_hardware=id_hardware, ma_hexa=ma_hexa)
         except Paquete.DoesNotExist:
-            print("No se encontro el paquete id={0}".format(numero))
-            return False
+            return "No se encontro el paquete id_hardware={0} y ma_hexa={1}".format(id_hardware, ma_hexa)
 
         if paquete.estado.id is not EstadoDePaquete.objects.get(nombre="EducAr").id:
-            print("El paquete id={0} ma_hexa={1} no se puede cambiar a estado Devuelto, porque tiene un estado diferente a EducAr".format(paquete.id, paquete.ma_hexa))
-            return False
+            return "El paquete id_hardware={0} ma_hexa={1} no se puede cambiar a estado Devuelto, porque tiene un estado diferente a EducAr".format(id_hardware, ma_hexa)
 
-        """
-        TODO: activar especificando dónde guardar el archivo.
+        ruta_a_min_desde_educ_ar = ruta_a_bin_desde_educ_ar.replace('.bin', '.min')
 
-        archivo = open(ruta_a_zip_desde_educar)
-        archivo_django = ContentFile(archivo.read());
-        archivo.close()
-        paquete.ruta_archivo.save(archivo_django)
-        """
+        if not os.path.exists(ruta_a_min_desde_educ_ar):
+            return "No existe archivo .min para el paquete id_hardware={0} ma_hexa={1}".format(id_hardware, ma_hexa)
+
+        nombre = '{0}_{1}.zip'.format(id_hardware, ma_hexa)
+        paquete.zip_devolucion.save(nombre, cls.crear_archivo_zip(ruta_a_bin_desde_educ_ar, ruta_a_min_desde_educ_ar))
 
         paquete.estado = EstadoDePaquete.objects.get(nombre="Devuelto")
         paquete.save()
+        return "Cambiando el estado del paquete id_hardware={0} ma_hexa={1} a 'Devuelto'".format(id_hardware, ma_hexa)
+
+    @classmethod
+    def crear_archivo_zip(cls,ruta_bin, ruta_min):
+        directorio_del_archivo_zip = tempfile.mkdtemp()
+        directorio_temporal = tempfile.mkdtemp()
+        ruta_del_archivo_zip = os.path.join(directorio_del_archivo_zip, 'archivo')
+
+        archivo_bin = os.path.basename(ruta_bin)
+        archivo_min = os.path.basename(ruta_min)
+
+        shutil.copyfile(ruta_bin, os.path.join(directorio_temporal, archivo_bin))
+        shutil.copyfile(ruta_min, os.path.join(directorio_temporal, archivo_min))
+
+        shutil.make_archive(ruta_del_archivo_zip, 'zip', directorio_temporal)
+
+        archivo = open(ruta_del_archivo_zip + '.zip')
+        contenido = archivo.read()
+        archivo.close()
+        shutil.rmtree(directorio_del_archivo_zip)
+
+        return django.core.files.base.ContentFile(contenido)
+
 
     @classmethod
     def obtener_paquetes_para_exportar(cls, inicio, fin, estadoPedido):
