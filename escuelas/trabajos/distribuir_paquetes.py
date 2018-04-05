@@ -51,7 +51,8 @@ def distribuir_paquetes(distribucion_de_paquete):
             regex = re.search('tcopp_(.*)_(.*)\.bin', os.path.basename(ruta))
 
             if regex:
-                (id_hardware, marca_de_arranque_hex) = regex.groups()
+                (id_hardware, marca_de_arranque_decimal) = regex.groups()
+                marca_de_arranque_hex = hex(int(marca_de_arranque_decimal)).split('x')[-1]
 
                 mensaje = models.Paquete.cambiar_estado_a_entregado(id_hardware, marca_de_arranque_hex, ruta)
             else:

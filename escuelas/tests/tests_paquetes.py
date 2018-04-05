@@ -117,7 +117,6 @@ class TrabajosPaquetes(APITestCase):
             id_hardware="240a64647f81",
             marca_de_arranque="6",
             estado=estado_educar,
-            ma_hexa="39bf408"
         )
 
         paquete_2 = models.Paquete.objects.create(
@@ -125,9 +124,9 @@ class TrabajosPaquetes(APITestCase):
             fecha_pedido="2017-11-10",
             ne="ee183ce07cfbd86bf819",
             id_hardware="E81132429EFF",
-            marca_de_arranque="23",        # Corresponde a 17 hexa
+            marca_de_arranque="17",
             estado=estado_educar,
-            ma_hexa="17"
+            ma_hexa="11"
         )
 
         paquete_3 = models.Paquete.objects.create(

@@ -141,7 +141,7 @@ class Paquete(models.Model):
                 llaves.add(llave_servidor)
 
             id_hardware = paquete.id_hardware
-            marca_de_arranque = paquete.marca_de_arranque
+            marca_de_arranque = paquete.ma_hexa
             ne = paquete.ne
             fecha_pedido = paquete.fecha_pedido
             pedido = fecha_pedido.strftime("%Y-%m-%d")

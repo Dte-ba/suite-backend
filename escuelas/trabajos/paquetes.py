@@ -84,7 +84,7 @@ def crear_listado_excel_de_paquetes(datos, directorio_destino):
     font_style = xlwt.XFStyle()
     font_style.font.bold = True
 
-    columns = ['CUE', 'Escuela', 'Región', 'Distrito', 'Nro Serie Servidor', 'ID Hardware', 'Marca de Arranque', 'NE', 'Pedido', 'Estado']
+    columns = ['CUE', 'Escuela', 'Región', 'Distrito', 'Nro Serie Servidor', 'ID Hardware', 'Marca de Arranque (hexa)', 'NE', 'Pedido', 'Estado']
     col_num = 2 # 0 y 1 son obligatorias
 
     # Escribir los headers
