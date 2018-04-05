@@ -54,7 +54,11 @@ class Paquete(models.Model):
         try:
             paquete = Paquete.objects.get(id_hardware=id_hardware, ma_hexa=ma_hexa)
         except Paquete.DoesNotExist:
-            return "No se encontro el paquete id_hardware={0} y ma_hexa={1}".format(id_hardware, ma_hexa)
+            try:
+                ma_decimal = int(ma_hexa, 16)
+                paquete = Paquete.objects.get(id_hardware=id_hardware, marca_de_arranque=ma_decimal)
+            except Paquete.DoesNotExist:
+                return "No se encontro el paquete id_hardware={0} y ma_hexa={1}".format(id_hardware, ma_hexa)
 
         if paquete.estado.id is not EstadoDePaquete.objects.get(nombre="EducAr").id:
             return "El paquete id_hardware={0} ma_hexa={1} no se puede cambiar a estado Devuelto, porque tiene un estado diferente a EducAr".format(id_hardware, ma_hexa)
