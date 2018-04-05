@@ -42,7 +42,7 @@ def distribuir_paquetes(distribucion_de_paquete):
         paquetes_min = [paquete for paquete in archivos_de_paquetes if paquete.endswith("min")]
 
         if len(directorios) > 0:
-            trabajo.actualizar_paso(2, 3, "Buscando solicitudes de {0} cue paquetes devueltos".format(len(paquetes_bin)))
+            trabajo.actualizar_paso(2, 3, "Buscando solicitudes de {0} paquetes devueltos".format(len(paquetes_bin)))
         else:
             raise Exception("No se buscaran solicitudes porque la devolucion parece vacia.")
 
