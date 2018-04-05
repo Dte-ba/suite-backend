@@ -49,7 +49,6 @@ def distribuir_paquetes(distribucion_de_paquete):
         for ruta in paquetes_bin:
             nombre = os.path.basename(ruta)
             regex = re.search('tcopp_(.*)_(.*)\.bin', os.path.basename(ruta))
-            print nombre
 
             if regex:
                 (id_hardware, marca_de_arranque_hex) = regex.groups()

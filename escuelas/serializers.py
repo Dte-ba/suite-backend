@@ -296,8 +296,10 @@ class PaqueteSerializer(CustomSerializer):
             'id_devolucion',
             'leido',
             'tpmdata',
-            'ma_hexa'
+            'ma_hexa',
+            'zip_devolucion'
         )
+        read_only_fields = ['zip_devolucion']
 
 class PermissionSerializer(CustomSerializer):
     content_type = serializers.CharField(source='content_type.model', read_only=True)
