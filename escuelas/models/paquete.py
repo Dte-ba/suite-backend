@@ -54,6 +54,7 @@ class Paquete(models.Model):
         try:
             paquete = Paquete.objects.get(id_hardware=id_hardware, ma_hexa=ma_hexa)
         except Paquete.DoesNotExist:
+            # Esta segunda busqueda la agregamos por los paquetes viejos.
             try:
                 ma_decimal = int(ma_hexa, 16)
                 paquete = Paquete.objects.get(id_hardware=id_hardware, marca_de_arranque=ma_decimal)
