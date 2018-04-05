@@ -52,16 +52,16 @@ class Paquete(models.Model):
         y almacena el archivo señalado."""
 
         try:
-            paquete = Paquete.objects.get(id_hardware=id_hardware, ma_hexa__iexact=str(ma_hexa))
+            paquete = Paquete.objects.get(id_hardware__iexact=id_hardware, ma_hexa__iexact=str(ma_hexa))
         except Paquete.DoesNotExist:
             # Esta segunda y tercer busqueda la agregamos por los paquetes viejos. Tenemos que quitarlo una vez
             # que aparezcan los paquetes nuevos.
             try:
                 ma_decimal = int(ma_hexa, 16)
-                paquete = Paquete.objects.get(id_hardware=id_hardware, marca_de_arranque__iexact=str(ma_decimal))
+                paquete = Paquete.objects.get(id_hardware__iexact=id_hardware, marca_de_arranque__iexact=str(ma_decimal))
             except Paquete.DoesNotExist:
                 try:
-                    paquete = Paquete.objects.get(id_hardware=id_hardware, marca_de_arranque__iexact=str(ma_hexa))
+                    paquete = Paquete.objects.get(id_hardware__iexact=id_hardware, marca_de_arranque__iexact=str(ma_hexa))
                 except Paquete.DoesNotExist:
                     return "No se encontro el paquete id_hardware={0} y ma_hexa={1}".format(id_hardware, ma_hexa)
 
