@@ -111,8 +111,8 @@ class EscuelaViewSet(viewsets.ModelViewSet):
     queryset = models.Escuela.objects.all()
     serializer_class = serializers.EscuelaSerializer
     filter_backends = [SearchFilter]
-    search_fields = ['cue', 'nombre', 'localidad__distrito__nombre', 'localidad__nombre', 'nivel__nombre', 'programas__nombre']
-    #filter_fields = ['localidad__distrito__region__numero', 'conformada']
+    search_fields = ['cue', 'nombre', 'localidad__distrito__nombre', 'localidad__nombre']
+    #filter_fields = ['modalidad__id',]
 
     def get_queryset(self):
         #solo_padre = Q(padre__isnull=True)
@@ -125,9 +125,17 @@ class EscuelaViewSet(viewsets.ModelViewSet):
         filtro_conformada = self.request.query_params.get('conformada')
         filtro_region = self.request.query_params.get('localidad__distrito__region__numero')
         filtro_programa = self.request.query_params.get('programa')
+        filtro_modalidad = self.request.query_params.get('modalidad')
+        filtro_nivel = self.request.query_params.get('nivel')
+        filtro_tipo_de_gestion = self.request.query_params.get('tipoDeGestion')
+        filtro_sort = self.request.query_params.get('sort')
 
         if filtro_region:
             filtro = Q(localidad__distrito__region__numero=filtro_region) | Q(cue=60000000)
+            queryset = queryset.filter(filtro)
+
+        if filtro_modalidad:
+            filtro = Q(modalidad=filtro_modalidad)
             queryset = queryset.filter(filtro)
 
         if filtro_conformada:
@@ -141,7 +149,15 @@ class EscuelaViewSet(viewsets.ModelViewSet):
             queryset = queryset.filter(filtro)
 
         if filtro_programa:
-            filtro = Q(programas__nombre=filtro_programa)
+            filtro = Q(programas__in=filtro_programa)
+            queryset = queryset.filter(filtro)
+
+        if filtro_nivel:
+            filtro = Q(nivel=filtro_nivel)
+            queryset = queryset.filter(filtro)
+
+        if filtro_tipo_de_gestion:
+            filtro = Q(tipo_de_gestion=filtro_tipo_de_gestion)
             queryset = queryset.filter(filtro)
 
 
@@ -153,6 +169,9 @@ class EscuelaViewSet(viewsets.ModelViewSet):
             filtro_nivel = Q(nivel__nombre__icontains=query)
 
             queryset = queryset.filter(filtro_cue | filtro_nombre | filtro_distrito | filtro_localidad | filtro_nivel)
+
+        if filtro_sort:
+            queryset = queryset.order_by(filtro_sort)
 
         return queryset
 
