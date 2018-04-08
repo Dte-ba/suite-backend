@@ -223,21 +223,24 @@ class EscuelaViewSet(viewsets.ModelViewSet):
 
 
     def obtener_escuelas_para_exportar(self):
-        escuelas = models.Escuela.objects.all()
+        escuelas = self.get_queryset()
         filas = []
+
         for escuela in escuelas:
-            #import ipdb; ipdb.set_trace()
             nombre = escuela.nombre
             cue = escuela.cue
             direccion = escuela.direccion
             region = escuela.localidad.distrito.region.numero
             localidad = escuela.localidad.nombre
             distrito = escuela.localidad.distrito.nombre
-            if escuela.modalidad :
+
+            if escuela.modalidad:
                 modalidad = escuela.modalidad.nombre
             else:
                 modalidad = ''
+
             filas.append([nombre,cue,direccion,region,localidad,distrito,modalidad])
+
         return filas
 
 
