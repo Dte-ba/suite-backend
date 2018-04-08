@@ -129,6 +129,7 @@ class EscuelaViewSet(viewsets.ModelViewSet):
         filtro_nivel = self.request.query_params.get('nivel')
         filtro_tipo_de_gestion = self.request.query_params.get('tipoDeGestion')
         filtro_piso = self.request.query_params.get('piso')
+        filtro_llave = self.request.query_params.get('llave')
 
         filtro_sort = self.request.query_params.get('sort')
 
@@ -167,6 +168,15 @@ class EscuelaViewSet(viewsets.ModelViewSet):
                 filtro = Q(piso__estado=True)
             else:
                 filtro = Q(piso__estado=False)
+
+            queryset = queryset.filter(filtro)
+
+        if filtro_llave:
+            if filtro_llave == 'sin-llave':
+                filtro = Q(piso__llave='')
+            else:
+                filtro = ~Q(piso__llave='')
+
             queryset = queryset.filter(filtro)
 
 
