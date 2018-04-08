@@ -128,6 +128,8 @@ class EscuelaViewSet(viewsets.ModelViewSet):
         filtro_modalidad = self.request.query_params.get('modalidad')
         filtro_nivel = self.request.query_params.get('nivel')
         filtro_tipo_de_gestion = self.request.query_params.get('tipoDeGestion')
+        filtro_piso = self.request.query_params.get('piso')
+
         filtro_sort = self.request.query_params.get('sort')
 
         if filtro_region:
@@ -158,6 +160,13 @@ class EscuelaViewSet(viewsets.ModelViewSet):
 
         if filtro_tipo_de_gestion:
             filtro = Q(tipo_de_gestion=filtro_tipo_de_gestion)
+            queryset = queryset.filter(filtro)
+
+        if filtro_piso:
+            if filtro_piso == 'funcionando':
+                filtro = Q(piso__estado=True)
+            else:
+                filtro = Q(piso__estado=False)
             queryset = queryset.filter(filtro)
 
 
