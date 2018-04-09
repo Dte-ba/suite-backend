@@ -130,6 +130,8 @@ class EscuelaViewSet(viewsets.ModelViewSet):
         filtro_tipo_de_gestion = self.request.query_params.get('tipoDeGestion')
         filtro_piso = self.request.query_params.get('piso')
         filtro_llave = self.request.query_params.get('llave')
+        filtro_distrito = self.request.query_params.get('distrito')
+        filtro_localidad = self.request.query_params.get('localidad')
 
         filtro_sort = self.request.query_params.get('sort')
 
@@ -177,6 +179,14 @@ class EscuelaViewSet(viewsets.ModelViewSet):
             else:
                 filtro = ~Q(piso__llave='')
 
+            queryset = queryset.filter(filtro)
+
+        if filtro_distrito:
+            filtro = Q(localidad__distrito=filtro_distrito)
+            queryset = queryset.filter(filtro)
+
+        if filtro_localidad:
+            filtro = Q(localidad=filtro_localidad)
             queryset = queryset.filter(filtro)
 
 
@@ -773,7 +783,8 @@ class LocalidadViewSet(viewsets.ModelViewSet):
     serializer_class = serializers.LocalidadSerializer
     filter_backends = [SearchFilter, DjangoFilterBackend]
     search_fields = ['nombre']
-    filter_fields = ['nombre']
+    filter_fields = ['nombre', 'distrito']
+
 
 class ProgramaViewSet(viewsets.ModelViewSet):
     queryset = models.Programa.objects.all()
