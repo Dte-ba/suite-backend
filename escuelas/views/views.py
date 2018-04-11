@@ -154,7 +154,7 @@ class EscuelaViewSet(viewsets.ModelViewSet):
             queryset = queryset.filter(filtro)
 
         if filtro_programa:
-            filtro = Q(programas__in=filtro_programa)
+            filtro = Q(programas__nombre=filtro_programa)
             queryset = queryset.filter(filtro)
 
         if filtro_nivel:
