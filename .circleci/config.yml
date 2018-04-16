@@ -19,9 +19,8 @@ jobs:
       - run:
           name: Instalando dependencias
           command: |
-            sudo pip install pipenv
+            sudo pip install pipenv==11.6.0
             pipenv install
-            ls -la
             pipenv run "python manage.py test -v 2"
   deploy:
     docker:
