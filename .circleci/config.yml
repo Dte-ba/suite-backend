@@ -21,9 +21,8 @@ jobs:
           command: |
             sudo pip install pipenv
             pipenv install
-      - run:
-          name: Ejecutando test
-          command: pipenv run "python manage.py test -v 2"
+            ls -la
+            pipenv run "python manage.py test -v 2"
   deploy:
     docker:
       - image: circleci/python:2.7.14
