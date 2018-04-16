@@ -38,8 +38,8 @@ jobs:
       - image: redis:2.8.19
     steps:
       - checkout
-      - run: echo -e "Host dtelab.com.ar\n\tStrictHostKeyChecking no\n" >> ~/.ssh/config
-      - run: git remote add dokku dokku@dtelab.com.ar:suite-backend
+      - run: echo -e "Host enjambrelab.com.ar\n\tStrictHostKeyChecking no\n" >> ~/.ssh/config
+      - run: git remote add dokku dokku@enjambrelab.com.ar:suite-backend
       - run: git push dokku master:master
 workflows:
   version: 2
