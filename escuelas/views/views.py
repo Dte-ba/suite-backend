@@ -214,6 +214,8 @@ class EscuelaViewSet(viewsets.ModelViewSet):
             "cerradas": queryset.filter(estado=False).count(),
             "pisoRoto": queryset.filter(piso__estado=False).count(),
             "pisoFuncionando": queryset.filter(piso__estado=True).count(),
+            "conLlave": queryset.filter(Q(piso__llave='') & Q(programas__nombre="Conectar Igualdad")).count(),
+            "sinLlave": queryset.filter(Q(piso__llave='') & Q(programas__nombre="Conectar Igualdad")).count(),
             "conectarIgualdad": queryset.filter(programas__nombre="Conectar Igualdad").count(),
             "pad": queryset.filter(programas__nombre="PAD").count(),
             "responsabilidadEmpresarial": queryset.filter(programas__nombre="Responsabilidad Empresarial").count(),
