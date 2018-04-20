@@ -1,3 +1,4 @@
+VERSION=$(shell git describe --tags)
 NOMBRE=suite
 
 N=[0m
@@ -17,7 +18,7 @@ DB_URL="postgres://postgres:postgress@localhost/suite"
 
 comandos:
 	@echo ""
-	@echo "${B}Comandos disponibles para ${G}${NOMBRE}${N}"
+	@echo "${B}Comandos disponibles para ${G}${NOMBRE}${N} (versión: ${VERSION})"
 	@echo ""
 	@echo "  ${Y}Para desarrolladores${N}"
 	@echo ""
