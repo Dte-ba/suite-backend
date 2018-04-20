@@ -781,7 +781,9 @@ class DistritoViewSet(viewsets.ModelViewSet):
     resource_name = 'distrito'
     queryset = models.Distrito.objects.all()
     serializer_class = serializers.DistritoSerializer
-    #pagination_class = LargeResultsSetPagination
+    filter_backends = [SearchFilter, DjangoFilterBackend]
+    search_fields = ['nombre']
+    filter_fields = ['nombre', 'region']
 
 class LocalidadViewSet(viewsets.ModelViewSet):
     resource_name = 'localidad'
