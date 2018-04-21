@@ -125,6 +125,7 @@ class EscuelaViewSet(viewsets.ModelViewSet):
         filtro_conformada = self.request.query_params.get('conformada')
         filtro_region = self.request.query_params.get('localidad__distrito__region__numero')
         filtro_programa = self.request.query_params.get('programa')
+        filtro_programa_in = self.request.query_params.get('programa_in')
         filtro_modalidad = self.request.query_params.get('modalidad')
         filtro_nivel = self.request.query_params.get('nivel')
         filtro_tipo_de_gestion = self.request.query_params.get('tipoDeGestion')
@@ -155,6 +156,10 @@ class EscuelaViewSet(viewsets.ModelViewSet):
 
         if filtro_programa:
             filtro = Q(programas__nombre=filtro_programa)
+            queryset = queryset.filter(filtro)
+
+        if filtro_programa_in:
+            filtro = Q(programas__in=filtro_programa_in)
             queryset = queryset.filter(filtro)
 
         if filtro_nivel:
