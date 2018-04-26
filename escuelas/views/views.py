@@ -10,7 +10,7 @@ from django.contrib.auth.models import User, Group, Permission
 from django.core.files import File
 from django.http import HttpResponse
 
-from rest_framework.filters import SearchFilter
+from rest_framework.filters import SearchFilter, OrderingFilter
 from django_filters.rest_framework import DjangoFilterBackend
 
 import rest_framework.filters
@@ -336,16 +336,27 @@ class EventoViewSet(viewsets.ModelViewSet):
     resource_name = 'eventos'
     queryset = models.Evento.objects.all()
     serializer_class = serializers.EventoSerializer
-    filter_backends = [SearchFilter, DjangoFilterBackend]
+    filter_backends = [SearchFilter, DjangoFilterBackend, OrderingFilter]
     search_fields = ['escuela__nombre', 'escuela__cue', 'titulo']
+    filter_fields = ['escuela__localidad', 'escuela__localidad__distrito', "responsable__id"]
+    ordering_fields = ['titulo', 'fecha', 'escuela_id', 'escuela__localidad__distrito__region__numero', 'distrito', 'responsable', 'requiere_traslado']
 
     def get_queryset(self):
         queryset = self.queryset
         query = self.request.query_params.get('query', None)
 
+        filtro_desde = self.request.query_params.get('desde', None)
+        filtro_hasta = self.request.query_params.get('hasta', None)
         filtro_region = self.request.query_params.get('escuela__localidad__distrito__region__numero', None)
         filtro_perfil = self.request.query_params.get('perfil', None)
 
+        if filtro_desde:
+            filtro = Q(fecha__gte=filtro_desde)
+            queryset = queryset.filter(filtro)
+
+        if filtro_hasta:
+            filtro = Q(fecha_fin__lte=filtro_hasta)
+            queryset = queryset.filter(filtro)
 
         if filtro_perfil:
             usuario = models.Perfil.objects.get(id=filtro_perfil)
@@ -642,7 +653,7 @@ class PerfilViewSet(viewsets.ModelViewSet):
     serializer_class = serializers.PerfilSerializer
     filter_backends = [SearchFilter, DjangoFilterBackend]
     search_fields = ['nombre', 'apellido', 'dni', 'cargo__nombre']
-    filter_fields = ['region__numero']
+    filter_fields = ['region__numero', "region__id"]
 
     def create(self, request):
         return Response({})
