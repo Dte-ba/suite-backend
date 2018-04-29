@@ -6,12 +6,15 @@ from rest_framework.authtoken.views import obtain_auth_token
 
 
 from easy_pdf.views import PDFTemplateView
+
+import escuelas.views.escuela
+import escuelas.views.user
 from escuelas import views
 from rest_framework import routers
 
 router = routers.DefaultRouter(trailing_slash=False)
-router.register(r'users', views.UserViewSet)
-router.register(r'escuelas', views.EscuelaViewSet)
+router.register(r'users', escuelas.views.user.UserViewSet)
+router.register(r'escuelas', escuelas.views.escuela.EscuelaViewSet)
 router.register(r'contactos', views.ContactoViewSet)
 router.register(r'eventos', views.EventoViewSet)
 router.register(r'regiones', views.RegionViewSet)
@@ -43,8 +46,8 @@ router.register('estados-de-paquete', views.EstadoDePaqueteViewSet)
 router.register('paquetes', views.PaqueteViewSet)
 router.register('permissions', views.PermissionViewSet)
 router.register('groups', views.GroupViewSet)
-router.register('informes', views.informes_view.InformesViewSet, 'Informes')
-router.register('trabajos', views.trabajos_view.TrabajosViewSet, 'Trabajos')
+router.register('informes', views.informes.InformesViewSet, 'Informes')
+router.register('trabajos', views.trabajos.TrabajosViewSet, 'Trabajos')
 router.register('distribucion-de-paquetes', views.DistribucionDePaquetesViewSet, 'DistribucionDePaquetes')
 
 

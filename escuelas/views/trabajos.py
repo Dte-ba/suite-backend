@@ -12,6 +12,7 @@ from escuelas.models import Trabajo
 from escuelas.models import DistribucionDePaquete
 from escuelas import trabajos
 
+
 class TrabajosViewSet(viewsets.ViewSet):
 
     @authentication_classes([])
