@@ -3,3 +3,11 @@ from informes import InformesViewSet
 from trabajos import TrabajosViewSet
 from user import UserViewSet
 from escuela import EscuelaViewSet
+from piso import PisoViewSet
+from distribucion_de_paquete import DistribucionDePaquetesViewSet
+from tarea import TareaViewSet
+from mi_perfil import MiPerfilViewSet
+from perfil import PerfilViewSet
+from evento import EventoViewSet
+from paquete import PaqueteViewSet
+from validacion import ValidacionViewSet
