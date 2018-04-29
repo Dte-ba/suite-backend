@@ -63,8 +63,6 @@ router.register('mi-perfil', escuelas.views.mi_perfil.MiPerfilViewSet, 'Perfil')
 
 urlpatterns = [
     url(r'^$', views.home, name='home'),
-    url(r'^demo/$', views.DemoPDFView.as_view(), name="demo"),
-    url(r'^user/(?P<pk>\d+)/$', views.PDFUserDetailView.as_view()),
     url(r'^api/', include(router.urls)),
     url(r'^api/auth', obtain_auth_token),
     url(r'^admin/', admin.site.urls),
