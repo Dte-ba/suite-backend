@@ -1,4 +1,5 @@
 # coding: utf-8
+from __future__ import unicode_literals
 import xlwt
 from django.db.models import Q
 from django.http import HttpResponse

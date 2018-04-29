@@ -1,13 +1,27 @@
 # coding: utf-8
+from __future__ import unicode_literals
 from django.db.models import Q
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import viewsets
 from rest_framework.decorators import list_route, detail_route
 from rest_framework.filters import SearchFilter
 from rest_framework.response import Response
+from rest_framework_json_api.pagination import PageNumberPagination
 
 from escuelas import models, serializers
-from escuelas.views import SuitePageNumberPagination, responseError
+
+
+class SuitePageNumberPagination(PageNumberPagination):
+    max_page_size = 6000
+
+
+def responseError(mensaje):
+    response = Response({
+        "error": mensaje
+    })
+
+    response.status_code = 500
+    return response
 
 
 class PerfilViewSet(viewsets.ModelViewSet):
@@ -96,3 +110,4 @@ class PerfilViewSet(viewsets.ModelViewSet):
         perfil.user.save()
 
         return Response({'ok': True})
+
