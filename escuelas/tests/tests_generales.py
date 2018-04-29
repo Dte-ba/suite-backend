@@ -17,6 +17,10 @@ from escuelas import serializers
 class APIUsuariosTests(APITestCase):
 
 
+    def test_tiene_depedencias(self):
+        result = os.system('convert --version')
+        self.assertEqual(result, 0, "Tiene instalado convert en el sistema")
+
     def test_ruta_principal_de_la_api(self):
         response = self.client.get('/api/', format='json')
         self.assertEqual(response.status_code, 200)

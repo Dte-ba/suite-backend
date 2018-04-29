@@ -9,6 +9,9 @@ El primer paso es instalar algunas dependencias del sistema:
 ```
 sudo pip install pipenv
 sudo pip install bumpversion
+
+brew install imagemagick
+# o bien 'sudo apt-get install imagemagick' en debian.
 ```
 
 Luego, para iniciar le proyecto:
@@ -67,12 +70,11 @@ make ejecutar
 
 y luego abrir la dirección:
 
-- http://127.0.0.1:8000/
+* http://127.0.0.1:8000/
 
 o bien, la siguiente dirección para abrir la interfaz de administración:
 
-- http://127.0.0.1:8000/admin
-
+* http://127.0.0.1:8000/admin
 
 ## Cómo iniciar workers
 
@@ -82,7 +84,6 @@ de informes, se hacen mediantes tareas que requieren algunos pasos adicionales:
 1 - Tenes que tener instalador redis y lanzarlo con redis-server.
 2 - Ejecutar el comando `make ejecutar_worker`.
 3 - Opcionalmente, se puede ejecutar el comando `make monitor` para inspeccionar el estado del las tareas.
-
 
 ## Cómo crear un nuevo modelo de base de datos
 
@@ -183,7 +184,6 @@ la migración. Es importante notar que no es solo un "CREATE TABLE" y
 estructura vieja, crear una tabla nueva, mover los registros para no perder
 ningún dato y dejar todo funcionando nuevamente.
 
-
 ### Cómo realizar las operaciones básicas del ORM
 
 Para acceder al ORM y ejecutar algunas pruebas podemos usar el comando:
@@ -241,7 +241,7 @@ Para buscar por ID o nombre exacto así:
 
 Ver documentación completa en:
 
-- https://docs.djangoproject.com/en/1.10/topics/db/queries/
+* https://docs.djangoproject.com/en/1.10/topics/db/queries/
 
 #### Cómo borrar registros
 
@@ -271,14 +271,12 @@ admin.site.register(models.Domicilio)
 
 ![](imagenes/admin_domicilio.png)
 
-
-
 ## API
 
 La aplicación incluye una API para acceder a los modelos a traves del
 estándar json-api. Para ver todas las rutas disponibles ingresá en:
 
-- http://localhost:8000/api/
+* http://localhost:8000/api/
 
 Si ves esa URL con un navegador, vas a poder pulsar en las URLs para
 ingresar en cada recurso y navegar por cualquier link:
@@ -297,7 +295,7 @@ Para agregar algún modelo a esta API deberías crear
 una vista y un serializador. Esto es bastante sencillo
 de hacer, pero requiere seguir estos pasos y copiar/pegar un poco de código:
 
-- Primero tendrías que crear la ruta en el archivo `suite/suite/urls.py`.
+* Primero tendrías que crear la ruta en el archivo `suite/suite/urls.py`.
 
 Por ejemplo, para exponer la API de los modelo Escuela
 usamos esta linea:
@@ -306,7 +304,7 @@ usamos esta linea:
 router.register(r'escuelas', views.EscuelaViewSet)
 ```
 
-- Luego tendrías que incluir una vista en el archivo
+* Luego tendrías que incluir una vista en el archivo
   `suite/escuelas/views.py`:
 
 Volviendo al ejemplo del modelo Escuela, la vista quedaría
@@ -320,7 +318,6 @@ class EscuelaViewSet(viewsets.ModelViewSet):
 
 Por último, hay que crear el serializador en el archivo
 `suite/escuelas/serializers.py`, por ejemplo:
-
 
 ```
 class EscuelaSerializer(serializers.HyperlinkedModelSerializer):
@@ -336,7 +333,6 @@ la clase `UserSerializer` del mismo archivo para ver otro ejemplo de uso.
 
 ## Notas, consejos y trucos.
 
-
 ### Cómo salir del entorno virtual
 
 Para salir del entorno se puede ejecutar el siguiente comando:
@@ -347,11 +343,9 @@ deactivate
 
 ### Cómo instalar dependencias
 
-
 Si encontás alguna dependencia útil, podés
 instalarla usando el comando `pip install`, por
 ejemplo:
-
 
 ```
 pip install rednose
@@ -375,7 +369,6 @@ pero esto ensucia un poco el treeview de un editor como atom:
 Atom reconoce que los archivos `.pyc` no son importantes (ya que están
 en el archivo .gitignore) y por eso los muestra en color gris.
 
-
 Para que estos archivos ni siquiera aparescan, se puede ingresar en las
 prefenrencias del editor, luego en complemento treeview y activar la
 opción para ocultar todos los archivos ignorados:
@@ -387,7 +380,6 @@ los cambios:
 
 ![](imagenes/ocultar_pyc_3.png)
 
-
 ### Activar utf-8
 
 Si ves un mensaje de la forma:
@@ -396,13 +388,11 @@ Si ves un mensaje de la forma:
 SyntaxError: Non-ASCII character '\xc3' in file ...
 ```
 
-
 Simplemente agregá este comentario al principio del archivo que da errores:
 
 ```
 # coding: utf-8
 ```
-
 
 ### Cómo generar un gráfico del modelo de datos
 
@@ -414,7 +404,6 @@ sudo apt-get install graphviz
 ```
 
 Y luego ejecutar este comando:
-
 
 ```
 make grafico
@@ -435,8 +424,8 @@ Una vez instalado, hay que ingresar en las preferencias del complemento
 y colocar las rutas al binario de python (dentro del entorno virtual) y
 también el directorio de bibliotecas dentro del entorno virtual:
 
-- binarios: `/usr/bin/python;$PROJECT/venv/bin/python`
-- bibliotecas: `$PROJECT/venv/lib/python2.7/site-packages`
+* binarios: `/usr/bin/python;$PROJECT/venv/bin/python`
+* bibliotecas: `$PROJECT/venv/lib/python2.7/site-packages`
 
 ![](imagenes/autocompletado-2.png)
 
@@ -449,21 +438,17 @@ Nota: la primera vez que comenzamos a escribir, demora como 5 o 10 segundos
 en aparecer la primer opción de autocompletado. Una vez que pasa esa primer
 demora el resto de las sugerencias es inmediata.
 
-
-
-
 ## Deploy en producción
 
 Primero hay que contar con un servidor que soporte dokku, hay una nota
 que puede servirte de introducción a dokku aquí:
 
-- http://blog.enjambrelab.com.ar/
+* http://blog.enjambrelab.com.ar/
 
 También tendrías que tener instalada la extensión para usar bases de
 dato postgres:
 
-- https://github.com/dokku/dokku-postgres
-
+* https://github.com/dokku/dokku-postgres
 
 En este punto, tu vps con dokku debería tener un dominio.
 
@@ -471,30 +456,28 @@ Aquí usaremos el dominio dtelab.com.ar porque es el que estamos usando para des
 
 Para iniciar la instalación de la aplicación en dokku tenemos que escribir:
 
-
-	git remote add desarrollo dokku@dtelab.com.ar:testing-suite-backend
-	git push desarrollo master
+    git remote add desarrollo dokku@dtelab.com.ar:testing-suite-backend
+    git push desarrollo master
 
 La instancia de la aplicación quedará como un destino remoto de nuestro
 La instancia de la aplicación quedará como un destino remoto de nuestro
 repositorio, así que cada vez que busquemos hacer un deploy tenemos
 que ejecutar el comando:
 
-	git push desarrollo master
+    git push desarrollo master
 
 Donde "desarrollo" es el nombre que le damos a la instancia, que podría
 Donde "desarrollo" es el nombre que le damos a la instancia, que podría
 ser cualquier otra cosa. Incluso podríamos tener una instancia "produccion",
 "pruebas" etc...
 
-
-	dokku postgres:create testing-suite-backend
-	dokku postgres:info testing-suite-backend
+    dokku postgres:create testing-suite-backend
+    dokku postgres:info testing-suite-backend
 
 Por último, hay que vincular la nueva base de datos con la aplicación:
 Por último, hay que vincular la nueva base de datos con la aplicación:
 
-	dokku postgres:link testing-suite-backend suite-backend-desarrollo
+    dokku postgres:link testing-suite-backend suite-backend-desarrollo
 
 (el primer argumento de link es el nombre de la base de datos y el segundo
 es el identificador de la aplicación).
@@ -503,21 +486,21 @@ Luego, desde la aplicación deberíamos conectarnos a la base de datos usando
 la variable de entorno DATABASE_URL. Usando el comando `dokku config` se
 puede consultar si esta variable se inicializó correctamente o no:
 
-	> dokku config
-	=====> suite-backend-desarrollo config vars
-	DATABASE_URL:      postgres://postgres:612a369cxxxxx13@dokku-postgres-testing-suite-backend:5432/desarrollo_suite_backend
-	DOKKU_APP_RESTORE: 1
-	DOKKU_APP_TYPE:    herokuish
-	DOKKU_NGINX_PORT:  80
+    > dokku config
+    =====> suite-backend-desarrollo config vars
+    DATABASE_URL:      postgres://postgres:612a369cxxxxx13@dokku-postgres-testing-suite-backend:5432/desarrollo_suite_backend
+    DOKKU_APP_RESTORE: 1
+    DOKKU_APP_TYPE:    herokuish
+    DOKKU_NGINX_PORT:  80
 
 Si no llega a estar correctamente configurado, hay que ejecutar el comando que
 define la variable de entorno DATABASE_URL:
 
-	dokku config:set DATABASE_URL=postgres://postgres:33bd2xxxxx@dokku-postgres-testing-suite-backend:5432/desarrollo_suite_backend
+    dokku config:set DATABASE_URL=postgres://postgres:33bd2xxxxx@dokku-postgres-testing-suite-backend:5432/desarrollo_suite_backend
 
 Por último, para ejecutar comandos sobre el entorno de desarrollo hay que
 anteponer el prefijo `dokku run` y en algunos casos especificar el nombre
 de la configuración del entorno:
 
-	dokku run python manage.py migrate --settings=suite.desarrollo_settings
-	dokku run python manage.py createsuperuser --settings=suite.desarrollo_settings
+    dokku run python manage.py migrate --settings=suite.desarrollo_settings
+    dokku run python manage.py createsuperuser --settings=suite.desarrollo_settings
