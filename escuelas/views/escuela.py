@@ -15,7 +15,6 @@ class EscuelaViewSet(viewsets.ModelViewSet):
     serializer_class = serializers.EscuelaSerializer
     filter_backends = [SearchFilter]
     search_fields = ['cue', 'nombre', 'localidad__distrito__nombre', 'localidad__nombre']
-    #filter_fields = ['modalidad__id',]
 
     def get_queryset(self):
         #solo_padre = Q(padre__isnull=True)
@@ -187,17 +186,15 @@ class EscuelaViewSet(viewsets.ModelViewSet):
 
         return filas
 
-
     @list_route(methods=['get'])
     def export_raw(self, request):
 
         return Response({
             'filas': self.obtener_escuelas_para_exportar()
-    })
+        })
 
     @list_route(methods=['get'])
     def export(self, request):
-
         escuelas = self.obtener_escuelas_para_exportar()
         response = HttpResponse()
         response['Content-Disposition'] = 'attachment; filename="escuelas-export.xls"'
@@ -211,7 +208,6 @@ class EscuelaViewSet(viewsets.ModelViewSet):
 
         #TODO Definir todos los campos del archivo
         columns = ['Escuela', 'CUE','Dirección','Región', 'Localidad', 'Distrito', 'Modalidad']
-        col_num = 6
 
         # Escribir los headers
         for col_num in range(len(columns)):
@@ -221,11 +217,9 @@ class EscuelaViewSet(viewsets.ModelViewSet):
         ws.col(1).width = 256 * 12
         font_style = xlwt.XFStyle()
 
-        row_num = 0
-
         for (indice, fila) in enumerate(escuelas):
             for (indice_columna, columna) in enumerate(fila):
                 ws.write(indice+1, indice_columna, columna, font_style)
 
         wb.save(response)
-        return(response)
+        return response
