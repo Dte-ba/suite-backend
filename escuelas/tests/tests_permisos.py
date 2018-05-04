@@ -86,6 +86,56 @@ class Permisos(APITestCase):
         self.assertEqual(response.data['permisosAgrupados'][0]['permisos'][2]['accion'], 'listar');
         self.assertEqual(response.data['permisosAgrupados'][0]['permisos'][2]['permiso'], False);
 
+    def test_puede_sustituir_a_otro_usuario(self):
+        # Comienza con dos usuarios
+        user = User.objects.create_user(username='test', password='123')
+        usuario_secundario = User.objects.create_user(username='secundario', password='123')
+
+        # Se genera un grupo para el administrador
+        grupo = Group.objects.create(name='coordinador')
+
+        tipo = ContentType.objects.get(app_label='escuelas', model='evento')
+        puede_administrar = Permission(name='perfil.global', codename='perfil.global', content_type=tipo)
+        puede_administrar.save()
+        grupo.permissions.add(puede_administrar)
+
+
+        # Se asigna una region al perfil de usuario
+        region_1 = models.Region.objects.create(numero=1)
+        user.perfil.region = region_1
+        usuario_secundario.perfil.region = region_1
+
+        grupo.save()
+
+        user.perfil.group = grupo
+        user.save()
+        user.perfil.save()
+
+        usuario_secundario.perfil.save()
+        usuario_secundario.save()
+
+        self.client.login(username='test', password='123')
+
+        self.client.force_authenticate(user=user)
+        response = self.client.get('/api/mi-perfil', format='json')
+
+        self.assertEqual(response.data['username'], "test");
+        self.assertEqual(len(response.data['grupos']), 1, "Tiene un solo grupo")
+        self.assertEqual(response.data['grupos'][0]['nombre'], 'coordinador', "Tiene asignado el grupo coordinador")
+
+        # Accede al perfil de otro usuario correctamente
+        response = self.client.get('/api/mi-perfil?perfilInspeccionado=%d' %(usuario_secundario.id), format='json')
+        self.assertEqual(response.data['username'], "secundario");
+
+        self.client.logout()
+
+        # Si un usuario que no tiene permisos de administrador intenta ver el perfil de otro usuario falla, por falta de permisos
+        print("----------")
+        self.client.login(username='secundario', password='123')
+        self.client.force_authenticate(user=usuario_secundario)
+        response = self.client.get('/api/mi-perfil?perfilInspeccionado=%d' %(user.id), format='json')
+        self.assertEqual(response.status_code, 500)
+
 
     def test_puede_obtener_una_lista_de_todos_los_permisos(self):
         user = User.objects.create_user(username='test', password='123')

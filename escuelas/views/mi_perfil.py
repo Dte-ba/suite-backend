@@ -19,10 +19,22 @@ class MiPerfilViewSet(viewsets.ViewSet):
         if not request.user.is_authenticated():
             return Response({'error': 'El usuario no esta autenticado.'})
 
-        perfil = models.Perfil.objects.get(user=request.user)
+        perfilInspeccionado = request.GET.get('perfilInspeccionado')
+
+        if perfilInspeccionado:
+            perfil_original = models.Perfil.objects.get(user=request.user)
+            perfil = models.Perfil.objects.get(id=perfilInspeccionado)
+
+            # Previene que los usuarios no administradores usen esta característica.
+            if not perfil_original.esAdministrador():
+                response = Response("No puede sustituir el perfil de otro usuario si no es administrador.")
+                response.status_code = 500
+                return response
+        else:
+            perfil = models.Perfil.objects.get(user=request.user)
 
         data = {
-            'username': request.user.username,
+            'username': perfil.user.username,
             'nombre': perfil.nombre,
             'apellido': perfil.apellido,
             'permisos': perfil.obtenerPermisos(),

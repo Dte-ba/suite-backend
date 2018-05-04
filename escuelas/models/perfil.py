@@ -97,6 +97,10 @@ class Perfil(models.Model):
 
         return permisos_como_diccionario
 
+    def esAdministrador(self):
+        permisos = self.obtenerPermisos()
+        return 'perfil.global' in permisos and permisos['perfil.global']
+
     def definir_grupo_usando_nombre(self, nombre_del_grupo):
         self.group = Group.objects.get(name=nombre_del_grupo)
 
