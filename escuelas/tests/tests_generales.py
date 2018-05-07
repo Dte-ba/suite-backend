@@ -168,6 +168,8 @@ class GeneralesTestCase(APITestCase):
         self.assertEqual(models.Paquete.objects.all().count(), 0)
 
         estado = models.EstadoDePaquete.objects.create(nombre="Pendiente")
+        estado2 = models.EstadoDePaquete.objects.create(nombre="Objetado")
+        estado3 = models.EstadoDePaquete.objects.create(nombre="EducAr")
 
         # Se genera una escuela destino de los paquetes
         region_1 = models.Region.objects.create(numero=1)
@@ -775,5 +777,3 @@ class GeneralesTestCase(APITestCase):
         evento_1 = models.Evento.objects.create(titulo="Evento de prueba en donde no es reponsable", responsable=userExterno.perfil, categoria=categoria_1, escuela=escuela_central, fecha="2017-01-15", fecha_fin="2017-01-15")
         response = self.client.get('/api/eventos?escuela__localidad__distrito__region__numero=4&perfil={0}'.format(user.perfil.id))
         self.assertEqual(response.data['meta']['pagination']['count'], 3)
-
-

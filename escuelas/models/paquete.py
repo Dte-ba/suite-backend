@@ -157,16 +157,16 @@ class Paquete(models.Model):
                 llaves.add(llave_servidor)
 
             id_hardware = paquete.id_hardware
-            
+
             if paquete.ma_hexa:
                 marca_de_arranque = paquete.ma_hexa
             else:
-                if not paquete.tpm_data:
+                if not paquete.tpmdata:
                     marca_de_arranque = paquete.marca_de_arranque
                 else:
                     try:
-                        float(marca_de_arranque)
-                        marca_de_arranque = hex(int(marca_de_arranque))[2:]
+                        float(paquete.marca_de_arranque)
+                        marca_de_arranque = hex(int(paquete.marca_de_arranque))[2:]
                     except ValueError:
                         marca_de_arranque = ""
 
