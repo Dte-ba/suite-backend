@@ -157,7 +157,19 @@ class Paquete(models.Model):
                 llaves.add(llave_servidor)
 
             id_hardware = paquete.id_hardware
-            marca_de_arranque = paquete.ma_hexa
+            
+            if paquete.ma_hexa:
+                marca_de_arranque = paquete.ma_hexa
+            else:
+                if not paquete.tpm_data:
+                    marca_de_arranque = paquete.marca_de_arranque
+                else:
+                    try:
+                        float(marca_de_arranque)
+                        marca_de_arranque = hex(int(marca_de_arranque))[2:]
+                    except ValueError:
+                        marca_de_arranque = ""
+
             ne = paquete.ne
             fecha_pedido = paquete.fecha_pedido
             pedido = fecha_pedido.strftime("%Y-%m-%d")
