@@ -87,8 +87,9 @@ class PaqueteViewSet(viewsets.ModelViewSet):
                 errores.append(u"Error en la linea %d. Ya hay un pedido con ese ID de Hardware: '%s'. No se puede solicitar mas de uno por ID, aunque tengan distinta marca de arranque." %(indice + 1, id_hardware))
 
             # chequeamos que no exista un pedido pendiente con los mismos datos
-            objeto_estado = models.EstadoDePaquete.objects.get(nombre="Pendiente")
-            objeto_paquete = models.Paquete.objects.filter(ne=ne, id_hardware=id_hardware, marca_de_arranque=marca_de_arranque, estado=objeto_estado)
+            objeto_estado_pendiente = models.EstadoDePaquete.objects.get(nombre="Pendiente")
+            objeto_estado_educar = models.EstadoDePaquete.objects.get(nombre="EducAr")
+            objeto_paquete = models.Paquete.objects.filter(ne=ne, id_hardware=id_hardware, marca_de_arranque=marca_de_arranque, estado__in=[objeto_estado_pendiente, objeto_estado_educar])
 
             if objeto_paquete:
                 errores.append(u"Error en la linea %d. Ya existe una solicitud de paquete con ese ID de Hardware y esa Marca de arranque." %(indice + 1))

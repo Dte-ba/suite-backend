@@ -50,10 +50,11 @@ def distribuir_paquetes(distribucion_de_paquete):
             nombre = os.path.basename(ruta)
             regex = re.search('tcopp_(.*)_(.*)\.bin', os.path.basename(ruta))
 
+
             if regex:
                 (id_hardware, marca_de_arranque_decimal) = regex.groups()
                 marca_de_arranque_hex = hex(int(marca_de_arranque_decimal)).split('x')[-1]
-
+                trabajo.actualizar_paso(2, 3, "Procesando paquete id_hardware=%s marca_de_arranque=%s"%(id_hardware, marca_de_arranque_hex))
                 mensaje = models.Paquete.cambiar_estado_a_entregado(id_hardware, marca_de_arranque_hex, ruta)
             else:
                 mensaje = "CUIDADO: ignorando el archivo {0} porque no coincide con el formato de paquete esperado (tcopp_idhardware_ma.bin)"

@@ -51,17 +51,29 @@ class Paquete(models.Model):
         """Busca un paquete con el número indicado, lo cambia de estado
         y almacena el archivo señalado."""
 
+        # Objeta todos los duplicados antes.
+        paquetes = Paquete.objects.filter(id_hardware__iexact=id_hardware, ma_hexa__iexact=str(ma_hexa)).order_by('fecha_pedido')
+
+        if len(paquetes) > 1:
+            for paquete in paquetes[1:]:
+                estado_objetado = EstadoDePaquete.objects.get(nombre="Objetado")
+                paquete.estado = estado_objetado
+                paquete.comentario = "Paquete duplicado"
+                paquete.save()
+
+        estado_educar = EstadoDePaquete.objects.get(nombre="EducAr")
+
         try:
-            paquete = Paquete.objects.get(id_hardware__iexact=id_hardware, ma_hexa__iexact=str(ma_hexa))
+            paquete = Paquete.objects.get(id_hardware__iexact=id_hardware, ma_hexa__iexact=str(ma_hexa), estado=estado_educar)
         except Paquete.DoesNotExist:
             # Esta segunda y tercer busqueda la agregamos por los paquetes viejos. Tenemos que quitarlo una vez
             # que aparezcan los paquetes nuevos.
             try:
                 ma_decimal = int(ma_hexa, 16)
-                paquete = Paquete.objects.get(id_hardware__iexact=id_hardware, marca_de_arranque__iexact=str(ma_decimal))
+                paquete = Paquete.objects.get(id_hardware__iexact=id_hardware, marca_de_arranque__iexact=str(ma_decimal), estado=estado_educar)
             except Paquete.DoesNotExist:
                 try:
-                    paquete = Paquete.objects.get(id_hardware__iexact=id_hardware, marca_de_arranque__iexact=str(ma_hexa))
+                    paquete = Paquete.objects.get(id_hardware__iexact=id_hardware, marca_de_arranque__iexact=str(ma_hexa), estado=estado_educar)
                 except Paquete.DoesNotExist:
                     return "No se encontro el paquete id_hardware={0} y ma_hexa={1}".format(id_hardware, ma_hexa)
 
