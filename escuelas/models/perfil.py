@@ -72,6 +72,8 @@ class Perfil(models.Model):
     class Meta:
         db_table = 'perfiles'
         verbose_name_plural = "perfiles"
+        ordering = ('apellido',)
+
 
     class JSONAPIMeta:
         resource_name = 'perfiles'
