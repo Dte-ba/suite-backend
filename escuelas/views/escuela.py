@@ -139,6 +139,44 @@ class EscuelaViewSet(viewsets.ModelViewSet):
         }
         return Response(estadisticas)
 
+    @list_route(methods=['get'])
+    def escuelas_por_programa(self,request):
+        queryset = models.Escuela.objects.filter(padre__isnull=True)
+        filtro_region = self.request.query_params.get('localidad__distrito__region__numero')
+
+        if filtro_region:
+            filtro = Q(localidad__distrito__region__numero=filtro_region) | Q(cue=60000000)
+            queryset = queryset.filter(filtro)
+
+        totalDeEscuelas = queryset.count()
+
+        # Querysets por programa
+        conectarIgualdad = queryset.filter(programas__nombre="Conectar Igualdad").count()
+        responsabilidadEmpresarial = queryset.filter(programas__nombre="Responsabilidad Empresarial").count()
+        primariaDigital = queryset.filter(programas__nombre="Primaria Digital").count()
+        escuelasDelFuturo = queryset.filter(programas__nombre="Escuelas del Futuro").count()
+
+        escuelas_por_programa = [
+            {
+                "name": "Conectar Igualdad",
+                "count": conectarIgualdad
+            },
+            {
+                "name": "Responsabilidad Empresarial",
+                "count": responsabilidadEmpresarial
+            },
+            {
+                "name": "Primaria Digital",
+                "count": primariaDigital
+            },
+            {
+                "name": "Escuelas del Futuro",
+                "count": escuelasDelFuturo
+            }
+        ]
+
+        return Response(escuelas_por_programa)
+
     @detail_route(methods=['get'])
     def validaciones(self, request, pk=None):
         escuela = self.get_object()
