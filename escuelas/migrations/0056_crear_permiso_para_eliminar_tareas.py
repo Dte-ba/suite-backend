@@ -14,11 +14,15 @@ def crear_permiso(apps, schema_editor):
 
     modelo, permiso = TAREAS_ELIMINAR.split('.')
 
-    tipo, _ = ContentType.objects.get_or_create(app_label='escuelas', model=modelo)
-    permiso = Permission.objects.create(name=permiso, codename=TAREAS_ELIMINAR, content_type=tipo)
+    try:
+        grupo_administrador = Group.objects.get(name="Administrador")
+        
+        tipo, _ = ContentType.objects.get_or_create(app_label='escuelas', model=modelo)
+        permiso = Permission.objects.create(name=permiso, codename=TAREAS_ELIMINAR, content_type=tipo)
 
-    grupo_administrador = Group.objects.get(name="Administrador")
-    grupo_administrador.permissions.add(permiso)
+        grupo_administrador.permissions.add(permiso)
+    except Group.DoesNotExist:
+        print("CUIDADO: no existe el grupo administrador.")
 
 
 class Migration(migrations.Migration):
