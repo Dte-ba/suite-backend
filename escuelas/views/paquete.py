@@ -141,6 +141,65 @@ class PaqueteViewSet(viewsets.ModelViewSet):
                 'cantidad_de_errores': 0
             }
 
+    def _detectar_errores_en_objecion_masiva_de_paquetes(self, filas):
+        """Retorna una lista de errores y evaluaciones sobre las
+        filas de objecion masiva.
+
+        Si el conjunto de datos no tiene errores, retorna un diccionario
+        donde la clave "error" no tendrá valor.
+        """
+        errores = []
+        filas_correctas = 0
+        listado_de_id_hardware = []
+
+        for indice, paquete in enumerate(filas):
+            cue = unicode(paquete[0])
+            numero_de_servidor = unicode(paquete[1])
+            ne = unicode(paquete[2])
+            id_hardware = unicode(paquete[3])
+            marca_de_arranque = unicode(paquete[4])
+            motivo = unicode(paquete[5])
+
+
+            # chequeamos que no exista un pedido pendiente con los mismos datos
+            objeto_estado_objetado = models.EstadoDePaquete.objects.get(nombre="Objetado")
+            objeto_paquete = models.Paquete.objects.filter(ne=ne, id_hardware=id_hardware, marca_de_arranque=marca_de_arranque, estado__in=[objeto_estado_objetado])
+
+            if objeto_paquete:
+                errores.append(u"Error en la linea %d. Ya existe un paquete Objetado con ese ID de Hardware y esa Marca de arranque." %(indice + 1))
+
+            if not ne and not id_hardware and not marca_de_arranque:
+                continue
+
+            if not re.match(r'^[a-fA-F0-9]{20}$', ne):
+                errores.append(u"Error en la linea %d. El campo NE tiene un valor inválido: '%s'. Tiene que ser un valor hexadecimal de 20 dígitos." %(indice + 1, ne))
+
+            if not re.match(r'^[a-fA-F0-9]{12}$', id_hardware):
+                errores.append(u"Error en la linea %d. El campo ID Hardware tiene un valor inválido: '%s'. Tiene que ser un valor hexadecimal de 12 dígitos." %(indice + 1, id_hardware))
+
+            if not re.match(r'^[a-fA-F0-9]+$', marca_de_arranque):
+                errores.append(u"Error en la linea %d. El campo Marca de arranque tiene un valor inválido: '%s'." %(indice + 1, marca_de_arranque))
+
+            filas_correctas += 1
+            listado_de_id_hardware.append(id_hardware)
+
+
+        if filas_correctas < 1:
+            errores.append("No ha especificado ninguna fila.")
+
+        if errores:
+            return {
+                'error': u"La importación ha fallado",
+                'errores': errores,
+                'cantidad_de_errores': len(errores)
+            }
+        else:
+            return {
+                'error': False,
+                'errores': [],
+                'cantidad_de_errores': 0
+            }
+
     @list_route(methods=['post'])
     def importacionMasiva(self, request, **kwargs):
         # TODO: evitar esta conversión, debería llegar el dicionario de datos
@@ -206,4 +265,66 @@ class PaqueteViewSet(viewsets.ModelViewSet):
 
         return Response({
             "paquetes": cantidad_de_paquetes_creados
+        })
+
+    @list_route(methods=['post'])
+    def objecionMasiva(self, request, **kwargs):
+        # TODO: evitar esta conversión, debería llegar el dicionario de datos
+        # directamente. Ver si el problema está en la forma de declarar el
+        # post el frontend.
+        data = json.loads(request.data.keys()[0])
+
+        # Captura los datos del requests, fecha, escuela y lista de paquetes
+        # desde la grilla de handsontable.js
+        paquetes = data['paquetes']
+        fecha = data['fecha']
+
+        # Se obtienen los modelos a relacionar con cada paquete solicitado.
+        estadoObjetado = models.EstadoDePaquete.objects.get(nombre="Objetado")
+        estadoEducAr = models.EstadoDePaquete.objects.get(nombre="EducAr")
+
+        cantidad_de_paquetes_objetados = 0
+
+        validacion = self._detectar_errores_en_objecion_masiva_de_paquetes(paquetes)
+
+        if validacion['error']:
+            return Response({
+                'error': validacion['error'],
+                'errores': validacion['errores'],
+                'cantidad_de_errores': len(validacion['errores'])
+            })
+        else:
+
+            for p in paquetes:
+                cue = p[0]
+                numero_de_servidor = p[1]
+                ne = p[2]
+                hwid = p[3]
+                bt = p[4]
+                motivo = p[5]
+
+                if cue and numero_de_servidor and ne and hwid and bt and motivo:
+                    try:
+                        paquete_a_modificar = models.Paquete.objects.get(escuela__cue=cue, ne=ne, id_hardware=hwid, estado=estadoEducAr)
+                    except models.Paquete.DoesNotExist:
+                        print("No existe el paquete")
+                        # return Response({
+                        #     'error': "No existe un paquete con esos datos."
+                        # })
+                        continue
+                    except models.Paquete.MultipleObjectsReturned:
+                        print("Se encontró mas de un regitro")
+                        # return Response({
+                        #     'error': "Se encontró más de un registro con esos datos."
+                        # })
+                        continue
+
+                    paquete_a_modificar.estado = estadoObjetado
+                    paquete_a_modificar.comentario = motivo
+                    paquete_a_modificar.save()
+
+                    cantidad_de_paquetes_objetados += 1
+
+        return Response({
+            "paquetes": cantidad_de_paquetes_objetados
         })
