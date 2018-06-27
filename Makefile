@@ -56,7 +56,7 @@ iniciar:
 	@pipenv install
 
 migrar:
-	@pipenv run "${BIN_MANAGE} migrate --noinput"
+	@pipenv run ${BIN_MANAGE} migrate --noinput
 
 test: migrar
 	@clear;
@@ -76,10 +76,10 @@ ejecutar:
 ejecutar_produccion: migrar ejecutar
 
 ejecutar_worker:
-	@pipenv run "python manage.py rqworker default"
+	@pipenv run python manage.py rqworker default
 
 monitor:
-	@pipenv run "python manage.py rqstats --interval=1"
+	@pipenv run python manage.py rqstats --interval=1
 
 shell:
 	@pipenv run ${BIN_MANAGE} shell
@@ -103,20 +103,20 @@ filtro=""
 depuracion="0"
 
 cargar_datos:
-	@pipenv run "python manage.py cargar_datos --filtro $(filtro) --depuracion $(depuracion) --perfil_id $(perfil_id)"
+	@pipenv run python manage.py cargar_datos --filtro $(filtro) --depuracion $(depuracion) --perfil_id $(perfil_id)
 
 cargar_usuarios_demo:
-	@pipenv run "python scripts/cargar_usuarios_demo.py"
+	@pipenv run python scripts/cargar_usuarios_demo.py
 
 limpiar_registros_duplicados:
-	@pipenv run "python scripts/limpiar_registros_duplicados.py"
+	@pipenv run python scripts/limpiar_registros_duplicados.py
 
 realizar_backup_desde_produccion:
 	@echo "${G}Creando el archivo ${DB_NOMBRE_DEL_DUMP}${N}"
 	${BIN_DOKKU} postgres:export ${DB_NAME} > ${DB_NOMBRE_DEL_DUMP}
 
 reiniciar_contraseñas:
-	@pipenv run "python scripts/reiniciar_contraseñas.py"
+	@pipenv run python scripts/reiniciar_contraseñas.py
 
 cargar_ultimo_dump_localmente:
 	@echo "${G}Se cargará el dump mas reciente: ${DB_DUMP_MAS_RECIENTE}${N}"
