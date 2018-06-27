@@ -71,7 +71,7 @@ test_live:
 	@make test; watchmedo shell-command --patterns="*.py" --recursive --command='make test' .
 
 ejecutar:
-	@pipenv run "${BIN_MANAGE_RELATIVO} runserver"
+	@pipenv run ${BIN_MANAGE_RELATIVO} runserver
 
 ejecutar_produccion: migrar ejecutar
 
@@ -82,13 +82,13 @@ monitor:
 	@pipenv run "python manage.py rqstats --interval=1"
 
 shell:
-	@pipenv run "${BIN_MANAGE} shell"
+	@pipenv run ${BIN_MANAGE} shell
 
 crear_migraciones:
-	@pipenv run "${BIN_MANAGE} makemigrations"
+	@pipenv run ${BIN_MANAGE} makemigrations
 
 crear_usuario_admin:
-	@pipenv run "${BIN_MANAGE} createsuperuser"
+	@pipenv run ${BIN_MANAGE} createsuperuser
 
 generar_fixture_desde_base_de_datos:
 	@echo ""
