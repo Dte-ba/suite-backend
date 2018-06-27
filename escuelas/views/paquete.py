@@ -7,6 +7,7 @@ from django.db.models import Q
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import viewsets
 from rest_framework.decorators import list_route
+from rest_framework.decorators import detail_route
 from rest_framework.filters import SearchFilter
 from rest_framework.response import Response
 
@@ -35,6 +36,14 @@ class PaqueteViewSet(viewsets.ModelViewSet):
             queryset = queryset.filter(filtro_escuela | filtro_escuela_cue | filtro_estado | filtro_idHardware | filtro_ne | filtro_serie)
 
         return queryset
+
+    @detail_route(methods=['post'], url_path="marcar-como-descargado")
+    def margar_como_descargado(self, request, pk=None):
+        paquete = self.get_object()
+        estado_descargado = models.EstadoDePaquete.objects.get(nombre="Descargado")
+        paquete.estado = estado_descargado
+        paquete.save()
+        return Response({"status": "ok"})
 
     @list_route(methods=['get'])
     def estadistica(self, request):
