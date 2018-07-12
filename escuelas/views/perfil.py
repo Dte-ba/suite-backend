@@ -47,6 +47,7 @@ class PerfilViewSet(viewsets.ModelViewSet):
         if filtro_activos:
             filtro = Q(fecha_de_renuncia=None)
             queryset = queryset.filter(filtro)
+            queryset = queryset.exclude(Q(dni="0000"))
 
         if query:
             filtro_nombre = Q(nombre__icontains=query)
@@ -55,6 +56,18 @@ class PerfilViewSet(viewsets.ModelViewSet):
             filtro_cargo = Q(cargo__nombre__icontains=query)
 
             queryset = queryset.filter(filtro_nombre | filtro_apellido | filtro_dni | filtro_cargo)
+
+        filtro_region = self.request.query_params.get('region')
+
+        if filtro_region:
+            filtro = Q(region__numero=filtro_region)
+            queryset = queryset.filter(filtro)
+
+        filtro_sort = self.request.query_params.get('sort')
+
+        if filtro_sort:
+            queryset = queryset.order_by(filtro_sort)
+
 
         return queryset
 
@@ -110,4 +123,3 @@ class PerfilViewSet(viewsets.ModelViewSet):
         perfil.user.save()
 
         return Response({'ok': True})
-
