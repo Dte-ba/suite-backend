@@ -48,6 +48,26 @@ class Paquete(models.Model):
             paquete.save()
 
     @classmethod
+    def obtener_por_ma_hexa(cls, id_hardware, ma_hexa, estado):
+
+        def corregir_valor_hexa(valor):
+            return hex(int(valor, 16))[2:]
+
+        paquetes = Paquete.objects.filter(id_hardware__iexact=id_hardware, ma_hexa__iendswith=str(ma_hexa), estado=estado)
+
+        for p in paquetes:
+            if corregir_valor_hexa(p.ma_hexa) == str(ma_hexa):
+                return p
+        else:
+            paquetes = Paquete.objects.filter(id_hardware__iexact=id_hardware, ma_hexa__iendswith=str(ma_hexa))
+            
+            for p in paquetes:
+                if corregir_valor_hexa(p.ma_hexa) == str(ma_hexa):
+                    raise ValueError("Ya fue procesado")
+
+        raise Paquete.DoesNotExist
+
+    @classmethod
     def cambiar_estado_a_entregado(cls, id_hardware, ma_hexa, ruta_a_bin_desde_educ_ar):
         """Busca un paquete con el número indicado, lo cambia de estado
         y almacena el archivo señalado."""
@@ -64,8 +84,9 @@ class Paquete(models.Model):
 
         estado_educar = EstadoDePaquete.objects.get(nombre="EducAr")
 
+
         try:
-            paquete = Paquete.objects.get(id_hardware__iexact=id_hardware, ma_hexa__iexact=str(ma_hexa), estado=estado_educar)
+            paquete = Paquete.obtener_por_ma_hexa(id_hardware=id_hardware, ma_hexa=str(ma_hexa), estado=estado_educar)
         except Paquete.DoesNotExist:
             # Esta segunda y tercer busqueda la agregamos por los paquetes viejos. Tenemos que quitarlo una vez
             # que aparezcan los paquetes nuevos.
@@ -89,6 +110,8 @@ class Paquete(models.Model):
                 return "[ERROR] Hay mas de un paquete indicado como id_hardware={0} y ma_hexa={1}".format(id_hardware, ma_hexa)
         except MultipleObjectsReturned:
             return "[ERROR] Hay mas de un paquete indicado como id_hardware={0} y ma_hexa={1}".format(id_hardware, ma_hexa)
+        except ValueError:
+            return "[NOTA] El paquete id_hardware={0} y ma_hexa={1} ya fue procesado".format(id_hardware, ma_hexa)
 
         if paquete.estado.id is not EstadoDePaquete.objects.get(nombre="EducAr").id:
             return "[ERROR] El paquete id_hardware={0} ma_hexa={1} no se puede cambiar a estado Devuelto, porque tiene un estado diferente a EducAr".format(id_hardware, ma_hexa)
