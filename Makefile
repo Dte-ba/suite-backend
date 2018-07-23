@@ -10,7 +10,6 @@ L=[01;30m
 
 BIN_MANAGE=python manage.py
 BIN_MANAGE_RELATIVO=python manage.py
-BIN_DOKKU=~/.dokku/contrib/dokku_client.sh
 DB_NAME=suite-produccion
 DB_NOMBRE_DEL_DUMP= ~/Dropbox/4cores/Backups/suite-backend-produccion-dtelab_`date +'%Y%m%d_%Hhs%Mmin'`.dump
 DB_DUMP_MAS_RECIENTE=`ls -Art ~/Dropbox/4cores/Backups/*.dump  | tail -n 1`
@@ -113,7 +112,7 @@ limpiar_registros_duplicados:
 
 realizar_backup_desde_produccion:
 	@echo "${G}Creando el archivo ${DB_NOMBRE_DEL_DUMP}${N}"
-	${BIN_DOKKU} postgres:export ${DB_NAME} > ${DB_NOMBRE_DEL_DUMP}
+	ssh dokku@dtelab.com.ar postgres:export ${DB_NAME} > ${DB_NOMBRE_DEL_DUMP}
 
 reiniciar_contraseñas:
 	@pipenv run python scripts/reiniciar_contraseñas.py
