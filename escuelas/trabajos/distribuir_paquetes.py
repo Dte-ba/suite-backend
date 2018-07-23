@@ -42,11 +42,13 @@ def distribuir_paquetes(distribucion_de_paquete):
         paquetes_min = [paquete for paquete in archivos_de_paquetes if paquete.endswith("min")]
 
         if len(directorios) > 0:
+            trabajo.actualizar_paso(2, 3, " ")
             trabajo.actualizar_paso(2, 3, "Buscando solicitudes de {0} paquetes devueltos".format(len(paquetes_bin)))
+            trabajo.actualizar_paso(2, 3, "===================================================")
         else:
             raise Exception("No se buscaran solicitudes porque la devolucion parece vacia.")
 
-        for ruta in paquetes_bin:
+        for (indice, ruta) in enumerate(paquetes_bin):
             nombre = os.path.basename(ruta)
             regex = re.search('tcopp_(.*)_(.*)\.bin', os.path.basename(ruta))
 
@@ -54,13 +56,12 @@ def distribuir_paquetes(distribucion_de_paquete):
             if regex:
                 (id_hardware, marca_de_arranque_decimal) = regex.groups()
                 marca_de_arranque_hex = hex(int(marca_de_arranque_decimal)).split('x')[-1]
-                trabajo.actualizar_paso(2, 3, "Procesando paquete id_hardware=%s marca_de_arranque=%s"%(id_hardware, marca_de_arranque_hex))
                 mensaje = models.Paquete.cambiar_estado_a_entregado(id_hardware, marca_de_arranque_hex, ruta)
             else:
                 mensaje = "CUIDADO: ignorando el archivo {0} porque no coincide con el formato de paquete esperado (tcopp_idhardware_ma.bin)"
 
-            archivo_log.write(mensaje + "\n")
-            trabajo.actualizar_paso(2, 3, mensaje)
+            archivo_log.write("%04d - " %(indice + 1) + mensaje + "\n")
+            trabajo.actualizar_paso(2, 3, "%04d - " %(indice + 1) + mensaje)
 
         trabajo.actualizar_paso(3, 3, "Finalizado")
         archivo_log.close()

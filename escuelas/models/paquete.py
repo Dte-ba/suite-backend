@@ -6,6 +6,7 @@ import shutil
 from escuelas.models import EstadoDePaquete
 from django.db import models
 import django
+from django.core.exceptions import MultipleObjectsReturned
 
 class Paquete(models.Model):
     legacy_id = models.IntegerField(default=None, blank=True, null=True)
@@ -75,22 +76,34 @@ class Paquete(models.Model):
                 try:
                     paquete = Paquete.objects.get(id_hardware__iexact=id_hardware, marca_de_arranque__iexact=str(ma_hexa), estado=estado_educar)
                 except Paquete.DoesNotExist:
-                    return "No se encontro el paquete id_hardware={0} y ma_hexa={1}".format(id_hardware, ma_hexa)
+                    cantidad = Paquete.objects.filter(id_hardware__iexact=id_hardware, marca_de_arranque__iexact=str(ma_hexa)).count()
+
+                    if cantidad > 0:
+                        return "[NOTA] El paquete id_hardware={0} y ma_hexa={1} ya fue procesado".format(id_hardware, ma_hexa)
+                    else:
+                        return "[ERROR] No se encontro el paquete id_hardware={0} y ma_hexa={1}".format(id_hardware, ma_hexa)
+
+                except MultipleObjectsReturned:
+                    return "[ERROR] Hay mas de un paquete indicado como id_hardware={0} y ma_hexa={1}".format(id_hardware, ma_hexa)
+            except MultipleObjectsReturned:
+                return "[ERROR] Hay mas de un paquete indicado como id_hardware={0} y ma_hexa={1}".format(id_hardware, ma_hexa)
+        except MultipleObjectsReturned:
+            return "[ERROR] Hay mas de un paquete indicado como id_hardware={0} y ma_hexa={1}".format(id_hardware, ma_hexa)
 
         if paquete.estado.id is not EstadoDePaquete.objects.get(nombre="EducAr").id:
-            return "El paquete id_hardware={0} ma_hexa={1} no se puede cambiar a estado Devuelto, porque tiene un estado diferente a EducAr".format(id_hardware, ma_hexa)
+            return "[ERROR] El paquete id_hardware={0} ma_hexa={1} no se puede cambiar a estado Devuelto, porque tiene un estado diferente a EducAr".format(id_hardware, ma_hexa)
 
         ruta_a_min_desde_educ_ar = ruta_a_bin_desde_educ_ar.replace('.bin', '.min')
 
         if not os.path.exists(ruta_a_min_desde_educ_ar):
-            return "No existe archivo .min para el paquete id_hardware={0} ma_hexa={1}".format(id_hardware, ma_hexa)
+            return "[ERROR] No existe archivo .min para el paquete id_hardware={0} ma_hexa={1}".format(id_hardware, ma_hexa)
 
         nombre = '{0}_{1}.zip'.format(id_hardware, ma_hexa)
         paquete.zip_devolucion.save(nombre, cls.crear_archivo_zip(ruta_a_bin_desde_educ_ar, ruta_a_min_desde_educ_ar))
 
         paquete.estado = EstadoDePaquete.objects.get(nombre="Devuelto")
         paquete.save()
-        return "Cambiando el estado del paquete id_hardware={0} ma_hexa={1} a 'Devuelto'".format(id_hardware, ma_hexa)
+        return "[OK] Cambiando el estado del paquete id_hardware={0} ma_hexa={1} a 'Devuelto'".format(id_hardware, ma_hexa)
 
     @classmethod
     def crear_archivo_zip(cls,ruta_bin, ruta_min):
