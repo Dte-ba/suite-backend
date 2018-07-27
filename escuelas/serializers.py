@@ -70,10 +70,11 @@ class PerfilSerializer(CustomSerializer):
     contrato = ResourceRelatedField(queryset=models.Contrato.objects)
     localidad = ResourceRelatedField(queryset=models.Localidad.objects)
     group = ResourceRelatedField(queryset=Group.objects)
+    aplicaciones = ResourceRelatedField(queryset=models.Aplicacion.objects, many=True)
 
     class Meta:
         model = models.Perfil
-        fields = ('user', 'group', 'image', 'nombre', 'apellido', 'fechadenacimiento', 'titulo', 'experiencia', 'dni', 'cuit', 'cbu', 'email', 'estado', 'direccion_calle', 'direccion_altura', 'direccion_piso', 'direccion_depto', 'direccion_torre', 'codigo_postal', 'localidad', 'telefono_celular', 'telefono_alternativo', 'region', 'cargo', 'contrato', 'expediente', 'fecha_de_ingreso', 'fecha_de_renuncia', 'email_laboral')
+        fields = ('user', 'group', 'image', 'nombre', 'apellido', 'fechadenacimiento', 'titulo', 'experiencia', 'dni', 'cuit', 'cbu', 'email', 'estado', 'direccion_calle', 'direccion_altura', 'direccion_piso', 'direccion_depto', 'direccion_torre', 'codigo_postal', 'localidad', 'telefono_celular', 'telefono_alternativo', 'region', 'cargo', 'contrato', 'expediente', 'fecha_de_ingreso', 'fecha_de_renuncia', 'email_laboral', 'aplicaciones')
         read_only_fields = ('image',)
 
 class DistritoSerializer(CustomSerializer):
@@ -315,3 +316,9 @@ class GroupSerializer(CustomSerializer):
     class Meta:
         model = Group
         fields = ('url', 'name', 'perfiles', 'permissions')
+
+class AplicacionSerializer(CustomSerializer):
+
+    class Meta:
+        model = models.Aplicacion
+        fields = '__all__'

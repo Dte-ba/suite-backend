@@ -207,3 +207,5 @@ admin.site.register(models.Distrito, DistritoAdmin)
 admin.site.register(models.Paquete, PaqueteAdmin)
 admin.site.register(models.Trabajo, TrabajoAdmin)
 admin.site.register(models.DistribucionDePaquete, DistribucionDePaqueteAdmin)
+
+admin.site.register(models.Aplicacion)

@@ -36,3 +36,4 @@ from programa import ProgramaViewSet
 from region import RegionViewSet
 from tipo_de_financiamiento import TipoDeFinanciamientoViewSet
 from tipo_de_gestion import TipoDeGestionViewSet
+from aplicacion import AplicacionViewSet

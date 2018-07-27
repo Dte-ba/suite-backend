@@ -54,6 +54,9 @@ class Perfil(models.Model):
     fecha_de_renuncia = models.DateField(default=None, blank=True,null=True)
     email_laboral = models.CharField(max_length=200, default=None, blank=True, null=True)
 
+    # Apps a las que tiene acceso (SUITE, SUITE Robótica)
+    aplicaciones = models.ManyToManyField('Aplicacion', related_name='perfil_aplicaciones', default=None, blank=True)
+
     # 3) Disponibilidad Horaria (?):
 
     # 4) Adjuntos:
