@@ -11,8 +11,9 @@ def crear_aplicaciones(apps, schema_editor):
     aplicacion.objects.get_or_create(nombre=u"Robótica")
 
 def cargar_app_suite_a_usuarios(apps, schema_editor):
+    Perfil = apps.get_model("escuelas", "Perfil")
     aplicacion = models.Aplicacion.objects.get(nombre="SUITE")
-    perfiles = models.Perfil.objects.all()
+    perfiles = Perfil.objects.all()
     for perfil in perfiles:
         perfil.aplicaciones.add(aplicacion)
         perfil.save()
