@@ -12,6 +12,7 @@ from paquete import PaqueteViewSet
 from validacion import ValidacionViewSet
 from area import AreaViewSet
 from cargo import CargoViewSet
+from rol_en_robotica import RolEnRoboticaViewSet
 from cargo_escolar import CargoEscolarViewSet
 from categoria_de_evento import CategoriaDeEventoViewSet
 from comentario_de_tarea import ComentarioDeTareaViewSet

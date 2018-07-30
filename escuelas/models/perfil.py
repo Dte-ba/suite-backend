@@ -56,6 +56,7 @@ class Perfil(models.Model):
 
     # Apps a las que tiene acceso (SUITE, SUITE Robótica)
     aplicaciones = models.ManyToManyField('Aplicacion', related_name='perfil_aplicaciones', default=None, blank=True)
+    rol_en_robotica = models.ForeignKey('RolEnRobotica', related_name='perfiles_rol_en_robotica', default=None, blank=True, null=True)
 
     # 3) Disponibilidad Horaria (?):
 

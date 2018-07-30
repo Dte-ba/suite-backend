@@ -63,9 +63,16 @@ class CargoSerializer(CustomSerializer):
         model = models.Cargo
         fields = '__all__'
 
+class RolEnRoboticaSerializer(CustomSerializer):
+
+    class Meta:
+        model = models.RolEnRobotica
+        fields = '__all__'
+
 class PerfilSerializer(CustomSerializer):
 
     cargo = ResourceRelatedField(queryset=models.Cargo.objects)
+    rol_en_robotica = ResourceRelatedField(queryset=models.RolEnRobotica.objects)
     region = ResourceRelatedField(queryset=models.Region.objects)
     contrato = ResourceRelatedField(queryset=models.Contrato.objects)
     localidad = ResourceRelatedField(queryset=models.Localidad.objects)
@@ -74,7 +81,7 @@ class PerfilSerializer(CustomSerializer):
 
     class Meta:
         model = models.Perfil
-        fields = ('user', 'group', 'image', 'nombre', 'apellido', 'fechadenacimiento', 'titulo', 'experiencia', 'dni', 'cuit', 'cbu', 'email', 'estado', 'direccion_calle', 'direccion_altura', 'direccion_piso', 'direccion_depto', 'direccion_torre', 'codigo_postal', 'localidad', 'telefono_celular', 'telefono_alternativo', 'region', 'cargo', 'contrato', 'expediente', 'fecha_de_ingreso', 'fecha_de_renuncia', 'email_laboral', 'aplicaciones')
+        fields = ('user', 'group', 'image', 'nombre', 'apellido', 'fechadenacimiento', 'titulo', 'experiencia', 'dni', 'cuit', 'cbu', 'email', 'estado', 'direccion_calle', 'direccion_altura', 'direccion_piso', 'direccion_depto', 'direccion_torre', 'codigo_postal', 'localidad', 'telefono_celular', 'telefono_alternativo', 'region', 'cargo', 'contrato', 'expediente', 'fecha_de_ingreso', 'fecha_de_renuncia', 'email_laboral', 'aplicaciones', 'rol_en_robotica')
         read_only_fields = ('image',)
 
 class DistritoSerializer(CustomSerializer):

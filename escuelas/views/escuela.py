@@ -116,10 +116,14 @@ class EscuelaViewSet(viewsets.ModelViewSet):
     def estadistica(self, request):
         queryset = models.Escuela.objects.filter(padre__isnull=True)
         filtro_region = self.request.query_params.get('localidad__distrito__region__numero')
+        filtro_nivel = self.request.query_params.get('nivel')
 
         if filtro_region:
             filtro = Q(localidad__distrito__region__numero=filtro_region) | Q(cue=60000000)
             queryset = queryset.filter(filtro)
+
+        if filtro_nivel:
+            queryset = queryset.filter(nivel=filtro_nivel)
 
         estadisticas = {
             "total": queryset.count(),

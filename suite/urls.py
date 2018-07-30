@@ -39,6 +39,7 @@ import escuelas.views.piso
 import escuelas.views.prioridad_de_tarea
 import escuelas.views.programa
 import escuelas.views.region
+import escuelas.views.rol_en_robotica
 import escuelas.views.tarea
 import escuelas.views.tipo_de_financiamiento
 import escuelas.views.tipo_de_gestion
@@ -66,6 +67,7 @@ router.register('niveles', escuelas.views.nivel.NivelViewSet)
 router.register('modalidades', escuelas.views.modalidad.ModalidadViewSet)
 router.register('experiencias', escuelas.views.experiencia.ExperienciaViewSet)
 router.register('cargos', escuelas.views.cargo.CargoViewSet)
+router.register('roles-en-robotica', escuelas.views.rol_en_robotica.RolEnRoboticaViewSet)
 router.register('contratos', escuelas.views.contrato.ContratoViewSet)
 router.register('pisos', escuelas.views.piso.PisoViewSet)
 router.register('cargos-escolares', escuelas.views.cargo_escolar.CargoEscolarViewSet)

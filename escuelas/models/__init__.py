@@ -12,6 +12,7 @@ from localidad import Localidad
 from distrito import Distrito
 from experiencia import Experiencia
 from cargo import Cargo
+from rol_en_robotica import RolEnRobotica
 from contrato import Contrato
 from piso import Piso
 from cargo_escolar import CargoEscolar

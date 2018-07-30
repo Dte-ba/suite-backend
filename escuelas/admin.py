@@ -188,6 +188,7 @@ admin.site.register(models.Localidad, LocalidadAdmin)
 
 admin.site.register(models.Experiencia)
 admin.site.register(models.Cargo)
+admin.site.register(models.RolEnRobotica)
 admin.site.register(models.Contrato)
 
 admin.site.register(models.Tarea, TareaAdmin)
