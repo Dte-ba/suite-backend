@@ -14,7 +14,6 @@ def cargar_app_suite_a_usuarios(apps, schema_editor):
     aplicacion = models.Aplicacion.objects.get(nombre="SUITE")
     perfiles = models.Perfil.objects.all()
     for perfil in perfiles:
-        print("Se va a asignar la aplicación SUITE al perfil: " + perfil.nombre)
         perfil.aplicaciones.add(aplicacion)
         perfil.save()
 
