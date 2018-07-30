@@ -33,6 +33,8 @@ class MiPerfilViewSet(viewsets.ViewSet):
         else:
             perfil = models.Perfil.objects.get(user=request.user)
 
+
+
         data = {
             'username': perfil.user.username,
             'nombre': perfil.nombre,
@@ -42,7 +44,10 @@ class MiPerfilViewSet(viewsets.ViewSet):
             'idPerfil': perfil.id,
             'region': perfil.region.numero,
             'idRegion': perfil.region.id,
-            'version': settings.VERSION_NUMBER
+            'version': settings.VERSION_NUMBER,
+            'tieneAccesoASuite': perfil.aplicaciones.filter(nombre="SUITE").count() > 0,
+            'tieneAccesoARobotica': perfil.aplicaciones.filter(nombre="Robótica").count() > 0
+
         }
 
         return Response(data)

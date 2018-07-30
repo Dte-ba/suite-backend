@@ -5,6 +5,11 @@ from __future__ import unicode_literals
 from django.db import migrations
 from escuelas import models
 
+def crear_aplicaciones(apps, schema_editor):
+    aplicacion = apps.get_model("escuelas", "Aplicacion")
+    aplicacion.objects.get_or_create(nombre="SUITE")
+    aplicacion.objects.get_or_create(nombre="Robótica")
+
 def cargar_app_suite_a_usuarios(apps, schema_editor):
     aplicacion = models.Aplicacion.objects.get(nombre="SUITE")
     perfiles = models.Perfil.objects.all()
@@ -21,5 +26,6 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
+        migrations.RunPython(crear_aplicaciones, migrations.RunPython.noop),
         migrations.RunPython(cargar_app_suite_a_usuarios, migrations.RunPython.noop),
     ]
