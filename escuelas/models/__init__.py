@@ -1,6 +1,7 @@
 from contacto import Contacto
 from escuela import Escuela
 from evento import Evento
+from eventos_de_robotica import EventoDeRobotica
 from region import Region
 from perfil import Perfil
 from tipo_de_financiamiento import TipoDeFinanciamiento
