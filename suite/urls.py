@@ -9,6 +9,7 @@ from easy_pdf.views import PDFTemplateView
 
 import escuelas.views.aplicacion
 import escuelas.views.area
+import escuelas.views.area_de_robotica
 import escuelas.views.cargo
 import escuelas.views.cargo_escolar
 import escuelas.views.categoria_de_evento
@@ -16,6 +17,7 @@ import escuelas.views.comentario_de_tarea
 import escuelas.views.comentario_de_validacion
 import escuelas.views.contacto
 import escuelas.views.contrato
+import escuelas.views.curso_de_robotica
 import escuelas.views.distribucion_de_paquete
 import escuelas.views.distrito
 import escuelas.views.escuela
@@ -23,6 +25,7 @@ import escuelas.views.estado_de_paquete
 import escuelas.views.estado_de_tarea
 import escuelas.views.estado_de_validacion
 import escuelas.views.evento
+import escuelas.views.evento_de_robotica
 import escuelas.views.experiencia
 import escuelas.views.group
 import escuelas.views.home
@@ -40,6 +43,7 @@ import escuelas.views.prioridad_de_tarea
 import escuelas.views.programa
 import escuelas.views.region
 import escuelas.views.rol_en_robotica
+import escuelas.views.taller_de_robotica
 import escuelas.views.tarea
 import escuelas.views.tipo_de_financiamiento
 import escuelas.views.tipo_de_gestion
@@ -55,6 +59,7 @@ router.register('users', escuelas.views.user.UserViewSet)
 router.register('escuelas', escuelas.views.escuela.EscuelaViewSet)
 router.register('contactos', escuelas.views.contacto.ContactoViewSet)
 router.register('eventos', escuelas.views.evento.EventoViewSet)
+router.register('eventos-de-robotica', escuelas.views.evento_de_robotica.EventoDeRoboticaViewSet)
 router.register('regiones', escuelas.views.region.RegionViewSet)
 router.register('perfiles', escuelas.views.perfil.PerfilViewSet)
 router.register('distritos', escuelas.views.distrito.DistritoViewSet)
@@ -63,6 +68,9 @@ router.register('programas', escuelas.views.programa.ProgramaViewSet)
 router.register('tipos-de-financiamiento', escuelas.views.tipo_de_financiamiento.TipoDeFinanciamientoViewSet)
 router.register('tipos-de-gestion', escuelas.views.tipo_de_gestion.TipoDeGestionViewSet)
 router.register('areas', escuelas.views.area.AreaViewSet)
+router.register('areas-de-robotica', escuelas.views.area_de_robotica.AreaDeRoboticaViewSet)
+router.register('cursos-de-robotica', escuelas.views.curso_de_robotica.CursoDeRoboticaViewSet)
+router.register('talleres-de-robotica', escuelas.views.taller_de_robotica.TallerDeRoboticaViewSet)
 router.register('niveles', escuelas.views.nivel.NivelViewSet)
 router.register('modalidades', escuelas.views.modalidad.ModalidadViewSet)
 router.register('experiencias', escuelas.views.experiencia.ExperienciaViewSet)

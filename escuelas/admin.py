@@ -47,6 +47,11 @@ class EventoAdmin(CustomModelAdmin):
     list_display = ('id', 'titulo', 'fecha', 'inicio', 'fecha_fin', 'fin',  'responsable')
     search_fields = ('id', 'titulo', 'legacy_id')
 
+class EventoDeRoboticaAdmin(CustomModelAdmin):
+    model = models.EventoDeRobotica
+    list_display = ('id', 'fecha', 'inicio', 'fecha_fin', 'fin',  'tallerista')
+    search_fields = ('id', 'tallerista')
+
 
 
 class LocalidadForm(forms.ModelForm):
@@ -87,6 +92,10 @@ class ValidacionAdmin(admin.ModelAdmin):
 
 class CategoriaDeEventoAdmin(CustomModelAdmin):
     model = models.CategoriaDeEvento
+    list_display = ('nombre', )
+
+class TallerDeRoboticaAdmin(CustomModelAdmin):
+    model = models.TallerDeRobotica
     list_display = ('nombre', )
 
 
@@ -174,6 +183,7 @@ admin.site.register(Permission)
 admin.site.register(models.Contacto, ContactoAdmin)
 admin.site.register(models.Escuela, EscuelaAdmin)
 admin.site.register(models.Evento, EventoAdmin)
+admin.site.register(models.EventoDeRobotica, EventoDeRoboticaAdmin)
 admin.site.register(models.Perfil, PerfilAdmin)
 
 admin.site.register(models.MotivoDeConformacion)
@@ -183,6 +193,8 @@ admin.site.register(models.Nivel)
 admin.site.register(models.Modalidad)
 admin.site.register(models.TipoDeGestion)
 admin.site.register(models.Area)
+admin.site.register(models.AreaDeRobotica)
+admin.site.register(models.CursoDeRobotica)
 admin.site.register(models.Programa)
 admin.site.register(models.Localidad, LocalidadAdmin)
 
@@ -202,6 +214,7 @@ admin.site.register(models.EstadoDePaquete)
 admin.site.register(models.Validacion, ValidacionAdmin)
 admin.site.register(models.ComentarioDeValidacion)
 admin.site.register(models.CategoriaDeEvento, CategoriaDeEventoAdmin)
+admin.site.register(models.TallerDeRobotica, TallerDeRoboticaAdmin)
 admin.site.register(models.Piso, PisoAdmin)
 admin.site.register(models.Region, RegionAdmin)
 admin.site.register(models.Distrito, DistritoAdmin)

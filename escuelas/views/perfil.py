@@ -102,6 +102,26 @@ class PerfilViewSet(viewsets.ModelViewSet):
             'accion_id': accion_id
         })
 
+    @detail_route(methods=['get'], url_path='puede-editar-el-taller')
+    def puedeEditarElTaller(self, request, pk=None):
+        taller_id = self.request.query_params.get('taller_id', None)
+        taller = None
+
+        perfil = self.get_object()
+
+        if not taller_id:
+            return responseError("No ha especificado taller_id")
+
+        try:
+            taller = models.EventoDeRobotica.objects.get(id=taller_id)
+        except models.Evento.DoesNotExist:
+            return responseError("No se encuentra el taller id=%d" %(taller_id))
+
+        return Response({
+            'puedeEditar': taller.puedeSerEditadaPor(perfil),
+            'taller_id': taller_id
+        })
+
     @detail_route(methods=['post'], url_path='definir-clave')
     def definirClave(self, request, **kwargs):
         data = request.data

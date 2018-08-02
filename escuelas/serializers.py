@@ -49,6 +49,19 @@ class EventoSerializer(CustomSerializer):
         fields = ('id', 'titulo', 'fecha', 'fecha_fin', 'inicio', 'fin', 'objetivo', 'responsable', 'escuela', 'acompaniantes', 'cantidad_de_participantes', 'requiere_traslado', 'categoria', 'resumenParaCalendario', 'minuta', 'acta_legacy', 'legacy_id', 'acta')
         read_only_fields = ['acta']
 
+class EventoDeRoboticaSerializer(CustomSerializer):
+
+    tallerista = ResourceRelatedField(queryset=models.Perfil.objects)
+    escuela = ResourceRelatedField(queryset=models.Escuela.objects)
+    titulo = ResourceRelatedField(queryset=models.TallerDeRobotica.objects)
+    curso = ResourceRelatedField(queryset=models.CursoDeRobotica.objects)
+    area_en_que_se_dicta = ResourceRelatedField(queryset=models.AreaDeRobotica.objects)
+
+    class Meta:
+        model = models.EventoDeRobotica
+        fields = ('id', 'titulo', 'curso', 'docente_a_cargo', 'area_en_que_se_dicta', 'fecha', 'fecha_fin', 'inicio', 'fin', 'tallerista', 'escuela', 'cantidad_de_alumnos', 'minuta', 'acta')
+        read_only_fields = ['acta']
+
 
 class RegionSerializer(CustomSerializer):
 
@@ -248,6 +261,24 @@ class CategoriaDeEventoSerializer(CustomSerializer):
 
     class Meta:
         model = models.CategoriaDeEvento
+        fields = '__all__'
+
+class TallerDeRoboticaSerializer(CustomSerializer):
+
+    class Meta:
+        model = models.TallerDeRobotica
+        fields = '__all__'
+
+class AreaDeRoboticaSerializer(CustomSerializer):
+
+    class Meta:
+        model = models.AreaDeRobotica
+        fields = '__all__'
+
+class CursoDeRoboticaSerializer(CustomSerializer):
+
+    class Meta:
+        model = models.CursoDeRobotica
         fields = '__all__'
 
 class EstadoDeValidacionSerializer(CustomSerializer):

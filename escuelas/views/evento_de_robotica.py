@@ -18,13 +18,13 @@ from escuelas import models, serializers
 
 
 class EventoDeRoboticaViewSet(viewsets.ModelViewSet):
-    resource_name = 'eventos'
+    resource_name = 'eventos-de-robotica'
     queryset = models.EventoDeRobotica.objects.all()
     serializer_class = serializers.EventoDeRoboticaSerializer
     filter_backends = [SearchFilter, DjangoFilterBackend, OrderingFilter]
-    search_fields = ['escuela__nombre', 'escuela__cue', 'titulo']
+    search_fields = ['escuela__nombre', 'escuela__cue']
     filter_fields = ['escuela__localidad', 'escuela__localidad__distrito', "tallerista__id", 'escuela__localidad__distrito__region']
-    ordering_fields = ['titulo', 'fecha', 'escuela_id', 'escuela__localidad__distrito__region__numero', 'distrito', 'tallerista']
+    ordering_fields = ['fecha', 'escuela_id', 'escuela__localidad__distrito__region__numero', 'distrito', 'tallerista']
 
     def get_queryset(self):
         queryset = self.queryset

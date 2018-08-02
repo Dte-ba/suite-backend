@@ -8,6 +8,7 @@ from tarea import TareaViewSet
 from mi_perfil import MiPerfilViewSet
 from perfil import PerfilViewSet
 from evento import EventoViewSet
+from evento_de_robotica import EventoDeRoboticaViewSet
 from paquete import PaqueteViewSet
 from validacion import ValidacionViewSet
 from area import AreaViewSet
@@ -15,6 +16,9 @@ from cargo import CargoViewSet
 from rol_en_robotica import RolEnRoboticaViewSet
 from cargo_escolar import CargoEscolarViewSet
 from categoria_de_evento import CategoriaDeEventoViewSet
+from taller_de_robotica import TallerDeRoboticaViewSet
+from area_de_robotica import AreaDeRoboticaViewSet
+from curso_de_robotica import CursoDeRoboticaViewSet
 from comentario_de_tarea import ComentarioDeTareaViewSet
 from comentario_de_validacion import ComentarioDeValidacionViewSet
 from contacto import ContactoViewSet
