@@ -32,12 +32,14 @@ class EventoDeRobotica(models.Model):
 
     acta = models.FileField(default=None, blank=True, null=True)
 
+    cerrar_evento = models.BooleanField(default=False)
+
     def __unicode__(self):
         return self.titulo.nombre
 
     class Meta:
         db_table = 'eventos_de_robotica'
-        verbose_name_plural = "eventos_de_robotica"
+        verbose_name_plural = "Eventos (Robotica)"
         ordering = ('-fecha',)
 
     def resumenParaCalendario(self):
@@ -57,7 +59,7 @@ class EventoDeRobotica(models.Model):
 
         # Sin importar el perfil, el evento no se tiene que poder editar
         # si tiene acta.
-        if self.acta:
+        if self.cerrar_evento == True:
             return False
 
         # Si es responsable tiene que poder editarlo.

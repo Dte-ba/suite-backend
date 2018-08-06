@@ -96,7 +96,7 @@ class CategoriaDeEventoAdmin(CustomModelAdmin):
 
 class TallerDeRoboticaAdmin(CustomModelAdmin):
     model = models.TallerDeRobotica
-    list_display = ('nombre', )
+    list_display = ('nombre', "area")
 
 
 class PisoAdmin(CustomModelAdmin):

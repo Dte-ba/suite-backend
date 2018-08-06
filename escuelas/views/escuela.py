@@ -31,6 +31,7 @@ class EscuelaViewSet(viewsets.ModelViewSet):
         filtro_programa_in = self.request.query_params.get('programa_in')
         filtro_modalidad = self.request.query_params.get('modalidad')
         filtro_nivel = self.request.query_params.get('nivel')
+        filtro_nivel_nombre = self.request.query_params.get('nivel__nombre')
         filtro_tipo_de_gestion = self.request.query_params.get('tipoDeGestion')
         filtro_piso = self.request.query_params.get('piso')
         filtro_llave = self.request.query_params.get('llave')
@@ -67,6 +68,10 @@ class EscuelaViewSet(viewsets.ModelViewSet):
 
         if filtro_nivel:
             filtro = Q(nivel=filtro_nivel)
+            queryset = queryset.filter(filtro)
+
+        if filtro_nivel_nombre:
+            filtro = Q(nivel__nombre=filtro_nivel_nombre)
             queryset = queryset.filter(filtro)
 
         if filtro_tipo_de_gestion:

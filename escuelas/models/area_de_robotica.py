@@ -11,7 +11,7 @@ class AreaDeRobotica(models.Model):
 
     class Meta:
         db_table = 'areasDeRobotica'
-        verbose_name_plural = 'areasDeRobotica'
+        verbose_name_plural = 'Areas (Robotica)'
 
     class JSONAPIMeta:
         resource_name = "areas-de-robotica"
