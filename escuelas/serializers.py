@@ -56,11 +56,19 @@ class EventoDeRoboticaSerializer(CustomSerializer):
     titulo = ResourceRelatedField(queryset=models.TallerDeRobotica.objects)
     curso = ResourceRelatedField(queryset=models.CursoDeRobotica.objects)
     area_en_que_se_dicta = ResourceRelatedField(queryset=models.AreaDeRobotica.objects)
+    fecha_formateada = serializers.SerializerMethodField()
+
 
     class Meta:
         model = models.EventoDeRobotica
-        fields = ('id', 'titulo', 'curso', 'docente_a_cargo', 'area_en_que_se_dicta', 'fecha', 'fecha_fin', 'inicio', 'fin', 'tallerista', 'escuela', 'cantidad_de_alumnos', 'minuta', 'acta', 'cerrar_evento')
+        fields = ('id', 'titulo', 'curso', 'docente_a_cargo', 'area_en_que_se_dicta', 'fecha', 'fecha_fin', 'inicio', 'fin', 'tallerista', 'escuela', 'cantidad_de_alumnos', 'minuta', 'acta', 'cerrar_evento', 'fecha_formateada')
         read_only_fields = ['acta']
+
+    def get_fecha_formateada(self, objeto):
+        return "{} de {} hs a {} hs".format(
+            objeto.fecha.strftime('%d/%m/%Y'),
+            objeto.inicio.strftime("%H:%M"),
+            objeto.fin.strftime("%H:%M"))
 
 
 class RegionSerializer(CustomSerializer):

@@ -384,7 +384,6 @@ class GeneralesTestCase(APITestCase):
 
         # El primer evento lo tiene como responsable a user 1, así que tiene que ser editable por el.
         response = self.client.get('/api/perfiles/%d/puede-editar-la-accion?accion_id=%d' %(user.perfil.id, evento_de_user.id), format='json')
-        print(response)
         self.assertEqual(response.data['puedeEditar'], True)
 
         # El segundo evento no, porque no es responsable ni invitado.
