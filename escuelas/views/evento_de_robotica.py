@@ -40,7 +40,7 @@ class EventoDeRoboticaViewSet(viewsets.ModelViewSet):
             queryset = queryset.filter(filtro)
 
         if filtro_hasta:
-            filtro = Q(fecha_fin__lte=filtro_hasta)
+            filtro = Q(fecha__lte=filtro_hasta)
             queryset = queryset.filter(filtro)
 
         if filtro_perfil:

@@ -49,7 +49,7 @@ class EventoAdmin(CustomModelAdmin):
 
 class EventoDeRoboticaAdmin(CustomModelAdmin):
     model = models.EventoDeRobotica
-    list_display = ('id', 'fecha', 'inicio', 'fecha_fin', 'fin',  'tallerista')
+    list_display = ('id', 'fecha', 'inicio', 'fin', 'tallerista')
     search_fields = ('id', 'tallerista')
 
 

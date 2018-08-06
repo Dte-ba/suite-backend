@@ -26,7 +26,6 @@ class AgendaRoboticaTestsCase(APITestCase):
             curso=curso,
             area_en_que_se_dicta=area,
             fecha="2017-10-10",
-            fecha_fin="2015-10-10",
             inicio="10:10:10",
             fin="12:00:01"
         )

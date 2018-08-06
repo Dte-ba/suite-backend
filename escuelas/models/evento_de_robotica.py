@@ -24,7 +24,6 @@ class EventoDeRobotica(models.Model):
     area_en_que_se_dicta = models.ForeignKey('AreaDeRobotica', on_delete=models.CASCADE, related_name='area_eventos_de_robotica', default=None, blank=True, null=True)
 
     fecha = models.DateField(default=date.today)
-    fecha_fin = models.DateField(default=date.today)
     inicio = models.TimeField(default=datetime.now)
     fin = models.TimeField(default=datetime.now)
 
