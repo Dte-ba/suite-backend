@@ -40,7 +40,7 @@ class PerfilAdmin(CustomModelAdmin):
     form = PerfilForm
     model = models.Perfil
     list_display = ('user', 'nombre', 'apellido', 'group', 'region', 'dni', 'email')
-    search_fields = ('nombre', 'apellido', 'dni')
+    search_fields = ('nombre', 'apellido', 'dni', 'aplicaciones__nombre')
 
 class EventoAdmin(CustomModelAdmin):
     model = models.Evento

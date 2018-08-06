@@ -43,6 +43,8 @@ class PerfilViewSet(viewsets.ModelViewSet):
         query = self.request.query_params.get('query', None)
 
         filtro_activos = self.request.query_params.get('activos')
+        filtro_suite = self.request.query_params.get('suite')
+        filtro_robotica = self.request.query_params.get('robotica')
 
         if filtro_activos:
             filtro = Q(fecha_de_renuncia=None)
@@ -67,6 +69,16 @@ class PerfilViewSet(viewsets.ModelViewSet):
 
         if filtro_sort:
             queryset = queryset.order_by(filtro_sort)
+
+        if filtro_suite:
+            aplicacion_suite = models.Aplicacion.objects.get(nombre=u"SUITE")
+            filtro = Q(aplicaciones__in=[aplicacion_suite.id])
+            queryset = queryset.filter(filtro)
+
+        if filtro_robotica:
+            aplicacion_robotica = models.Aplicacion.objects.get(nombre=u"Robótica")
+            filtro = Q(aplicaciones__in=[aplicacion_robotica.id])
+            queryset = queryset.filter(filtro)
 
 
         return queryset
