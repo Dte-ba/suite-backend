@@ -63,7 +63,8 @@ class EscuelaViewSet(viewsets.ModelViewSet):
             queryset = queryset.filter(filtro)
 
         if filtro_programa_in:
-            filtro = Q(programas__in=filtro_programa_in)
+            filtro_in = int(filtro_programa_in)
+            filtro = Q(programas=filtro_in)
             queryset = queryset.filter(filtro)
 
         if filtro_nivel:
@@ -164,6 +165,7 @@ class EscuelaViewSet(viewsets.ModelViewSet):
         responsabilidadEmpresarial = queryset.filter(programas__nombre="Responsabilidad Empresarial").count()
         primariaDigital = queryset.filter(programas__nombre="Primaria Digital").count()
         escuelasDelFuturo = queryset.filter(programas__nombre="Escuelas del Futuro").count()
+        planNacionalDeConectividadEscolar = queryset.filter(programas__nombre="Plan Nacional de Conectividad Escolar").count()
 
         escuelas_por_programa = [
             {
@@ -181,6 +183,10 @@ class EscuelaViewSet(viewsets.ModelViewSet):
             {
                 "name": "Escuelas del Futuro",
                 "count": escuelasDelFuturo
+            },
+            {
+                "name": "Plan Nacional de Conectividad Escolar",
+                "count": planNacionalDeConectividadEscolar
             }
         ]
 
