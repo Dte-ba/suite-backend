@@ -26,6 +26,8 @@ from categoria_de_evento import CategoriaDeEvento
 from taller_de_robotica import TallerDeRobotica
 from area_de_robotica import AreaDeRobotica
 from curso_de_robotica import CursoDeRobotica
+from seccion_de_robotica import SeccionDeRobotica
+from eje_de_robotica import EjeDeRobotica
 from estado_de_validacion import EstadoDeValidacion
 from validacion import Validacion
 from motivo_de_conformacion import MotivoDeConformacion

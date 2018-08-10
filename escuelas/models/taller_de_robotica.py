@@ -6,6 +6,7 @@ from django.db import models
 class TallerDeRobotica(models.Model):
     nombre = models.CharField(max_length=255)
     area = models.ForeignKey('AreaDeRobotica', on_delete=models.CASCADE, related_name='taller_de_robotica', default=None, blank=True, null=True)
+    eje = models.ForeignKey('EjeDeRobotica', on_delete=models.CASCADE, related_name='taller_de_robotica', default=None, blank=True, null=True)
 
     def __unicode__(self):
         return self.nombre

@@ -55,13 +55,14 @@ class EventoDeRoboticaSerializer(CustomSerializer):
     escuela = ResourceRelatedField(queryset=models.Escuela.objects)
     titulo = ResourceRelatedField(queryset=models.TallerDeRobotica.objects)
     curso = ResourceRelatedField(queryset=models.CursoDeRobotica.objects)
+    seccion = ResourceRelatedField(queryset=models.SeccionDeRobotica.objects)
     area_en_que_se_dicta = ResourceRelatedField(queryset=models.AreaDeRobotica.objects)
     fecha_formateada = serializers.SerializerMethodField()
 
 
     class Meta:
         model = models.EventoDeRobotica
-        fields = ('id', 'titulo', 'curso', 'docente_a_cargo', 'area_en_que_se_dicta', 'fecha', 'inicio', 'fin', 'tallerista', 'escuela', 'cantidad_de_alumnos', 'minuta', 'acta', 'cerrar_evento', 'fecha_formateada')
+        fields = ('id', 'titulo', 'curso', 'seccion', 'docente_a_cargo', 'area_en_que_se_dicta', 'fecha', 'inicio', 'fin', 'tallerista', 'escuela', 'cantidad_de_alumnos', 'minuta', 'acta', 'cerrar_evento', 'fecha_formateada', 'fecha_de_ultima_modificacion', 'fecha_de_creacion')
         read_only_fields = ['acta']
 
     def get_fecha_formateada(self, objeto):
@@ -287,6 +288,18 @@ class CursoDeRoboticaSerializer(CustomSerializer):
 
     class Meta:
         model = models.CursoDeRobotica
+        fields = '__all__'
+
+class SeccionDeRoboticaSerializer(CustomSerializer):
+
+    class Meta:
+        model = models.SeccionDeRobotica
+        fields = '__all__'
+
+class EjeDeRoboticaSerializer(CustomSerializer):
+
+    class Meta:
+        model = models.EjeDeRobotica
         fields = '__all__'
 
 class EstadoDeValidacionSerializer(CustomSerializer):

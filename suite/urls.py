@@ -20,6 +20,7 @@ import escuelas.views.contrato
 import escuelas.views.curso_de_robotica
 import escuelas.views.distribucion_de_paquete
 import escuelas.views.distrito
+import escuelas.views.eje_de_robotica
 import escuelas.views.escuela
 import escuelas.views.estado_de_paquete
 import escuelas.views.estado_de_tarea
@@ -43,6 +44,7 @@ import escuelas.views.prioridad_de_tarea
 import escuelas.views.programa
 import escuelas.views.region
 import escuelas.views.rol_en_robotica
+import escuelas.views.seccion_de_robotica
 import escuelas.views.taller_de_robotica
 import escuelas.views.tarea
 import escuelas.views.tipo_de_financiamiento
@@ -70,6 +72,8 @@ router.register('tipos-de-gestion', escuelas.views.tipo_de_gestion.TipoDeGestion
 router.register('areas', escuelas.views.area.AreaViewSet)
 router.register('areas-de-robotica', escuelas.views.area_de_robotica.AreaDeRoboticaViewSet)
 router.register('cursos-de-robotica', escuelas.views.curso_de_robotica.CursoDeRoboticaViewSet)
+router.register('ejes-de-robotica', escuelas.views.eje_de_robotica.EjeDeRoboticaViewSet)
+router.register('secciones-de-robotica', escuelas.views.seccion_de_robotica.SeccionDeRoboticaViewSet)
 router.register('talleres-de-robotica', escuelas.views.taller_de_robotica.TallerDeRoboticaViewSet)
 router.register('niveles', escuelas.views.nivel.NivelViewSet)
 router.register('modalidades', escuelas.views.modalidad.ModalidadViewSet)

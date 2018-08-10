@@ -19,6 +19,8 @@ from categoria_de_evento import CategoriaDeEventoViewSet
 from taller_de_robotica import TallerDeRoboticaViewSet
 from area_de_robotica import AreaDeRoboticaViewSet
 from curso_de_robotica import CursoDeRoboticaViewSet
+from seccion_de_robotica import SeccionDeRoboticaViewSet
+from eje_de_robotica import EjeDeRoboticaViewSet
 from comentario_de_tarea import ComentarioDeTareaViewSet
 from comentario_de_validacion import ComentarioDeValidacionViewSet
 from contacto import ContactoViewSet

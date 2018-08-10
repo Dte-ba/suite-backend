@@ -37,6 +37,7 @@ class EscuelaViewSet(viewsets.ModelViewSet):
         filtro_llave = self.request.query_params.get('llave')
         filtro_distrito = self.request.query_params.get('distrito')
         filtro_localidad = self.request.query_params.get('localidad')
+        filtro_robotica = self.request.query_params.get('robotica')
 
         filtro_sort = self.request.query_params.get('sort')
 
@@ -115,6 +116,9 @@ class EscuelaViewSet(viewsets.ModelViewSet):
 
         if filtro_sort:
             queryset = queryset.order_by(filtro_sort)
+
+        if filtro_robotica:
+            queryset = queryset.exclude(modalidad__nombre="Especial")
 
         return queryset
 

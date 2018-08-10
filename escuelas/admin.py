@@ -49,7 +49,7 @@ class EventoAdmin(CustomModelAdmin):
 
 class EventoDeRoboticaAdmin(CustomModelAdmin):
     model = models.EventoDeRobotica
-    list_display = ('id', 'fecha', 'inicio', 'fin', 'tallerista')
+    list_display = ('id', 'fecha', 'inicio', 'fin', 'tallerista', 'fecha_de_creacion', 'fecha_de_ultima_modificacion')
     search_fields = ('id', 'tallerista')
 
 
@@ -195,6 +195,8 @@ admin.site.register(models.TipoDeGestion)
 admin.site.register(models.Area)
 admin.site.register(models.AreaDeRobotica)
 admin.site.register(models.CursoDeRobotica)
+admin.site.register(models.SeccionDeRobotica)
+admin.site.register(models.EjeDeRobotica)
 admin.site.register(models.Programa)
 admin.site.register(models.Localidad, LocalidadAdmin)
 

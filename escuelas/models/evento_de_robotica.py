@@ -16,6 +16,7 @@ class EventoDeRobotica(models.Model):
     titulo = models.ForeignKey('TallerDeRobotica', on_delete=models.CASCADE, related_name='titulo_eventos_de_robotica', default=None, blank=True, null=True)
 
     curso = models.ForeignKey('CursoDeRobotica', on_delete=models.CASCADE, related_name='curso_eventos_de_robotica', default=None, blank=True, null=True)
+    seccion = models.ForeignKey('SeccionDeRobotica', on_delete=models.CASCADE, related_name='seccion_eventos_de_robotica', default=None, blank=True, null=True)
 
     cantidad_de_alumnos = models.IntegerField(default=None, blank=True, null=True)
 
@@ -32,6 +33,8 @@ class EventoDeRobotica(models.Model):
     acta = models.FileField(default=None, blank=True, null=True)
 
     cerrar_evento = models.BooleanField(default=False)
+    fecha_de_ultima_modificacion = models.DateTimeField(auto_now=True)
+    fecha_de_creacion = models.DateTimeField(auto_now_add=True)
 
     def __unicode__(self):
         return self.titulo.nombre
