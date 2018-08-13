@@ -23,7 +23,7 @@ class EventoDeRoboticaViewSet(viewsets.ModelViewSet):
     serializer_class = serializers.EventoDeRoboticaSerializer
     filter_backends = [SearchFilter, DjangoFilterBackend, OrderingFilter]
     search_fields = ['escuela__nombre', 'escuela__cue']
-    filter_fields = ['escuela__localidad', 'escuela__localidad__distrito', "tallerista__id", 'escuela__localidad__distrito__region']
+    filter_fields = ['escuela__localidad', 'escuela__localidad__distrito', "tallerista__id"]
     ordering_fields = ['fecha', 'escuela_id', 'escuela__localidad__distrito__region__numero', 'distrito', 'tallerista']
 
     def get_queryset(self):

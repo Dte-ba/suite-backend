@@ -23,7 +23,7 @@ class EventoViewSet(viewsets.ModelViewSet):
     serializer_class = serializers.EventoSerializer
     filter_backends = [SearchFilter, DjangoFilterBackend, OrderingFilter]
     search_fields = ['escuela__nombre', 'escuela__cue', 'titulo']
-    filter_fields = ['escuela__localidad', 'escuela__localidad__distrito', "responsable__id", 'escuela__localidad__distrito__region']
+    filter_fields = ['escuela__localidad', 'escuela__localidad__distrito', "responsable__id"]
     ordering_fields = ['titulo', 'fecha', 'escuela_id', 'escuela__localidad__distrito__region__numero', 'distrito', 'responsable', 'requiere_traslado']
 
     def get_queryset(self):
@@ -49,14 +49,14 @@ class EventoViewSet(viewsets.ModelViewSet):
             queryset = queryset.filter(filtro)
         else:
             if filtro_region:
-                filtro = Q(escuela__localidad__distrito__region__numero=filtro_region)
+                filtro = Q(escuela__localidad__distrito__region__numero=filtro_region) | Q(escuela__cue=60000000)
                 queryset = queryset.filter(filtro)
 
         if query:
             filtro_escuela = Q(escuela__nombre__icontains=query)
             filtro_escuela_cue = Q(escuela__cue__icontains=query)
 
-            queryset = queryset.filter(filtro_escuela | filtro_escuela_cue)
+            queryset = queryset.filter(filtro_escuela | filtro_escuela_cue | Q(escuela__cue=60000000))
 
         return queryset.distinct()
 
