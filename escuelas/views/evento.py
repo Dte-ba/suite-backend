@@ -49,14 +49,14 @@ class EventoViewSet(viewsets.ModelViewSet):
             queryset = queryset.filter(filtro)
         else:
             if filtro_region:
-                filtro = Q(escuela__localidad__distrito__region__numero=filtro_region) | Q(escuela__cue=60000000)
+                filtro = Q(escuela__localidad__distrito__region__numero=filtro_region)
                 queryset = queryset.filter(filtro)
 
         if query:
             filtro_escuela = Q(escuela__nombre__icontains=query)
             filtro_escuela_cue = Q(escuela__cue__icontains=query)
 
-            queryset = queryset.filter(filtro_escuela | filtro_escuela_cue | Q(escuela__cue=60000000))
+            queryset = queryset.filter(filtro_escuela | filtro_escuela_cue)
 
         return queryset.distinct()
 
