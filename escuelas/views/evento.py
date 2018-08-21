@@ -23,7 +23,7 @@ class EventoViewSet(viewsets.ModelViewSet):
     serializer_class = serializers.EventoSerializer
     filter_backends = [SearchFilter, DjangoFilterBackend, OrderingFilter]
     search_fields = ['escuela__nombre', 'escuela__cue', 'titulo']
-    filter_fields = ['escuela__localidad', 'escuela__localidad__distrito', "responsable__id"]
+    filter_fields = ['escuela__localidad', 'escuela__localidad__distrito', "responsable__id", "region"]
     ordering_fields = ['titulo', 'fecha', 'escuela_id', 'escuela__localidad__distrito__region__numero', 'distrito', 'responsable', 'requiere_traslado']
 
     def get_queryset(self):

@@ -1,5 +1,6 @@
 # coding: utf-8
 from __future__ import unicode_literals
+import progressbar
 import sys
 import pprint
 import os
@@ -17,14 +18,9 @@ from django.contrib.auth.models import User
 password = 'asdasd123'
 
 print "Reiniciando contraseñas..."
-print "--------------------------"
 
-for user in User.objects.order_by('username'):
+bar = progressbar.ProgressBar()
+
+for user in bar(User.objects.order_by('username')):
     user.set_password(password)
-
-    if user.is_superuser:
-        print "Usuario Administrador:", user
-    else:
-        print "Usuario", user
-
     user.save()
