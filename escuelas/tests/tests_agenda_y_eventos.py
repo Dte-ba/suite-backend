@@ -233,11 +233,11 @@ class AgendaYEventosTestCase(APITestCase):
         response = self.client.get('/api/eventos/agenda?inicio=2017-01-01&fin=2017-02-01&region=3', format='json')
         self.assertEqual(response.data['cantidad'], 3)
 
-        response = self.client.get('/api/eventos/agenda?inicio=2017-01-01&fin=2017-02-01&perfil={0}&region={1}'.format(perfil_usuario_2.id, region_1.id), format='json')
-        self.assertEqual(response.data['cantidad'], 1)
+        response = self.client.get('/api/eventos/agenda?inicio=2017-01-01&fin=2017-02-01&perfil={0}&region={1}'.format(usuario_3.perfil.id, '3'), format='json')
+        self.assertEqual(response.data['cantidad'], 3)
 
-        response = self.client.get('/api/eventos/agenda?inicio=2017-01-01&fin=2017-02-01&perfil={0}&region={1}'.format(usuario_3.perfil.id, region_3.id), format='json')
-        self.assertEqual(response.data['cantidad'], 1)
+        response = self.client.get('/api/eventos/agenda?inicio=2017-01-01&fin=2017-02-01&perfil={0}&region={1}'.format(perfil_usuario_2.id, '2'), format='json')
+        self.assertEqual(response.data['cantidad'], 2)
 
     def test_puede_crear_un_evento_con_acta_desde_la_api(self):
         # Prepara el usuario para chequear contra la api
