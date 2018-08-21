@@ -79,12 +79,8 @@ class Evento(models.Model):
             return "Sin resumen"
 
     def esDelEquipoRegion(self, numero_de_region):
-        if self.responsable.region.numero is int(numero_de_region):
+        if self.region is int(numero_de_region):
             return True
-
-        for acom in self.acompaniantes.all():
-            if acom.region.numero is int(numero_de_region):
-                return True
 
         return False
 

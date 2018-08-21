@@ -145,18 +145,12 @@ class EventoViewSet(viewsets.ModelViewSet):
         eventos = models.Evento.objects.filter(fecha__range=(inicio, fin))
 
         if region:
-            eventos = eventos.filter(Q(escuela__localidad__distrito__region__numero=region) | Q(escuela__cue=60000000))
+            eventos = eventos.filter(region=region)
 
         if perfil:
             usuario = models.Perfil.objects.get(id=perfil) # El usuario logeado
             eventos = eventos.filter(Q(responsable=usuario) | Q(acompaniantes=usuario)).distinct()
             eventos = eventos[:]
-        else:
-            if region:
-                eventos = [evento for evento in eventos if evento.esDelEquipoRegion(region)]
-            else:
-                eventos = eventos[:]
-
 
         return Response({
                 "inicio": inicio,

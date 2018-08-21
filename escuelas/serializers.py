@@ -47,7 +47,7 @@ class EventoSerializer(CustomSerializer):
     class Meta:
         model = models.Evento
         fields = ('id', 'titulo', 'region', 'fecha', 'fecha_fin', 'inicio', 'fin', 'objetivo', 'responsable', 'escuela', 'acompaniantes', 'cantidad_de_participantes', 'requiere_traslado', 'categoria', 'resumenParaCalendario', 'minuta', 'acta_legacy', 'legacy_id', 'acta')
-        read_only_fields = ['acta']
+        read_only_fields = ['acta', 'region']
 
 class EventoDeRoboticaSerializer(CustomSerializer):
 
