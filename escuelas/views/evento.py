@@ -24,7 +24,7 @@ class EventoViewSet(viewsets.ModelViewSet):
     filter_backends = [SearchFilter, DjangoFilterBackend, OrderingFilter]
     search_fields = ['escuela__nombre', 'escuela__cue', 'titulo']
     filter_fields = ['escuela__localidad', 'escuela__localidad__distrito', "responsable__id", "region"]
-    ordering_fields = ['titulo', 'fecha', 'escuela_id', 'escuela__localidad__distrito__region__numero', 'distrito', 'responsable', 'requiere_traslado']
+    ordering_fields = ['titulo', 'region', 'fecha', 'escuela_id', 'escuela__localidad__distrito__region__numero', 'distrito', 'responsable', 'requiere_traslado']
 
     def get_queryset(self):
         queryset = self.queryset
@@ -214,33 +214,33 @@ class EventoViewSet(viewsets.ModelViewSet):
             "total": total,
             "conActa": conActa,
             "sinActa": sinActa,
-            "totalOK": models.Evento.objects.all().exclude(escuela__localidad__distrito__region__numero=None).count(),
-            "region01": models.Evento.objects.filter(escuela__localidad__distrito__region__numero=1).count(),
-            "region02": models.Evento.objects.filter(escuela__localidad__distrito__region__numero=2).count(),
-            "region03": models.Evento.objects.filter(escuela__localidad__distrito__region__numero=3).count(),
-            "region04": models.Evento.objects.filter(escuela__localidad__distrito__region__numero=4).count(),
-            "region05": models.Evento.objects.filter(escuela__localidad__distrito__region__numero=5).count(),
-            "region06": models.Evento.objects.filter(escuela__localidad__distrito__region__numero=6).count(),
-            "region07": models.Evento.objects.filter(escuela__localidad__distrito__region__numero=7).count(),
-            "region08": models.Evento.objects.filter(escuela__localidad__distrito__region__numero=8).count(),
-            "region09": models.Evento.objects.filter(escuela__localidad__distrito__region__numero=9).count(),
-            "region10": models.Evento.objects.filter(escuela__localidad__distrito__region__numero=10).count(),
-            "region11": models.Evento.objects.filter(escuela__localidad__distrito__region__numero=11).count(),
-            "region12": models.Evento.objects.filter(escuela__localidad__distrito__region__numero=12).count(),
-            "region13": models.Evento.objects.filter(escuela__localidad__distrito__region__numero=13).count(),
-            "region14": models.Evento.objects.filter(escuela__localidad__distrito__region__numero=14).count(),
-            "region15": models.Evento.objects.filter(escuela__localidad__distrito__region__numero=15).count(),
-            "region16": models.Evento.objects.filter(escuela__localidad__distrito__region__numero=16).count(),
-            "region17": models.Evento.objects.filter(escuela__localidad__distrito__region__numero=17).count(),
-            "region18": models.Evento.objects.filter(escuela__localidad__distrito__region__numero=18).count(),
-            "region19": models.Evento.objects.filter(escuela__localidad__distrito__region__numero=19).count(),
-            "region20": models.Evento.objects.filter(escuela__localidad__distrito__region__numero=20).count(),
-            "region21": models.Evento.objects.filter(escuela__localidad__distrito__region__numero=21).count(),
-            "region22": models.Evento.objects.filter(escuela__localidad__distrito__region__numero=22).count(),
-            "region23": models.Evento.objects.filter(escuela__localidad__distrito__region__numero=23).count(),
-            "region24": models.Evento.objects.filter(escuela__localidad__distrito__region__numero=24).count(),
-            "region25": models.Evento.objects.filter(escuela__localidad__distrito__region__numero=25).count(),
-            "region27": models.Evento.objects.filter(escuela__localidad__distrito__region__numero=27).count()
+            "totalOK": models.Evento.objects.all().exclude(region=0).count(),
+            "region01": models.Evento.objects.filter(region=1).count(),
+            "region02": models.Evento.objects.filter(region=2).count(),
+            "region03": models.Evento.objects.filter(region=3).count(),
+            "region04": models.Evento.objects.filter(region=4).count(),
+            "region05": models.Evento.objects.filter(region=5).count(),
+            "region06": models.Evento.objects.filter(region=6).count(),
+            "region07": models.Evento.objects.filter(region=7).count(),
+            "region08": models.Evento.objects.filter(region=8).count(),
+            "region09": models.Evento.objects.filter(region=9).count(),
+            "region10": models.Evento.objects.filter(region=10).count(),
+            "region11": models.Evento.objects.filter(region=11).count(),
+            "region12": models.Evento.objects.filter(region=12).count(),
+            "region13": models.Evento.objects.filter(region=13).count(),
+            "region14": models.Evento.objects.filter(region=14).count(),
+            "region15": models.Evento.objects.filter(region=15).count(),
+            "region16": models.Evento.objects.filter(region=16).count(),
+            "region17": models.Evento.objects.filter(region=17).count(),
+            "region18": models.Evento.objects.filter(region=18).count(),
+            "region19": models.Evento.objects.filter(region=19).count(),
+            "region20": models.Evento.objects.filter(region=20).count(),
+            "region21": models.Evento.objects.filter(region=21).count(),
+            "region22": models.Evento.objects.filter(region=22).count(),
+            "region23": models.Evento.objects.filter(region=23).count(),
+            "region24": models.Evento.objects.filter(region=24).count(),
+            "region25": models.Evento.objects.filter(region=25).count(),
+            "region27": models.Evento.objects.filter(region=27).count()
         }
         return Response(estadisticas)
 
