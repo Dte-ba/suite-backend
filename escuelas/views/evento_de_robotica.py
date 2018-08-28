@@ -193,9 +193,8 @@ class EventoDeRoboticaViewSet(viewsets.ModelViewSet):
         perfil = self.request.query_params.get('perfil', None)
         region = self.request.query_params.get('region', None)
 
-        # import ipdb; ipdb.set_trace()
-
-        eventos = models.EventoDeRobotica.objects.filter(fecha__range=(inicio, fin))
+        # eventos = models.EventoDeRobotica.objects.filter(fecha__range=(inicio, fin))
+        eventos = models.EventoDeRobotica.objects.all()
 
         if region:
             eventos = eventos.filter(escuela__localidad__distrito__region__numero=region)
@@ -205,41 +204,148 @@ class EventoDeRoboticaViewSet(viewsets.ModelViewSet):
             eventos = eventos.filter(Q(tallerista=usuario) | Q(acompaniantes=usuario)).distinct()
 
         total = eventos.count()
-        conActaLegacy = eventos.filter(acta_legacy__gt='').count()
         conActaNueva = eventos.filter(acta__gt='').count()
-        conActa = conActaLegacy + conActaNueva
+        conActa = conActaNueva
         sinActa = total - conActa
 
+        totalDeTalleres = models.EventoDeRobotica.objects.all().exclude(escuela__localidad__distrito__region__numero=None)
+        region1 = models.EventoDeRobotica.objects.filter(escuela__localidad__distrito__region__numero=1)
+        region2 = models.EventoDeRobotica.objects.filter(escuela__localidad__distrito__region__numero=2)
+        region3 = models.EventoDeRobotica.objects.filter(escuela__localidad__distrito__region__numero=3)
+        region4 = models.EventoDeRobotica.objects.filter(escuela__localidad__distrito__region__numero=4)
+        region5 = models.EventoDeRobotica.objects.filter(escuela__localidad__distrito__region__numero=5)
+        region6 = models.EventoDeRobotica.objects.filter(escuela__localidad__distrito__region__numero=6)
+        region7 = models.EventoDeRobotica.objects.filter(escuela__localidad__distrito__region__numero=7)
+        region8 = models.EventoDeRobotica.objects.filter(escuela__localidad__distrito__region__numero=8)
+        region9 = models.EventoDeRobotica.objects.filter(escuela__localidad__distrito__region__numero=9)
+        region10 = models.EventoDeRobotica.objects.filter(escuela__localidad__distrito__region__numero=10)
+        region11= models.EventoDeRobotica.objects.filter(escuela__localidad__distrito__region__numero=11)
+        region12 = models.EventoDeRobotica.objects.filter(escuela__localidad__distrito__region__numero=12)
+        region13 = models.EventoDeRobotica.objects.filter(escuela__localidad__distrito__region__numero=13)
+        region14 = models.EventoDeRobotica.objects.filter(escuela__localidad__distrito__region__numero=14)
+        region15 = models.EventoDeRobotica.objects.filter(escuela__localidad__distrito__region__numero=15)
+        region16 = models.EventoDeRobotica.objects.filter(escuela__localidad__distrito__region__numero=16)
+        region17 = models.EventoDeRobotica.objects.filter(escuela__localidad__distrito__region__numero=17)
+        region18 = models.EventoDeRobotica.objects.filter(escuela__localidad__distrito__region__numero=18)
+        region19 = models.EventoDeRobotica.objects.filter(escuela__localidad__distrito__region__numero=19)
+        region20 = models.EventoDeRobotica.objects.filter(escuela__localidad__distrito__region__numero=20)
+        region21 = models.EventoDeRobotica.objects.filter(escuela__localidad__distrito__region__numero=21)
+        region22 = models.EventoDeRobotica.objects.filter(escuela__localidad__distrito__region__numero=22)
+        region23 = models.EventoDeRobotica.objects.filter(escuela__localidad__distrito__region__numero=23)
+        region24 = models.EventoDeRobotica.objects.filter(escuela__localidad__distrito__region__numero=24)
+        region25 = models.EventoDeRobotica.objects.filter(escuela__localidad__distrito__region__numero=25)
+
         estadisticas = {
-            "total": total,
-            "conActa": conActa,
-            "sinActa": sinActa,
-            "totalOK": models.EventoDeRobotica.objects.all().exclude(escuela__localidad__distrito__region__numero=None).count(),
-            "region01": models.EventoDeRobotica.objects.filter(escuela__localidad__distrito__region__numero=1).count(),
-            "region02": models.EventoDeRobotica.objects.filter(escuela__localidad__distrito__region__numero=2).count(),
-            "region03": models.EventoDeRobotica.objects.filter(escuela__localidad__distrito__region__numero=3).count(),
-            "region04": models.EventoDeRobotica.objects.filter(escuela__localidad__distrito__region__numero=4).count(),
-            "region05": models.EventoDeRobotica.objects.filter(escuela__localidad__distrito__region__numero=5).count(),
-            "region06": models.EventoDeRobotica.objects.filter(escuela__localidad__distrito__region__numero=6).count(),
-            "region07": models.EventoDeRobotica.objects.filter(escuela__localidad__distrito__region__numero=7).count(),
-            "region08": models.EventoDeRobotica.objects.filter(escuela__localidad__distrito__region__numero=8).count(),
-            "region09": models.EventoDeRobotica.objects.filter(escuela__localidad__distrito__region__numero=9).count(),
-            "region10": models.EventoDeRobotica.objects.filter(escuela__localidad__distrito__region__numero=10).count(),
-            "region11": models.EventoDeRobotica.objects.filter(escuela__localidad__distrito__region__numero=11).count(),
-            "region12": models.EventoDeRobotica.objects.filter(escuela__localidad__distrito__region__numero=12).count(),
-            "region13": models.EventoDeRobotica.objects.filter(escuela__localidad__distrito__region__numero=13).count(),
-            "region14": models.EventoDeRobotica.objects.filter(escuela__localidad__distrito__region__numero=14).count(),
-            "region15": models.EventoDeRobotica.objects.filter(escuela__localidad__distrito__region__numero=15).count(),
-            "region16": models.EventoDeRobotica.objects.filter(escuela__localidad__distrito__region__numero=16).count(),
-            "region17": models.EventoDeRobotica.objects.filter(escuela__localidad__distrito__region__numero=17).count(),
-            "region18": models.EventoDeRobotica.objects.filter(escuela__localidad__distrito__region__numero=18).count(),
-            "region19": models.EventoDeRobotica.objects.filter(escuela__localidad__distrito__region__numero=19).count(),
-            "region20": models.EventoDeRobotica.objects.filter(escuela__localidad__distrito__region__numero=20).count(),
-            "region21": models.EventoDeRobotica.objects.filter(escuela__localidad__distrito__region__numero=21).count(),
-            "region22": models.EventoDeRobotica.objects.filter(escuela__localidad__distrito__region__numero=22).count(),
-            "region23": models.EventoDeRobotica.objects.filter(escuela__localidad__distrito__region__numero=23).count(),
-            "region24": models.EventoDeRobotica.objects.filter(escuela__localidad__distrito__region__numero=24).count(),
-            "region25": models.EventoDeRobotica.objects.filter(escuela__localidad__distrito__region__numero=25).count(),
-            "region27": models.EventoDeRobotica.objects.filter(escuela__localidad__distrito__region__numero=27).count()
+            "totales": [
+                {
+                    "name": "Total",
+                    "count": total,
+                    "porcentaje": 100
+                },
+            ],
+            "estado": [
+                {
+                    "name": "Finalizados",
+                    "count": conActa,
+                    "porcentaje": round(((conActa * 100.00) / total),2)
+                },
+                {
+                    "name": "Abiertos",
+                    "count": sinActa,
+                    "porcentaje": round(((sinActa * 100.00) / total),2)
+                }
+            ],
+            # "region1": [
+            #     {
+            #         "name": "Finalizados",
+            #         "count": region1.filter(cerrar_evento=False).count(),
+            #         "porcentaje": round((((region1.filter(cerrar_evento=False).count()) * 100.00) / region1.count()),2)
+            #     },
+            #     {
+            #         "name": "Abiertos",
+            #         "count": region1.filter(cerrar_evento=True).count(),
+            #         "porcentaje": round((((region1.filter(cerrar_evento=True).count()) * 100.00) / region1.count()),2)
+            #     }
+            # ],
+            # "region2": [
+            #     {
+            #         "name": "Finalizados",
+            #         "count": region2.filter(cerrar_evento=False).count(),
+            #         "porcentaje": round((((region2.filter(cerrar_evento=False).count()) * 100.00) / region2.count()),2)
+            #     },
+            #     {
+            #         "name": "Abiertos",
+            #         "count": region2.filter(cerrar_evento=True).count(),
+            #         "porcentaje": round((((region2.filter(cerrar_evento=True).count()) * 100.00) / region2.count()),2)
+            #     }
+            # ],
+            # "region3": [
+            #     {
+            #         "name": "Finalizados",
+            #         "count": region3.filter(cerrar_evento=False).count(),
+            #         "porcentaje": round((((region3.filter(cerrar_evento=False).count()) * 100.00) / region3.count()),2)
+            #     },
+            #     {
+            #         "name": "Abiertos",
+            #         "count": region3.filter(cerrar_evento=True).count(),
+            #         "porcentaje": round((((region3.filter(cerrar_evento=True).count()) * 100.00) / region3.count()),2)
+            #     }
+            # ],
+            # "region4": [
+            #     {
+            #         "name": "Finalizados",
+            #         "count": region4.filter(cerrar_evento=False).count(),
+            #         "porcentaje": round((((region4.filter(cerrar_evento=False).count()) * 100.00) / region4.count()),2)
+            #     },
+            #     {
+            #         "name": "Abiertos",
+            #         "count": region4.filter(cerrar_evento=True).count(),
+            #         "porcentaje": round((((region4.filter(cerrar_evento=True).count()) * 100.00) / region4.count()),2)
+            #     }
+            # ],
+            "porRegion": [
+                {
+                    "region": "1",
+                    "total": region1.count(),
+                    "abiertos": region1.filter(cerrar_evento=False).count(),
+                    "finalizados": region1.filter(cerrar_evento=True).count()
+                },
+                {
+                    "region": "2",
+                    "total": region2.count(),
+                    "abiertos": region2.filter(cerrar_evento=False).count(),
+                    "finalizados": region2.filter(cerrar_evento=True).count()
+                },
+                {
+                    "region": "3",
+                    "total": region3.count(),
+                    "abiertos": region3.filter(cerrar_evento=False).count(),
+                    "finalizados": region3.filter(cerrar_evento=True).count()
+                },
+                {
+                    "region": "4",
+                    "total": region4.count(),
+                    "abiertos": region4.filter(cerrar_evento=False).count(),
+                    "finalizados": region4.filter(cerrar_evento=True).count()
+                },
+                {
+                    "region": "5",
+                    "total": region5.count(),
+                    "abiertos": region5.filter(cerrar_evento=False).count(),
+                    "finalizados": region5.filter(cerrar_evento=True).count()
+                },
+                {
+                    "region": "6",
+                    "total": region6.count(),
+                    "abiertos": region6.filter(cerrar_evento=False).count(),
+                    "finalizados": region6.filter(cerrar_evento=True).count()
+                },
+                {
+                    "region": "7",
+                    "total": region7.count(),
+                    "abiertos": region7.filter(cerrar_evento=False).count(),
+                    "finalizados": region7.filter(cerrar_evento=True).count()
+                }
+            ]
         }
         return Response(estadisticas)
