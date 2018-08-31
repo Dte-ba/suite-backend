@@ -24,7 +24,7 @@ class EventoDeRoboticaViewSet(viewsets.ModelViewSet):
     filter_backends = [SearchFilter, DjangoFilterBackend, OrderingFilter]
     search_fields = ['escuela__nombre', 'escuela__cue']
     filter_fields = ['escuela__localidad', 'escuela__localidad__distrito', "tallerista__id"]
-    ordering_fields = ['fecha', 'escuela_id', 'escuela__localidad__distrito__region__numero', 'distrito', 'tallerista']
+    ordering_fields = ['fecha', 'escuela_id', 'escuela__localidad__distrito__region__numero', 'distrito', 'tallerista', 'fecha_de_creacion']
 
     def get_queryset(self):
         queryset = self.queryset
