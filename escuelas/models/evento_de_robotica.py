@@ -45,8 +45,28 @@ class EventoDeRobotica(models.Model):
         ordering = ('-fecha',)
 
     def resumenParaCalendario(self):
-        if self.resumen:
-            return json.loads(self.resumen)
+        titulo = self.titulo.nombre
+        escuela = self.escuela.nombre
+        region = self.escuela.localidad.distrito.region.numero
+        localidad = self.escuela.localidad.nombre
+        distrito = self.escuela.localidad.distrito.nombre
+        tallerista = self.tallerista.nombre + " " + self.tallerista.apellido
+        inicio = self.inicio.strftime("%H:%M")
+        fin = self.fin.strftime("%H:%M")
+        print(inicio)
+        resumen = json.dumps(
+                {
+                    "titulo": titulo,
+                    "escuela": escuela,
+                    "region": region,
+                    "localidad": localidad,
+                    "distrito": distrito,
+                    "inicio": inicio,
+                    "fin": fin,
+                    "tallerista": tallerista
+                },ensure_ascii=False)
+        if resumen:
+            return json.loads(resumen)
         else:
             return "Sin resumen"
 

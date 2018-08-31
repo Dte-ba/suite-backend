@@ -62,7 +62,7 @@ class EventoDeRoboticaSerializer(CustomSerializer):
 
     class Meta:
         model = models.EventoDeRobotica
-        fields = ('id', 'titulo', 'curso', 'seccion', 'docente_a_cargo', 'area_en_que_se_dicta', 'fecha', 'inicio', 'fin', 'tallerista', 'escuela', 'cantidad_de_alumnos', 'minuta', 'acta', 'cerrar_evento', 'fecha_formateada', 'fecha_de_ultima_modificacion', 'fecha_de_creacion', 'fecha_de_creacion_formateada')
+        fields = ('id', 'titulo', 'curso', 'seccion', 'docente_a_cargo', 'area_en_que_se_dicta', 'fecha', 'inicio', 'fin', 'tallerista', 'escuela', 'cantidad_de_alumnos', 'minuta', 'acta', 'cerrar_evento', 'fecha_formateada', 'fecha_de_ultima_modificacion', 'fecha_de_creacion', 'fecha_de_creacion_formateada', 'resumenParaCalendario')
         read_only_fields = ['acta']
 
     def get_fecha_formateada(self, objeto):

@@ -149,7 +149,7 @@ class EventoDeRoboticaViewSet(viewsets.ModelViewSet):
 
         if perfil:
             usuario = models.Perfil.objects.get(id=perfil) # El usuario logeado
-            eventos = eventos.filter(Q(tallerista=usuario) | Q(acompaniantes=usuario)).distinct()
+            eventos = eventos.filter(Q(tallerista=usuario)).distinct()
             eventos = eventos[:]
         else:
             if region:
