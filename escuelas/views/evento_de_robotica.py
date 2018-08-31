@@ -32,6 +32,8 @@ class EventoDeRoboticaViewSet(viewsets.ModelViewSet):
 
         filtro_desde = self.request.query_params.get('desde', None)
         filtro_hasta = self.request.query_params.get('hasta', None)
+        filtro_desde_creacion = self.request.query_params.get('desde_creacion', None)
+        filtro_hasta_creacion = self.request.query_params.get('hasta_creacion', None)
         filtro_region = self.request.query_params.get('escuela__localidad__distrito__region__numero', None)
         filtro_perfil = self.request.query_params.get('perfil', None)
 
@@ -41,6 +43,14 @@ class EventoDeRoboticaViewSet(viewsets.ModelViewSet):
 
         if filtro_hasta:
             filtro = Q(fecha__lte=filtro_hasta)
+            queryset = queryset.filter(filtro)
+
+        if filtro_desde_creacion:
+            filtro = Q(fecha_de_creacion__gte=filtro_desde_creacion)
+            queryset = queryset.filter(filtro)
+
+        if filtro_hasta_creacion:
+            filtro = Q(fecha_de_creacion__lte=filtro_hasta_creacion)
             queryset = queryset.filter(filtro)
 
         if filtro_perfil:
