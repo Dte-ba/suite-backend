@@ -23,7 +23,7 @@ def formatear_fecha(fecha_como_string):
     return datetime.datetime.strptime(fecha_como_string, "%Y-%m-%d").strftime("%d/%m/%Y")
 
 @job
-def generar_informe_de_region(numero_de_region, desde, hasta):
+def generar_informe_de_region(numero_de_region, desde, hasta, aplicacion):
     trabajo = utils.crear_modelo_trabajo("Informe de region {0} completo desde {1} hasta {2}".format(numero_de_region, desde, hasta))
 
     directorio_temporal = tempfile.mkdtemp()
@@ -32,9 +32,9 @@ def generar_informe_de_region(numero_de_region, desde, hasta):
     region = models.Region.objects.get(numero=numero_de_region)
     cantidad_de_pasos = region.perfiles.count() + 2
     trabajo.actualizar_paso(1, cantidad_de_pasos, "Solicitando perfiles")
-
+    objeto_aplicacion = models.Aplicacion.objects.get(nombre= aplicacion)
     # Genera un archivo pdf por cada perfil.
-    for (numero, perfil) in enumerate(region.perfiles.filter(fecha_de_renuncia=None)):
+    for (numero, perfil) in enumerate(region.perfiles.filter(fecha_de_renuncia=None , aplicaciones=objeto_aplicacion)):
         trabajo.actualizar_paso(1 + numero, cantidad_de_pasos, u"Obteniendo informe de {0} {1}".format(perfil.apellido, perfil.nombre))
         nombre_del_archivo = u"informe_de_{0}".format(perfil.nombre)
         ruta = os.path.join(directorio_temporal, obtener_nombre_de_archivo_informe(perfil))

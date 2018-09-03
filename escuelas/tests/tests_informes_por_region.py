@@ -18,7 +18,7 @@ class InformesPorRegionTests(APITestCase):
         self.client.force_authenticate(user=user)
         self.crear_datos_para_los_informes(user)
 
-        resultado = trabajos.informes.generar_informe_de_region(numero_de_region=2, desde="2017-01-01", hasta="2018-01-01")
+        resultado = trabajos.informes.generar_informe_de_region(numero_de_region=2, desde="2017-01-01", hasta="2018-01-01", aplicacion="SUITE")
         self.assertTrue(resultado.archivo)
 
     def crear_datos_para_los_informes(self, user):

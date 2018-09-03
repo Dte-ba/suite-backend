@@ -72,8 +72,8 @@ class TrabajosViewSet(viewsets.ViewSet):
         desde = request.query_params['desde']
         hasta = request.query_params['hasta']
         region = request.query_params['region']
-
-        job = trabajos.informes.generar_informe_de_region.delay(region, desde, hasta)
+        aplicacion = request.query_params['aplicacion']
+        job = trabajos.informes.generar_informe_de_region.delay(region, desde, hasta, aplicacion)
 
         return Response({
             'trabajo_id': job.id
