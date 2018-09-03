@@ -277,9 +277,11 @@ class CategoriaDeEventoSerializer(CustomSerializer):
 
 class TallerDeRoboticaSerializer(CustomSerializer):
 
+    ejes = ResourceRelatedField(queryset=models.EjeDeRobotica.objects, many=True)
+
     class Meta:
         model = models.TallerDeRobotica
-        fields = '__all__'
+        fields = ('nombre', 'area', 'ejes')
 
 class AreaDeRoboticaSerializer(CustomSerializer):
 
