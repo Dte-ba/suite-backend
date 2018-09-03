@@ -1,5 +1,6 @@
 # coding: utf-8
 from __future__ import unicode_literals
+import datetime
 import base64
 import os
 import subprocess
@@ -7,6 +8,8 @@ import uuid
 
 import xlwt
 from django.db.models import Q
+from django.utils import timezone
+from datetime import timedelta
 from django.http import HttpResponse
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import viewsets
@@ -46,11 +49,18 @@ class EventoDeRoboticaViewSet(viewsets.ModelViewSet):
             queryset = queryset.filter(filtro)
 
         if filtro_desde_creacion:
-            filtro = Q(fecha_de_creacion__gte=filtro_desde_creacion)
+            fecha = datetime.datetime.strptime(filtro_desde_creacion, "%Y-%m-%d")
+            fecha = self.corregir_para_usar_timezone(fecha)
+
+            filtro = Q(fecha_de_creacion__gte=fecha)
             queryset = queryset.filter(filtro)
 
         if filtro_hasta_creacion:
-            filtro = Q(fecha_de_creacion__lte=filtro_hasta_creacion)
+            fecha = datetime.datetime.strptime(filtro_hasta_creacion, "%Y-%m-%d")
+            fecha += timedelta(days=1)
+
+            fecha = self.corregir_para_usar_timezone(fecha)
+            filtro = Q(fecha_de_creacion__lte=fecha)
             queryset = queryset.filter(filtro)
 
         if filtro_perfil:
@@ -69,6 +79,10 @@ class EventoDeRoboticaViewSet(viewsets.ModelViewSet):
             queryset = queryset.filter(filtro_escuela | filtro_escuela_cue)
 
         return queryset.distinct()
+
+    def corregir_para_usar_timezone(self, fecha):
+        default_timezone = timezone.get_default_timezone()
+        return timezone.make_aware(fecha, default_timezone)
 
     def perform_update(self, serializer):
         return self.guardar_modelo_teniendo_en_cuenta_el_acta(serializer)
