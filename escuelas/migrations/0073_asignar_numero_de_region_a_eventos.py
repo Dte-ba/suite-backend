@@ -7,15 +7,19 @@ from django.db import migrations
 from escuelas.models import Evento
 
 def asignar_numero_de_region(apps, schema_editor):
-    print("")
-    print("Asignando numeros de region a los eventos")
-
-    bar = progressbar.ProgressBar()
     eventos = Evento.objects.all()
+    
+    if len(eventos) > 50:
+        print("")
+        print("Asignando numeros de region a los eventos")
 
-    for evento in bar(eventos):
-        evento.save()
+        bar = progressbar.ProgressBar()
 
+        for evento in bar(eventos):
+            evento.save()
+    else:
+        for evento in eventos:
+            evento.save()
 
 class Migration(migrations.Migration):
 
