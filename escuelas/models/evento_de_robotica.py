@@ -53,7 +53,6 @@ class EventoDeRobotica(models.Model):
         tallerista = self.tallerista.nombre + " " + self.tallerista.apellido
         inicio = self.inicio.strftime("%H:%M")
         fin = self.fin.strftime("%H:%M")
-        print(inicio)
         resumen = json.dumps(
                 {
                     "titulo": titulo,
