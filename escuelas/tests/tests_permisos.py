@@ -130,7 +130,6 @@ class Permisos(APITestCase):
         self.client.logout()
 
         # Si un usuario que no tiene permisos de administrador intenta ver el perfil de otro usuario falla, por falta de permisos
-        print("----------")
         self.client.login(username='secundario', password='123')
         self.client.force_authenticate(user=usuario_secundario)
         response = self.client.get('/api/mi-perfil?perfilInspeccionado=%d' %(user.id), format='json')
