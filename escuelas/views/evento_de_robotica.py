@@ -373,3 +373,114 @@ class EventoDeRoboticaViewSet(viewsets.ModelViewSet):
             ]
         }
         return Response(estadisticas)
+
+    @list_route(methods=['get'])
+    def export(self, request):
+
+        inicio = self.request.query_params.get('inicio', None)
+        fin = self.request.query_params.get('fin', None)
+        region = self.request.query_params.get('region', None)
+
+        eventos = models.EventoDeRobotica.objects.filter(fecha__range=(inicio, fin))
+
+        if region:
+            eventos = eventos.filter(escuela__localidad__distrito__region__numero=region)
+
+        response = HttpResponse()
+        response['Content-Disposition'] = 'attachment; filename="talleres-export.xls"'
+        response['Content-Type'] = 'application/vnd.ms-excel'
+
+        wb = xlwt.Workbook(encoding='utf-8')
+        ws = wb.add_sheet('Talleres')
+
+        font_style = xlwt.XFStyle()
+        font_style.font.bold = True
+
+        columns = ['Fecha', 'Hora Inicio', 'Hora Fin', 'Título', 'Área', 'Curso', 'Sección', 'Cant. de Alumnos', 'Tallerista', 'Escuela', 'CUE', 'Región', 'Distrito', 'Localidad', 'Docente a Cargo', 'Acta', 'Estado', 'Observaciones', 'Fecha de Creación']
+        col_num = 2 # 0 y 1 son obligatorias
+
+        # Escribir los headers
+        for col_num in range(len(columns)):
+            ws.write(0, col_num, columns[col_num], font_style)
+
+        ws.col(0).width = 256 * 12 # Fecha
+        ws.col(1).width = 256 * 12 # Hora Inicio
+        ws.col(2).width = 256 * 12 # Hora Fin
+        ws.col(3).width = 600 * 12 # Titulo
+        ws.col(4).width = 400 * 12 # Área
+        ws.col(5).width = 256 * 12 # Curso
+        ws.col(6).width = 256 * 12 # Sección
+        ws.col(7).width = 256 * 12 # Cantidad de Alumnos
+        ws.col(8).width = 600 * 12 # Tallerista
+        ws.col(9).width = 600 * 12 # Escuela
+        ws.col(10).width = 256 * 12 # CUE
+        ws.col(11).width = 200 * 12 # Región
+        ws.col(12).width = 400 * 12 # Distrito
+        ws.col(13).width = 400 * 12 # Localidad
+        ws.col(14).width = 600 * 12 # Docente a Cargo
+        ws.col(15).width = 256 * 12 # Acta
+        ws.col(16).width = 300 * 12 # Estado
+        ws.col(17).width = 600 * 12 # Observaciones
+        ws.col(18).width = 256 * 12 # Fecha de Creación
+
+        font_style = xlwt.XFStyle()
+
+        row_num = 0
+
+        for taller in eventos:
+            fecha_de_creacion = taller.fecha_de_creacion
+            fecha_de_creacion = fecha_de_creacion.strftime("%d-%m-%Y")
+            fecha = taller.fecha
+            fecha = fecha.strftime("%d-%m-%Y")
+            hora_inicio = taller.inicio
+            hora_inicio = hora_inicio.strftime("%H:%m")
+            hora_fin = taller.fin
+            hora_fin = hora_fin.strftime("%H:%m")
+            titulo = taller.titulo.nombre
+            region = taller.escuela.localidad.distrito.region.numero
+            distrito = taller.escuela.localidad.distrito.nombre
+            localidad = taller.escuela.localidad.nombre
+            cue = taller.escuela.cue
+            escuela = taller.escuela.nombre
+            tallerista = taller.tallerista.nombre
+            area = taller.area_en_que_se_dicta.nombre
+            curso = taller.curso.nombre
+            seccion = taller.seccion.nombre
+            cantidad_de_alumnos = taller.cantidad_de_alumnos
+            docente_a_cargo = taller.docente_a_cargo
+            observaciones = taller.minuta
+            acta = taller.acta
+            if acta:
+                acta = "Con Acta"
+            else:
+                acta = "Sin Acta"
+
+            cerrar_evento = taller.cerrar_evento
+            if cerrar_evento == True:
+                estado = "Cerrado"
+            else:
+                estado = "Abierto"
+
+            row_num += 1
+            ws.write(row_num, 0, fecha, font_style)
+            ws.write(row_num, 1, hora_inicio, font_style)
+            ws.write(row_num, 2, hora_fin, font_style)
+            ws.write(row_num, 3, titulo, font_style)
+            ws.write(row_num, 4, area, font_style)
+            ws.write(row_num, 5, curso, font_style)
+            ws.write(row_num, 6, seccion, font_style)
+            ws.write(row_num, 7, cantidad_de_alumnos, font_style)
+            ws.write(row_num, 8, tallerista, font_style)
+            ws.write(row_num, 9, escuela, font_style)
+            ws.write(row_num, 10, cue, font_style)
+            ws.write(row_num, 11, region, font_style)
+            ws.write(row_num, 12, distrito, font_style)
+            ws.write(row_num, 13, localidad, font_style)
+            ws.write(row_num, 14, docente_a_cargo, font_style)
+            ws.write(row_num, 15, acta, font_style)
+            ws.write(row_num, 16, estado, font_style)
+            ws.write(row_num, 17, observaciones, font_style)
+            ws.write(row_num, 18, fecha_de_creacion, font_style)
+
+        wb.save(response)
+        return(response)
