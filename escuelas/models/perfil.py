@@ -7,6 +7,7 @@ from django.db.models import Q
 from django.dispatch import receiver
 from escuelas import utils
 from escuelas.models import Evento
+from escuelas.models import EventoDeRobotica
 
 
 def upload_to(instance, filename):
@@ -117,6 +118,9 @@ class Perfil(models.Model):
         filtro = Q(responsable=self) | Q(acompaniantes=self)
         return Evento.objects.filter(filtro).filter(fecha__range=(desde, hasta)).distinct().order_by('fecha')
 
+    def obtener_eventos_de_robotica_por_fecha(self, desde, hasta):
+        filtro = Q(tallerista=self)
+        return EventoDeRobotica.objects.filter(filtro).filter(fecha__range=(desde, hasta)).distinct().order_by('fecha')
 
 @receiver(post_save, sender=User)
 def create_user_profile(sender, instance, created, **kwargs):

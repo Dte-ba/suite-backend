@@ -12,7 +12,9 @@ def crear_aplicaciones(apps, schema_editor):
 
 def cargar_app_suite_a_usuarios(apps, schema_editor):
     Perfil = apps.get_model("escuelas", "Perfil")
-    aplicacion = models.Aplicacion.objects.get(nombre="SUITE")
+    Aplicacion = apps.get_model("escuelas", "Aplicacion")
+
+    aplicacion = Aplicacion.objects.get(nombre="SUITE")
     perfiles = Perfil.objects.all()
     for perfil in perfiles:
         perfil.aplicaciones.add(aplicacion)

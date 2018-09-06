@@ -1,0 +1,179 @@
+{% extends "easy_pdf/base.html" %}
+
+{% block extra_style %}
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <style type="text/css">
+
+        .tc {
+          text-align: center;
+        }
+
+        .w100 {
+          width: 100%;
+        }
+
+        .w2 {
+          width: 20%;
+        }
+
+        i {
+          font-style: normal;
+        }
+
+        i.verde {
+          color: green;
+        }
+
+        i.rojo {
+          color: red;
+        }
+
+        th {
+          text-align: left;
+        }
+
+        .w80 {
+          width: 80%;
+
+        }
+
+
+
+    </style>
+{% endblock %}
+
+{% if pdf %}
+  {%block page_foot %}
+    <div class='tc'>Página <pdf:pagenumber> de <pdf:pagecount> </div>
+  {% endblock%}
+{% endif %}
+
+
+{% block content %}
+
+  <table class="w100" border="1" cellspacing="0" cellpadding="4">
+
+    <tr>
+      <td class="tc" colspan="2"><h3>Informe de consultoría Robótica<h3></td>
+    </tr>
+
+    <tr>
+      <th class="w2" width={{w}}>Nombre</th>
+      <td>{{perfil.nombre}} {{perfil.apellido}}</td>
+    </tr>
+
+    <tr>
+      <th class="w2" width={{w}}>DNI</th>
+      <td>{{perfil.dni}}</td>
+    </tr>
+
+    <tr>
+      <th class="w2" width={{w}}>Cargo</th>
+      <td>{{perfil.cargo.nombre}}</td>
+    </tr>
+
+    <tr>
+      <th class="w2" width={{w}}>Región</th>
+      <td>{{perfil.region.numero}}</td>
+    </tr>
+
+    <tr>
+      <th class="w2" width={{w}}>Período</th>
+      <td>{{desde}} - {{hasta}}</td>
+    </tr>
+
+  </table>
+
+
+  {% for evento in eventos %}
+    <br/>
+    <br/>
+
+    <table class="w100" border="1" cellspacing="0" cellpadding="2">
+      <tr>
+        <th class="w2">Fecha</th>
+        <td colspan=2>{{evento.fecha|date:'d/m/Y'}} - de {{evento.inicio}} a {{evento.fin}}</td>
+
+        <td>
+          {% if evento.cerrar_evento %}
+            <i class='verde'>✔ Cerrado
+                {% if evento.acta %}
+                  (con acta)
+                {% else %}
+                  (sin acta)
+                {% endif %}
+            </i>
+          {% else %}
+            <i class='rojo'>✖ Sin cerrar</i>
+          {% endif %}
+        </td>
+      </tr>
+
+      <tr>
+        <th class="w2" width={{w}}>Fecha de creación</th>
+        <td> {{evento.fecha_de_creacion|date:'d/m/Y'}}</td>
+
+        <th class="w2" width={{w}}>Última modificación</th>
+        <td> {{evento.fecha_de_ultima_modificacion|date:'d/m/Y'}}</td>
+      </tr>
+
+
+      <tr>
+        <th class="w2" width={{w}}>Escuela</th>
+        <td colspan=3> {{evento.escuela.cue}} - {{evento.escuela.nombre}}</td>
+      </tr>
+
+      <tr>
+        <th class="w2" width={{w}}>Docente a cargo</th>
+        <td colspan=3>
+          {% if evento.docente_a_cargo %}
+            {{evento.docente_a_cargo}}
+          {% endif %}
+        </td>
+      </tr>
+
+      <tr>
+        <th class="w2" width={{w}}>Título</th>
+        <td colspan="3"> {{evento.titulo}}</td>
+      </tr>
+
+      <tr>
+        <th class="w2" width={{w}}>Curso</th>
+        <td> {{evento.curso}}</td>
+
+        <th class="w2" width={{w}}>Seccion</th>
+        <td> {{evento.seccion.nombre}}</td>
+      </tr>
+
+      <tr>
+        <th class="w2" width={{w}}>Area</th>
+        <td> {{evento.area_en_que_se_dicta}}</td>
+
+        <th class="w2" width={{w}}>Cantidad de alumnos</th>
+        <td> {{evento.cantidad_de_alumnos}}</td>
+
+      </tr>
+
+      <tr>
+        <th class="w2" width={{w}}>Observaciones</th>
+        <td colspan=3>
+            {% if evento.minuta %}
+              {{evento.minuta}}
+            {% endif %}
+        </td>
+      </tr>
+
+    </table>
+  {% endfor %}
+
+
+
+{% if imprimir %}
+
+<script type="text/javascript">
+window.print();
+</script>
+
+{% endif %}
+
+{% endblock %}

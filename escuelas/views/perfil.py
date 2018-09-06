@@ -72,12 +72,12 @@ class PerfilViewSet(viewsets.ModelViewSet):
 
         if filtro_suite:
             aplicacion_suite = models.Aplicacion.objects.get(nombre=u"SUITE")
-            filtro = Q(aplicaciones__in=[aplicacion_suite.id])
+            filtro = Q(aplicaciones=aplicacion_suite)
             queryset = queryset.filter(filtro)
 
         if filtro_robotica:
             aplicacion_robotica = models.Aplicacion.objects.get(nombre=u"Robótica")
-            filtro = Q(aplicaciones__in=[aplicacion_robotica.id])
+            filtro = Q(aplicaciones=aplicacion_robotica)
             queryset = queryset.filter(filtro)
 
 

@@ -3,6 +3,7 @@ from django.db import models
 
 class Aplicacion(models.Model):
     nombre = models.CharField(max_length=255)
+    identificador = models.CharField(max_length=128, default="")
 
     def __unicode__(self):
         return u"App: " + self.nombre

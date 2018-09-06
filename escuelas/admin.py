@@ -158,6 +158,14 @@ class TrabajoAdmin(CustomModelAdmin):
     )
     search_fields = ('trabajo_id', 'nombre')
 
+class AplicacionAdmin(CustomModelAdmin):
+    model = models.Aplicacion
+    list_display = (
+        'nombre',
+        'identificador',
+    )
+    search_fields = ('nombre', 'identificador')
+
 class DistribucionDePaqueteAdmin(CustomModelAdmin):
     model = models.DistribucionDePaquete
     list_display = (
@@ -224,4 +232,4 @@ admin.site.register(models.Paquete, PaqueteAdmin)
 admin.site.register(models.Trabajo, TrabajoAdmin)
 admin.site.register(models.DistribucionDePaquete, DistribucionDePaqueteAdmin)
 
-admin.site.register(models.Aplicacion)
+admin.site.register(models.Aplicacion, AplicacionAdmin)

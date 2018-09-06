@@ -13,12 +13,20 @@ from escuelas import trabajos
 
 class InformesPorRegionTests(APITestCase):
 
-    def test_puede_crear_informe_como_trabajo_por_region_no_asincronico(self):
+    def test_puede_crear_informe_como_trabajo_por_region_para_suite_no_asincronico(self):
         user = User.objects.create_user(username='test', password='123')
         self.client.force_authenticate(user=user)
         self.crear_datos_para_los_informes(user)
 
-        resultado = trabajos.informes.generar_informe_de_region(numero_de_region=2, desde="2017-01-01", hasta="2018-01-01", aplicacion="SUITE")
+        resultado = trabajos.informes.generar_informe_de_region(numero_de_region=2, desde="2017-01-01", hasta="2018-01-01", aplicacion="suite")
+        self.assertTrue(resultado.archivo)
+
+    def test_puede_crear_informe_como_trabajo_por_region_para_robotica_no_asincronico(self):
+        user = User.objects.create_user(username='test', password='123')
+        self.client.force_authenticate(user=user)
+        self.crear_datos_para_los_informes(user)
+
+        resultado = trabajos.informes.generar_informe_de_region(numero_de_region=2, desde="2017-01-01", hasta="2018-01-01", aplicacion=u"robotica")
         self.assertTrue(resultado.archivo)
 
     def crear_datos_para_los_informes(self, user):

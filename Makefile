@@ -119,8 +119,9 @@ reiniciar_contraseñas:
 
 cargar_ultimo_dump_localmente:
 	@echo "${G}Se cargará el dump mas reciente: ${DB_DUMP_MAS_RECIENTE}${N}"
-	dropdb --if-exists suite -e; createdb suite
-	pg_restore --no-acl --no-owner -d suite ${DB_DUMP_MAS_RECIENTE}
+	@dropdb --if-exists suite -e; createdb suite
+	@pg_restore --no-acl --no-owner -d suite ${DB_DUMP_MAS_RECIENTE}
+	make reiniciar_contraseñas
 
 version:
 	pipenv run bumpversion patch --verbose

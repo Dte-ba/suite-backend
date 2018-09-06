@@ -36,8 +36,21 @@ class TrabajosViewSet(viewsets.ViewSet):
         desde = request.query_params['desde']
         hasta = request.query_params['hasta']
         perfil_id = request.query_params['perfil_id']
+        aplicacion = request.query_params['aplicacion']
 
-        job = trabajos.informes.generar_informe_de_perfil.delay(perfil_id, desde, hasta)
+        job = trabajos.informes.generar_informe_de_perfil.delay(perfil_id, desde, hasta, aplicacion)
+
+        return Response({
+            'trabajo_id': job.id
+        })
+
+    @list_route(methods=['get'])
+    def informe_de_perfil_por_region(self, request):
+        desde = request.query_params['desde']
+        hasta = request.query_params['hasta']
+        region = request.query_params['region']
+        aplicacion = request.query_params['aplicacion']
+        job = trabajos.informes.generar_informe_de_region.delay(region, desde, hasta, aplicacion)
 
         return Response({
             'trabajo_id': job.id
@@ -65,18 +78,6 @@ class TrabajosViewSet(viewsets.ViewSet):
 
         return Response({
             'trabajo_id': trabajo.id
-        })
-
-    @list_route(methods=['get'])
-    def informe_de_perfil_por_region(self, request):
-        desde = request.query_params['desde']
-        hasta = request.query_params['hasta']
-        region = request.query_params['region']
-        aplicacion = request.query_params['aplicacion']
-        job = trabajos.informes.generar_informe_de_region.delay(region, desde, hasta, aplicacion)
-
-        return Response({
-            'trabajo_id': job.id
         })
 
     @detail_route(methods=['get'])

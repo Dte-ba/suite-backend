@@ -12,7 +12,6 @@ import shutil
 
 
 from easy_pdf.rendering import render_to_pdf
-from django.template import loader
 from escuelas import models
 
 
@@ -31,14 +30,21 @@ def generar_informe_de_region(numero_de_region, desde, hasta, aplicacion):
 
     region = models.Region.objects.get(numero=numero_de_region)
     cantidad_de_pasos = region.perfiles.count() + 2
-    trabajo.actualizar_paso(1, cantidad_de_pasos, "Solicitando perfiles")
-    objeto_aplicacion = models.Aplicacion.objects.get(nombre= aplicacion)
+    trabajo.actualizar_paso(1, cantidad_de_pasos, "Solicitando perfiles con acceso a {}".format(aplicacion))
+
+    try:
+        objeto_aplicacion = models.Aplicacion.objects.get(identificador=aplicacion)
+    except models.Aplicacion.DoesNotExist:
+        trabajo.error = "No se encuentra ese tipo de aplicacion: {}.".format(aplicacion)
+        trabajo.save()
+        return
+
     # Genera un archivo pdf por cada perfil.
     for (numero, perfil) in enumerate(region.perfiles.filter(fecha_de_renuncia=None , aplicaciones=objeto_aplicacion)):
         trabajo.actualizar_paso(1 + numero, cantidad_de_pasos, u"Obteniendo informe de {0} {1}".format(perfil.apellido, perfil.nombre))
         nombre_del_archivo = u"informe_de_{0}".format(perfil.nombre)
         ruta = os.path.join(directorio_temporal, obtener_nombre_de_archivo_informe(perfil))
-        crear_informe_en_archivo_pdf(ruta, perfil, desde, hasta)
+        crear_informe_en_archivo_pdf(ruta, perfil, desde, hasta, aplicacion)
 
     trabajo.actualizar_paso(cantidad_de_pasos, cantidad_de_pasos, u"Generando archivo .zip para descargar")
 
@@ -59,9 +65,12 @@ def generar_informe_de_region(numero_de_region, desde, hasta, aplicacion):
     shutil.rmtree(directorio_del_archivo_zip)
     return trabajo
 
-def crear_informe_en_archivo_pdf(ruta, perfil, desde, hasta):
-    eventos = perfil.obtener_eventos_por_fecha(desde, hasta)
-    template = loader.get_template('informe.html')
+def crear_informe_en_archivo_pdf(ruta, perfil, desde, hasta, aplicacion):
+    if aplicacion == 'suite':
+        eventos = perfil.obtener_eventos_por_fecha(desde, hasta)
+    else:
+        eventos = perfil.obtener_eventos_de_robotica_por_fecha(desde, hasta)
+
     contexto = {
         "perfil": perfil,
         "eventos": eventos,
@@ -69,21 +78,35 @@ def crear_informe_en_archivo_pdf(ruta, perfil, desde, hasta):
         "hasta": formatear_fecha(hasta),
     }
 
-    contenido = render_to_pdf("informe.html", contexto)
+    if aplicacion == 'suite':
+        contenido = render_to_pdf("informe.html", contexto)
+    else:
+        contenido = render_to_pdf("informe_robotica.html", contexto)
 
     archivo2 = open(ruta, "w")
     archivo2.write(contenido)
     archivo2.close()
 
 def obtener_nombre_de_archivo_informe(perfil):
-     return u'informe_region_{0}_{1}_{2}_{3}.pdf'.format(perfil.region.numero, perfil.cargo.nombre, perfil.apellido, perfil.nombre)
+    if perfil.cargo:
+        cargo = perfil.cargo.nombre
+    else:
+        cargo = "sin_cargo"
+    return u'informe_region_{0}_{1}_{2}_{3}.pdf'.format(perfil.region.numero, cargo, perfil.apellido, perfil.nombre)
 
 @job
-def generar_informe_de_perfil(perfil_id, desde, hasta):
+def generar_informe_de_perfil(perfil_id, desde, hasta, aplicacion):
     trabajo = utils.crear_modelo_trabajo("Informe de perfil {0} desde {1} hasta {2}".format(perfil_id, desde, hasta))
 
-    if None in [perfil_id, desde, hasta]:
+    if None in [perfil_id, desde, hasta, aplicacion]:
         trabajo.error = "No han especificado todos los argumentos: perfil_id, desde y hasta."
+        trabajo.save()
+        return
+
+    try:
+        objeto_aplicacion = models.Aplicacion.objects.get(identificador=aplicacion)
+    except models.Aplicacion.DoesNotExist:
+        trabajo.error = "No se encuentra ese tipo de aplicacion."
         trabajo.save()
         return
 
@@ -95,14 +118,21 @@ def generar_informe_de_perfil(perfil_id, desde, hasta):
     trabajo.actualizar_paso(1, 4, "Solicitando datos desde {0} hasta {1}".format(desde, hasta))
 
     perfil = models.Perfil.objects.get(id=perfil_id)
-    eventos = perfil.obtener_eventos_por_fecha(desde, hasta)
+
+    if aplicacion == 'suite':
+        eventos = perfil.obtener_eventos_por_fecha(desde, hasta)
+    elif aplicacion == 'robotica':
+        eventos = perfil.obtener_eventos_de_robotica_por_fecha(desde, hasta)
+    else:
+        trabajo.error = "No se pueden filtrar los eventos para la aplicacion {}.".format(aplicacion)
+        trabajo.save()
+        return
 
     trabajo.actualizar_paso(1, 4, "Procesando {0} eventos".format(len(eventos)))
 
     trabajo.actualizar_paso(2, 4, "Generando archivo")
     trabajo.resultado = json.dumps({'perfil_id': perfil_id, 'cantidad_de_eventos': len(eventos)})
 
-    template = loader.get_template('informe.html')
     contexto = {
         "perfil": perfil,
         "eventos": eventos,
@@ -110,7 +140,11 @@ def generar_informe_de_perfil(perfil_id, desde, hasta):
         "hasta": formatear_fecha(hasta),
     }
 
-    contenido = render_to_pdf("informe.html", contexto)
+    if aplicacion == 'suite':
+        contenido = render_to_pdf("informe.html", contexto)
+    else:
+        contenido = render_to_pdf("informe_robotica.html", contexto)
+
     archivo =  django.core.files.base.ContentFile(contenido)
     trabajo.archivo.save(obtener_nombre_de_archivo_informe(perfil), archivo)
 
