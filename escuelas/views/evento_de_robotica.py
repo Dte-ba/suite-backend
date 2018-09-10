@@ -442,7 +442,7 @@ class EventoDeRoboticaViewSet(viewsets.ModelViewSet):
             localidad = taller.escuela.localidad.nombre
             cue = taller.escuela.cue
             escuela = taller.escuela.nombre
-            tallerista = taller.tallerista.nombre
+            tallerista = taller.tallerista.apellido + ", " + taller.tallerista.nombre
             area = taller.area_en_que_se_dicta.nombre
             curso = taller.curso.nombre
             seccion = taller.seccion.nombre
