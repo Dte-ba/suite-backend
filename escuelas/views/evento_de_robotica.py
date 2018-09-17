@@ -396,7 +396,7 @@ class EventoDeRoboticaViewSet(viewsets.ModelViewSet):
         font_style = xlwt.XFStyle()
         font_style.font.bold = True
 
-        columns = ['Fecha', 'Hora Inicio', 'Hora Fin', 'Título', 'Área', 'Curso', 'Sección', 'Cant. de Alumnos', 'Tallerista', 'Escuela', 'CUE', 'Región', 'Distrito', 'Localidad', 'Docente a Cargo', 'Acta', 'Estado', 'Observaciones', 'Fecha de Creación']
+        columns = ['Fecha', 'Hora Inicio', 'Hora Fin', 'Título', 'Área', 'Curso', 'Sección', 'Cant. de Alumnos', 'Tallerista', 'Escuela', 'CUE', 'Región', 'Distrito', 'Localidad', 'Docente a Cargo', 'Se realizó el taller?', 'Motivo si NO se realizó', 'Acta', 'Estado', 'Observaciones', 'Fecha de Creación']
         col_num = 2 # 0 y 1 son obligatorias
 
         # Escribir los headers
@@ -418,10 +418,12 @@ class EventoDeRoboticaViewSet(viewsets.ModelViewSet):
         ws.col(12).width = 400 * 12 # Distrito
         ws.col(13).width = 400 * 12 # Localidad
         ws.col(14).width = 600 * 12 # Docente a Cargo
-        ws.col(15).width = 256 * 12 # Acta
-        ws.col(16).width = 300 * 12 # Estado
-        ws.col(17).width = 600 * 12 # Observaciones
-        ws.col(18).width = 256 * 12 # Fecha de Creación
+        ws.col(15).width = 600 * 12 # Se pudo realizar el taller?
+        ws.col(16).width = 600 * 12 # Si no se pudo, motivo.
+        ws.col(17).width = 256 * 12 # Acta
+        ws.col(18).width = 300 * 12 # Estado
+        ws.col(19).width = 600 * 12 # Observaciones
+        ws.col(20).width = 256 * 12 # Fecha de Creación
 
         font_style = xlwt.XFStyle()
 
@@ -448,8 +450,11 @@ class EventoDeRoboticaViewSet(viewsets.ModelViewSet):
             seccion = taller.seccion.nombre
             cantidad_de_alumnos = taller.cantidad_de_alumnos
             docente_a_cargo = taller.docente_a_cargo
+            se_dio_el_taller = taller.se_dio_el_taller
+            motivo = taller.motivo
             observaciones = taller.minuta
             acta = taller.acta
+
             if acta:
                 acta = "Con Acta"
             else:
@@ -477,10 +482,12 @@ class EventoDeRoboticaViewSet(viewsets.ModelViewSet):
             ws.write(row_num, 12, distrito, font_style)
             ws.write(row_num, 13, localidad, font_style)
             ws.write(row_num, 14, docente_a_cargo, font_style)
-            ws.write(row_num, 15, acta, font_style)
-            ws.write(row_num, 16, estado, font_style)
-            ws.write(row_num, 17, observaciones, font_style)
-            ws.write(row_num, 18, fecha_de_creacion, font_style)
+            ws.write(row_num, 15, se_dio_el_taller, font_style)
+            ws.write(row_num, 16, motivo, font_style)
+            ws.write(row_num, 17, acta, font_style)
+            ws.write(row_num, 18, estado, font_style)
+            ws.write(row_num, 19, observaciones, font_style)
+            ws.write(row_num, 20, fecha_de_creacion, font_style)
 
         wb.save(response)
         return(response)

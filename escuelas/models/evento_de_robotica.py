@@ -8,7 +8,10 @@ from datetime import date
 import json
 
 class EventoDeRobotica(models.Model):
-
+    OPCIONES_SI_NO = (
+        ('Si', 'Si'),
+        ('No', 'No'),
+    )
     escuela = models.ForeignKey('Escuela', on_delete=models.CASCADE, related_name='eventos_de_robotica', default=None, blank=True, null=True)
 
     tallerista = models.ForeignKey('Perfil', on_delete=models.CASCADE, related_name='tallerista_eventos_de_robotica', default=None, blank=True, null=True)
@@ -33,6 +36,10 @@ class EventoDeRobotica(models.Model):
     acta = models.FileField(default=None, blank=True, null=True)
 
     cerrar_evento = models.BooleanField(default=False)
+
+    se_dio_el_taller = models.CharField(max_length=3, choices=OPCIONES_SI_NO, default=None, blank=True, null=True)
+    motivo = models.TextField(max_length=512, default=None, blank=True, null=True)
+
     fecha_de_ultima_modificacion = models.DateTimeField(auto_now=True)
     fecha_de_creacion = models.DateTimeField(auto_now_add=True)
 
