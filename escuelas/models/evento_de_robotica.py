@@ -94,6 +94,10 @@ class EventoDeRobotica(models.Model):
         if perfil == self.tallerista:
             return True
 
+        # Si el perfil es Admin, puede editar el taller
+        if perfil.group.name == "Administrador":
+            return True
+
         return False
 
 @receiver(post_save, sender=EventoDeRobotica)
