@@ -86,9 +86,12 @@ class EventoDeRobotica(models.Model):
         "Indica si un taller puede ser editado por un perfil en particular."
 
         # Sin importar el perfil, el evento no se tiene que poder editar
-        # si tiene acta.
+        # si tiene acta. Excepto administrador, que puede editar aún cerrado.
         if self.cerrar_evento == True:
-            return False
+            if perfil.group.name =="Administrador":
+                return True
+            else:
+                return False
 
         # Si es responsable tiene que poder editarlo.
         if perfil == self.tallerista:
