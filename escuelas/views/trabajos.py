@@ -69,6 +69,18 @@ class TrabajosViewSet(viewsets.ViewSet):
         })
 
     @list_route(methods=['get'])
+    def exportar_talleres_de_robotica(self, request):
+        inicio = self.request.query_params.get('inicio', None)
+        fin = self.request.query_params.get('fin', None)
+        criterio = self.request.query_params.get('criterio', None)
+
+        trabajo = trabajos.exportar_talleres_de_robotica.exportar_talleres.delay(inicio, fin, criterio)
+
+        return Response({
+            'trabajo_id': trabajo.id
+        })
+
+    @list_route(methods=['get'])
     def distribuir_paquetes(self, request):
         id = request.query_params['id']
 

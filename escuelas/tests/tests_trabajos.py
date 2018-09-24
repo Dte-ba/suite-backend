@@ -59,6 +59,16 @@ class TrabajosTests(APITestCase):
         #os.system('open media_archivos_locales/{}'.format(resultado.archivo))
         self.assertTrue(resultado.archivo)
 
+    def test_puede_exportar_talleres_como_trabajo_no_asincronico(self):
+        user = User.objects.create_user(username='test', password='123')
+        self.client.force_authenticate(user=user)
+
+        perfil_id = self.crear_perfil_con_eventos_de_robotica()
+
+        resultado = trabajos.exportar_talleres_de_robotica.exportar_talleres(inicio="2017-01-01", fin="2018-01-01", criterio="fechaDeRealizacion")
+        #os.system('open media_archivos_locales/{}'.format(resultado.archivo))
+        self.assertTrue(resultado.archivo)
+
     def test_puede_crear_informe_como_trabajo(self):
         user = User.objects.create_user(username='test', password='123')
         self.client.force_authenticate(user=user)
