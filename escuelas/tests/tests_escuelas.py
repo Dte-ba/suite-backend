@@ -219,6 +219,7 @@ class EscuelasTestsCase(APITestCase):
         # Se crea un piso
         piso = models.Piso.objects.create(servidor="Servidor EXO")
 
+
         # Se crea un tipo de financiamiento
         tipo_de_financiamiento_1 = models.TipoDeFinanciamiento.objects.create(nombre="Provincial")
         tipo_de_financiamiento_2 = models.TipoDeFinanciamiento.objects.create(nombre="Municipal")
@@ -263,6 +264,12 @@ class EscuelasTestsCase(APITestCase):
                     },
                     #"motivo_de_conformacion": None,
                     #"padre": None,
+                    "perfil-de-ultima-modificacion": {
+                        "data": {
+                            "type": "perfiles",
+                            "id": user.perfil.id
+                        }
+                    },
                     "piso": {
                         "data": {
                             "type": "pisos",
