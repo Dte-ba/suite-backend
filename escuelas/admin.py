@@ -23,7 +23,7 @@ class EscuelaForm(forms.ModelForm):
 class EscuelaAdmin(CustomModelAdmin):
     form = EscuelaForm
     model = models.Escuela
-    list_display = ('id', 'cue', 'nombre', 'localidad', 'nivel', 'modalidad', 'numero_de_region')
+    list_display = ('id', 'cue', 'nombre', 'localidad', 'nivel', 'modalidad', 'numero_de_region', 'fecha_de_ultima_modificacion', 'perfil_de_ultima_modificacion')
     search_fields = ('cue', 'nombre')
 
 class PerfilForm(forms.ModelForm):

@@ -30,6 +30,9 @@ class Escuela(models.Model):
 
     estado = models.BooleanField(default=True, blank=True) # True = Abierta, False= Cerrada
 
+    fecha_de_ultima_modificacion = models.DateTimeField(auto_now=True)
+    perfil_de_ultima_modificacion = models.ForeignKey('Perfil', on_delete=models.CASCADE, related_name='perfil_modificacion_escuela', default=None, blank=True, null=True)
+
     def __unicode__(self):
         return self.cue + " " + self.nombre
 
