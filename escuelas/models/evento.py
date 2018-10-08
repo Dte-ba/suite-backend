@@ -64,6 +64,10 @@ class Evento(models.Model):
 
     acta = models.FileField(default=None, blank=True, null=True)
 
+    fecha_de_ultima_modificacion = models.DateTimeField(auto_now=True)
+    fecha_de_creacion = models.DateTimeField(auto_now_add=True)
+
+
     def __unicode__(self):
         return self.titulo
 
