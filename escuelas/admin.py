@@ -44,7 +44,7 @@ class PerfilAdmin(CustomModelAdmin):
 
 class EventoAdmin(CustomModelAdmin):
     model = models.Evento
-    list_display = ('id', 'region', 'titulo', 'fecha', 'inicio', 'fecha_fin', 'fin',  'responsable', 'escuela')
+    list_display = ('id', 'region', 'titulo', 'fecha', 'inicio', 'fecha_fin', 'fin',  'responsable', 'escuela','fecha_de_creacion', 'fecha_de_ultima_modificacion')
     search_fields = ('id', 'titulo', 'legacy_id')
 
 class EventoDeRoboticaAdmin(CustomModelAdmin):
