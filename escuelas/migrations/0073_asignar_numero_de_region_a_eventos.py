@@ -7,8 +7,8 @@ from django.db import migrations
 from escuelas.models import Evento
 
 def asignar_numero_de_region(apps, schema_editor):
-    eventos = Evento.objects.all()
-    
+    eventos = apps.get_model("escuelas", "Evento").objects.all()
+
     if len(eventos) > 50:
         print("")
         print("Asignando numeros de region a los eventos")
