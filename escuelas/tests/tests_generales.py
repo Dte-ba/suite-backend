@@ -140,6 +140,12 @@ class GeneralesTestCase(APITestCase):
                             "type": "estados-de-paquete",
                             "id": estado.id
                         }
+                    },
+                    "perfil-que-solicito-el-paquete": {
+                        "data": {
+                            "type": "perfiles",
+                            "id": user.perfil.id
+                        }
                     }
                 }
             }
@@ -164,6 +170,10 @@ class GeneralesTestCase(APITestCase):
         self.assertEqual(response.data['id_hardware'], '240a64647f8c')
 
     def test_puede_solicitar_muchos_maquetes_de_forma_masiva_a_la_api(self):
+        # Prepara el usuario para chequear contra la api
+        user = User.objects.create_user(username='test', password='123')
+        self.client.force_authenticate(user=user)
+
         # Inicialmente no hay paquetes cargados.
         self.assertEqual(models.Paquete.objects.all().count(), 0)
 
@@ -179,6 +189,7 @@ class GeneralesTestCase(APITestCase):
 
         data_con_errores = """{
             "fecha":"2017-11-09",
+            "idPerfil": IDPERFIL,
             "escuela": {
                 "cue":61480600,
                 "nombre":"Eem Nº 14",
@@ -211,7 +222,9 @@ class GeneralesTestCase(APITestCase):
                 ["","","", ""]
             ]
         }
-        """
+        """.replace("IDPERFIL", str(user.perfil.id))
+
+
         response = self.client.post('/api/paquetes/importacionMasiva', data_con_errores, content_type='application/x-www-form-urlencoded; charset=UTF-8')
 
 
@@ -222,6 +235,7 @@ class GeneralesTestCase(APITestCase):
 
         data_correcta = """{
             "fecha":"2017-11-09",
+            "idPerfil": IDPERFIL,
             "escuela": {
                 "cue":61480600,
                 "nombre":"Eem Nº 14",
@@ -249,7 +263,8 @@ class GeneralesTestCase(APITestCase):
                 ["","","", ""]
             ]
         }
-        """
+        """.replace("IDPERFIL", str(user.perfil.id))
+
         response = self.client.post('/api/paquetes/importacionMasiva', data_correcta, content_type='application/x-www-form-urlencoded; charset=UTF-8')
 
         self.assertEquals(response.data, {'paquetes': 1})
