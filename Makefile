@@ -60,7 +60,7 @@ migrar:
 test: migrar
 	@clear;
 	@echo "${G}Ejecutando tests ...${N}"
-	dropdb --if-exists suite-test -e; createdb suite-test
+	dropdb --if-exists test_suite -e
 	@pipenv run ${BIN_MANAGE_RELATIVO} test # -v 2"
 
 
