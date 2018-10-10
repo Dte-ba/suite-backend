@@ -221,6 +221,9 @@ class PaqueteViewSet(viewsets.ModelViewSet):
         escuela = data['escuela']
         paquetes = data['paquetes']
         fecha = data['fecha']
+        idPerfil = data['idPerfil']
+
+        perfilQueSolicitoElPaquete = models.Perfil.objects.get(id=idPerfil)
 
         # Se obtienen los modelos a relacionar con cada paquete solicitado.
         escuela = models.Escuela.objects.get(cue=escuela['cue'])
@@ -268,7 +271,8 @@ class PaqueteViewSet(viewsets.ModelViewSet):
                         marca_de_arranque=marca_de_arranque,
                         estado=estadoPendiente,
                         tpmdata=tpmdata,
-                        ma_hexa=ma_hexa
+                        ma_hexa=ma_hexa,
+                        perfil_que_solicito_el_paquete=perfilQueSolicitoElPaquete
                     )
                     cantidad_de_paquetes_creados += 1
 

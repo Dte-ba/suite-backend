@@ -344,6 +344,7 @@ class PaqueteSerializer(CustomSerializer):
 
     escuela = ResourceRelatedField(queryset=models.Escuela.objects)
     estado = ResourceRelatedField(queryset=models.EstadoDePaquete.objects)
+    perfil_que_solicito_el_paquete = ResourceRelatedField(queryset=models.Perfil.objects)
 
     class Meta:
         model = models.Paquete
@@ -363,7 +364,8 @@ class PaqueteSerializer(CustomSerializer):
             'leido',
             'tpmdata',
             'ma_hexa',
-            'zip_devolucion'
+            'zip_devolucion',
+            'perfil_que_solicito_el_paquete'
         )
         read_only_fields = ['zip_devolucion']
 

@@ -27,6 +27,8 @@ class Paquete(models.Model):
     ma_hexa = models.CharField(max_length=512, default=None, blank=True, null=True)
     zip_devolucion = models.FileField(upload_to='devoluciones_de_paquetes/', blank=True, null=True)
 
+    perfil_que_solicito_el_paquete = models.ForeignKey('Perfil', on_delete=models.CASCADE, related_name='perfil_paquetes', default=None, blank=True, null=True)
+
     class Meta:
         db_table = 'paquetes'
         verbose_name_plural = "paquetes"
@@ -60,7 +62,7 @@ class Paquete(models.Model):
                 return p
         else:
             paquetes = Paquete.objects.filter(id_hardware__iexact=id_hardware, ma_hexa__iendswith=str(ma_hexa))
-            
+
             for p in paquetes:
                 if corregir_valor_hexa(p.ma_hexa) == str(ma_hexa):
                     raise ValueError("Ya fue procesado")

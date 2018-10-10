@@ -32,6 +32,8 @@ class TrabajosPaquetes(APITestCase):
         user_2.perfil.group = grupo
         user_2.perfil.save()
 
+        perfilQueSolicitoElPaquete = user_2.perfil
+
         # Se genera 1 escuela
         region_1 = models.Region.objects.create(numero=1)
         distrito_1 = models.Distrito.objects.create(nombre="distrito1", region=region_1)
@@ -48,7 +50,8 @@ class TrabajosPaquetes(APITestCase):
             ne="ee183ce07cfbd86bf819",
             id_hardware="E81132429EFF",
             marca_de_arranque="23",        # Corresponde a 17 hexa
-            estado=estado
+            estado=estado,
+            perfil_que_solicito_el_paquete=perfilQueSolicitoElPaquete
         )
 
         # Se pide la lista de paquetes
