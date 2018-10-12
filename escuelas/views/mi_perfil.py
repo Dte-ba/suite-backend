@@ -46,7 +46,8 @@ class MiPerfilViewSet(viewsets.ViewSet):
             'idRegion': perfil.region.id,
             'version': settings.VERSION_NUMBER,
             'tieneAccesoASuite': perfil.aplicaciones.filter(nombre="SUITE").count() > 0,
-            'tieneAccesoARobotica': perfil.aplicaciones.filter(nombre="Robótica").count() > 0
+            'tieneAccesoARobotica': perfil.aplicaciones.filter(nombre="Robótica").count() > 0,
+            'paquetesPendientes': perfil.obtenerPaquetesPendientes()
 
         }
 

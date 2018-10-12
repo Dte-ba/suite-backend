@@ -8,6 +8,7 @@ from django.dispatch import receiver
 from escuelas import utils
 from escuelas.models import Evento
 from escuelas.models import EventoDeRobotica
+from escuelas.models import Paquete
 
 
 def upload_to(instance, filename):
@@ -121,6 +122,12 @@ class Perfil(models.Model):
     def obtener_eventos_de_robotica_por_fecha(self, desde, hasta):
         filtro = Q(tallerista=self)
         return EventoDeRobotica.objects.filter(filtro).filter(fecha__range=(desde, hasta)).distinct().order_by('fecha')
+
+    def obtenerPaquetesPendientes(self):
+        filtro = Q(perfil_que_solicito_el_paquete=self)
+        return Paquete.objects.filter(filtro)
+
+
 
 @receiver(post_save, sender=User)
 def create_user_profile(sender, instance, created, **kwargs):
