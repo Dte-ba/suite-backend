@@ -3,6 +3,8 @@ from escuela import Escuela
 from evento import Evento
 from evento_de_robotica import EventoDeRobotica
 from region import Region
+from estado_de_paquete import EstadoDePaquete
+from paquete import Paquete
 from perfil import Perfil
 from tipo_de_financiamiento import TipoDeFinanciamiento
 from nivel import Nivel
@@ -32,8 +34,6 @@ from estado_de_validacion import EstadoDeValidacion
 from validacion import Validacion
 from motivo_de_conformacion import MotivoDeConformacion
 from comentario_de_validacion import ComentarioDeValidacion
-from estado_de_paquete import EstadoDePaquete
-from paquete import Paquete
 from modalidad import Modalidad
 from trabajo import Trabajo
 from distribucion_de_paquete import DistribucionDePaquete
