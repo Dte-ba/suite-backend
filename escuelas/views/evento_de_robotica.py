@@ -232,6 +232,16 @@ class EventoDeRoboticaViewSet(viewsets.ModelViewSet):
         conActa = conActaNueva
         sinActa = total - conActa
 
+        from datetime import datetime, timedelta
+
+        day = str(datetime.today().strftime("%d/%b/%Y"))
+        dt = datetime.strptime(day, '%d/%b/%Y')
+        start = dt - timedelta(days=dt.weekday())
+        end = start + timedelta(days=6)
+
+        talleresCreadosEstaSemana = eventos.filter(fecha_de_creacion__range=(start, end))
+        talleresProgramadosParaEstaSemana = eventos.filter(fecha__range=(start, end))
+
         totalDeTalleres = models.EventoDeRobotica.objects.all().exclude(escuela__localidad__distrito__region__numero=None)
         region1 = models.EventoDeRobotica.objects.filter(escuela__localidad__distrito__region__numero=1)
         region2 = models.EventoDeRobotica.objects.filter(escuela__localidad__distrito__region__numero=2)
@@ -279,6 +289,8 @@ class EventoDeRoboticaViewSet(viewsets.ModelViewSet):
                     "porcentaje": round(((sinActa * 100.00) / total),2)
                 }
             ],
+            "talleresCreadosEstaSemana": talleresCreadosEstaSemana.count(),
+            "talleresProgramadosParaEstaSemana": talleresProgramadosParaEstaSemana.count(),
             # "region1": [
             #     {
             #         "name": "Finalizados",

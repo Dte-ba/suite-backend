@@ -19,7 +19,7 @@ class PaqueteViewSet(viewsets.ModelViewSet):
     serializer_class = serializers.PaqueteSerializer
     filter_backends = [SearchFilter, DjangoFilterBackend]
     search_fields = ['escuela__nombre', 'escuela__cue', 'estado__nombre', 'id_hardware', 'ne', 'escuela__piso__serie']
-    filter_fields = ['escuela__localidad__distrito__region__numero']
+    filter_fields = ['escuela__localidad__distrito__region__numero', 'perfil_que_solicito_el_paquete']
 
     def get_queryset(self):
         queryset = models.Paquete.objects.all()
