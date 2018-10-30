@@ -77,8 +77,31 @@ class Evento(models.Model):
         ordering = ('-fecha',)
 
     def resumenParaCalendario(self):
-        if self.resumen:
-            return json.loads(self.resumen)
+        titulo = self.titulo
+        categoria = self.categoria.nombre
+        escuela = self.escuela.nombre
+        traslado = self.requiere_traslado
+        region = self.escuela.localidad.distrito.region.numero
+        localidad = self.escuela.localidad.nombre
+        distrito = self.escuela.localidad.distrito.nombre
+        responsable = self.responsable.nombre + " " + self.responsable.apellido
+        inicio = self.fecha.strftime("%d/%m/%Y") + " a las " + self.inicio.strftime("%H:%M")
+        fin = self.fecha_fin.strftime("%d/%m/%Y") + " a las " + self.fin.strftime("%H:%M")
+        resumen = json.dumps(
+                {
+                    "titulo": titulo,
+                    "categoria": categoria,
+                    "escuela": escuela,
+                    "region": region,
+                    "localidad": localidad,
+                    "distrito": distrito,
+                    "inicio": inicio,
+                    "fin": fin,
+                    "responsable": responsable,
+                    "traslado": traslado
+                },ensure_ascii=False)
+        if resumen:
+            return json.loads(resumen)
         else:
             return "Sin resumen"
 
