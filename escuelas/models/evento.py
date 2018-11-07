@@ -80,6 +80,7 @@ class Evento(models.Model):
         titulo = self.titulo
         categoria = self.categoria.nombre
         escuela = self.escuela.nombre
+        cue = self.escuela.cue
         traslado = self.requiere_traslado
         region = self.escuela.localidad.distrito.region.numero
         localidad = self.escuela.localidad.nombre
@@ -92,6 +93,7 @@ class Evento(models.Model):
                     "titulo": titulo,
                     "categoria": categoria,
                     "escuela": escuela,
+                    "cue": cue,
                     "region": region,
                     "localidad": localidad,
                     "distrito": distrito,

@@ -54,6 +54,7 @@ class EventoDeRobotica(models.Model):
     def resumenParaCalendario(self):
         titulo = self.titulo.nombre
         escuela = self.escuela.nombre
+        cue = self.escuela.cue
         region = self.escuela.localidad.distrito.region.numero
         localidad = self.escuela.localidad.nombre
         distrito = self.escuela.localidad.distrito.nombre
@@ -64,6 +65,7 @@ class EventoDeRobotica(models.Model):
                 {
                     "titulo": titulo,
                     "escuela": escuela,
+                    "cue": cue,
                     "region": region,
                     "localidad": localidad,
                     "distrito": distrito,
