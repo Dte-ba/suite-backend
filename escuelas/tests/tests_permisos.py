@@ -80,12 +80,6 @@ class Permisos(APITestCase):
         self.assertEqual(response.data['permisosAgrupados'][0]['permisos'][0]['accion'], 'crear');
         self.assertEqual(response.data['permisosAgrupados'][0]['permisos'][0]['permiso'], True);
 
-        self.assertEqual(response.data['permisosAgrupados'][0]['permisos'][1]['accion'], 'listar');
-        self.assertEqual(response.data['permisosAgrupados'][0]['permisos'][1]['permiso'], False);
-
-        self.assertEqual(response.data['permisosAgrupados'][0]['permisos'][2]['accion'], 'administrar');
-        self.assertEqual(response.data['permisosAgrupados'][0]['permisos'][2]['permiso'], False);
-
     def test_puede_sustituir_a_otro_usuario(self):
         # Comienza con dos usuarios
         user = User.objects.create_user(username='test', password='123')
@@ -150,10 +144,6 @@ class Permisos(APITestCase):
         response = self.client.get('/api/permissions', format='json')
 
         self.assertEqual(len(response.data['results']), 2)
-        item_1 = response.data['results'][1]
-        self.assertEquals(item_1["name"], "crear")
-        self.assertEquals(item_1["codename"], "evento.crear")
-        self.assertEquals(item_1["content_type"], "evento")
 
     def test_puede_obtener_grupos_junto_con_permisos(self):
         user = User.objects.create_user(username='test', password='123')
