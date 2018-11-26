@@ -58,7 +58,7 @@ class Permisos(APITestCase):
         self.assertEqual(response.data['grupos'][0]['nombre'], 'coordinador', "Tiene asignado el grupo coordinador")
 
         # Hay 3 permisos en el sistema en total
-        self.assertEqual(len(response.data['permisos']), 3)
+        self.assertEqual(len(response.data['permisos']), 4)
 
         # Pero esta es la asignación, el usuario de este grupo solo puede crear eventos:
         self.assertEqual(response.data['permisos']['evento.crear'], True);
@@ -73,17 +73,17 @@ class Permisos(APITestCase):
         self.assertEqual(response.data['permisos']['evento.listar'], False);
         self.assertEqual(response.data['permisos']['evento.administrar'], False);
 
-        self.assertEqual(len(response.data['permisosAgrupados']), 1);
+        self.assertEqual(len(response.data['permisosAgrupados']), 2);
         self.assertEqual(response.data['permisosAgrupados'][0]['modulo'], 'evento');
         self.assertEqual(len(response.data['permisosAgrupados'][0]['permisos']), 3);
 
         self.assertEqual(response.data['permisosAgrupados'][0]['permisos'][0]['accion'], 'crear');
         self.assertEqual(response.data['permisosAgrupados'][0]['permisos'][0]['permiso'], True);
 
-        self.assertEqual(response.data['permisosAgrupados'][0]['permisos'][1]['accion'], 'administrar');
+        self.assertEqual(response.data['permisosAgrupados'][0]['permisos'][1]['accion'], 'listar');
         self.assertEqual(response.data['permisosAgrupados'][0]['permisos'][1]['permiso'], False);
 
-        self.assertEqual(response.data['permisosAgrupados'][0]['permisos'][2]['accion'], 'listar');
+        self.assertEqual(response.data['permisosAgrupados'][0]['permisos'][2]['accion'], 'administrar');
         self.assertEqual(response.data['permisosAgrupados'][0]['permisos'][2]['permiso'], False);
 
     def test_puede_sustituir_a_otro_usuario(self):
@@ -149,8 +149,8 @@ class Permisos(APITestCase):
         self.client.force_authenticate(user=user)
         response = self.client.get('/api/permissions', format='json')
 
-        self.assertEqual(len(response.data['results']), 1)
-        item_1 = response.data['results'][0]
+        self.assertEqual(len(response.data['results']), 2)
+        item_1 = response.data['results'][1]
         self.assertEquals(item_1["name"], "crear")
         self.assertEquals(item_1["codename"], "evento.crear")
         self.assertEquals(item_1["content_type"], "evento")
@@ -168,8 +168,8 @@ class Permisos(APITestCase):
         self.client.force_authenticate(user=user)
         response = self.client.get('/api/groups', format='json')
 
-        self.assertEqual(len(response.data['results']), 1)
-        item_1 = response.data['results'][0]
+        self.assertEqual(len(response.data['results']), 2)
+        item_1 = response.data['results'][1]
 
         self.assertEquals(item_1["name"], "coordinador")
 
@@ -183,7 +183,7 @@ class Permisos(APITestCase):
         user.perfil.save()
 
         response = self.client.get('/api/groups', format='json')
-        item_1 = response.data['results'][0]
+        item_1 = response.data['results'][1]
 
         self.assertEquals(len(item_1["perfiles"]), 1)
         self.assertEquals(item_1["perfiles"][0]['type'], 'perfiles')
