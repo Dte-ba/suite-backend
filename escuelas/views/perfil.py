@@ -1,5 +1,10 @@
 # coding: utf-8
 from __future__ import unicode_literals
+import base64
+import os
+import subprocess
+import uuid
+
 from django.db.models import Q
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import viewsets
@@ -82,6 +87,57 @@ class PerfilViewSet(viewsets.ModelViewSet):
 
 
         return queryset
+
+    def perform_update(self, serializer):
+        return self.guardar_modelo_teniendo_en_cuenta_la_foto(serializer)
+
+    def perform_create(self, serializer):
+        return self.guardar_modelo_teniendo_en_cuenta_la_foto(serializer)
+
+    def guardar_modelo_teniendo_en_cuenta_la_foto(self, serializer):
+        instancia = serializer.save()
+        foto = self.request.data.get('image', None)
+
+        if foto and isinstance(foto, list):
+            lista_de_archivos_temporales = []
+
+            nombre = foto[0]['name']
+            contenido = foto[0]['contenido']
+
+            archivo_temporal = self.guardar_archivo_temporal(nombre, contenido)
+            lista_de_archivos_temporales.append(archivo_temporal)
+
+            prefijo_aleatorio = str(uuid.uuid4())[:12]
+            nombre_del_archivo_jpg = '/tmp/%s_archivo.jpg' %(prefijo_aleatorio)
+
+            comando_a_ejecutar = ["convert"] + lista_de_archivos_temporales + ['-compress', 'jpeg', '-quality', '50', '-resize', '1024x1024', nombre_del_archivo_jpg]
+            fallo = subprocess.call(comando_a_ejecutar)
+
+            if not fallo:
+                from django.core.files import File
+                reopen = open(nombre_del_archivo_jpg, "rb")
+                django_file = File(reopen)
+
+                instancia.image.save('foto.jpg', django_file, save=False)
+            else:
+                raise Exception(u"Falló la generación del archivo jpg")
+
+        instancia.save()
+        return instancia
+
+    def guardar_archivo_temporal(self, nombre, data):
+        if 'data:' in data and ';base64,' in data:
+            header, data = data.split(';base64,')
+
+        decoded_file = base64.b64decode(data)
+        complete_file_name = str(uuid.uuid4())[:12]+ "_" + nombre
+        ruta_completa = os.path.join('/tmp', complete_file_name)
+
+        filehandler = open(ruta_completa, "wb")
+        filehandler.write(decoded_file)
+        filehandler.close()
+
+        return ruta_completa
 
     @list_route(methods=['get'])
     def estadistica(self, request):
