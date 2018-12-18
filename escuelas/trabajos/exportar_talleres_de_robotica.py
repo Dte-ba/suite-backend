@@ -13,7 +13,7 @@ import xlwt
 
 from escuelas import models
 
-@job
+@job("default", timeout=5*60)
 def exportar_talleres(inicio, fin, criterio):
 
     trabajo = utils.crear_modelo_trabajo("Exportación de talleres segun criterio {0} completo desde {1} hasta {2}".format(criterio, inicio, fin))
